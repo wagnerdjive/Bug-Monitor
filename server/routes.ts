@@ -27,13 +27,14 @@ export async function registerRoutes(
       // Generate API Key
       const apiKey = randomBytes(32).toString('hex');
       
-      const input = api.projects.create.input.parse({
-        ...req.body,
+      const projectData = {
+        name: req.body.name,
+        platform: req.body.platform,
         userId,
         apiKey
-      });
+      };
 
-      const project = await storage.createProject(input);
+      const project = await storage.createProject(projectData as any);
       res.status(201).json(project);
     } catch (err) {
       if (err instanceof z.ZodError) {

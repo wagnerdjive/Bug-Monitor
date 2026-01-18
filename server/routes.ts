@@ -110,10 +110,12 @@ export async function registerRoutes(
   // Ingestion Route (Public, authenticated via API Key)
   app.post(api.events.ingest.path, async (req, res) => {
     try {
+      console.log("Receiving error ingestion:", req.body);
       const input = api.events.ingest.input.parse(req.body);
       const project = await storage.getProjectByApiKey(input.apiKey);
 
       if (!project) {
+        console.error("Invalid API Key:", input.apiKey);
         return res.status(404).json({ message: 'Invalid API Key' });
       }
 

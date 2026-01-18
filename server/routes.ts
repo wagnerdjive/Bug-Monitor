@@ -112,7 +112,16 @@ export async function registerRoutes(
   app.post(api.events.ingest.path, async (req, res) => {
     try {
       console.log("Receiving error ingestion:", req.body);
-      const input = api.events.ingest.input.parse(req.body);
+      
+      // Coerce occurredAt to Date if it's a string
+      const ingestSchema = api.events.ingest.input.extend({
+        occurredAt: z.preprocess((arg) => {
+          if (typeof arg === "string") return new Date(arg);
+          return arg;
+        }, z.date().optional()),
+      });
+
+      const input = ingestSchema.parse(req.body);
       const project = await storage.getProjectByApiKey(input.apiKey);
 
       if (!project) {

@@ -22,7 +22,8 @@ import {
   Settings, 
   Activity, 
   Clock, 
-  MoreHorizontal 
+  MoreHorizontal,
+  Play
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
@@ -38,6 +39,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export default function ProjectDetails() {
   const [, params] = useRoute("/projects/:id");
@@ -45,6 +49,8 @@ export default function ProjectDetails() {
   const { data: project, isLoading: loadingProject } = useProject(projectId);
   const { data: events, isLoading: loadingEvents } = useProjectEvents({ projectId });
   const deleteProject = useDeleteProject();
+  const { toast } = useToast();
+  const [isSimulating, setIsSimulating] = useState(false);
 
   if (loadingProject) {
     return <Layout><div>Loading...</div></Layout>;
@@ -54,7 +60,36 @@ export default function ProjectDetails() {
     return <Layout><div>Project not found</div></Layout>;
   }
 
-  // Mock data for chart since backend doesn't aggregate yet
+  const simulateError = async () => {
+    setIsSimulating(true);
+    try {
+      await apiRequest('POST', '/api/ingest', {
+        apiKey: project.apiKey,
+        type: 'error',
+        message: 'Simulated UI Error: User profile failed to load',
+        stackTrace: 'Error: Failed to load\n at Profile.tsx:42',
+        deviceInfo: { model: 'Browser Demo', os: 'Web' },
+        platformInfo: { version: '1.0.0' },
+        occurredAt: new Date().toISOString()
+      });
+      
+      toast({
+        title: "Success",
+        description: "Simulated error ingested successfully.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${project.id}/events`] });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to ingest simulated error.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSimulating(false);
+    }
+  };
+
   const chartData = [
     { name: '00:00', errors: 0 },
     { name: '04:00', errors: 0 },
@@ -67,7 +102,6 @@ export default function ProjectDetails() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div className="flex items-center gap-3">
@@ -79,32 +113,45 @@ export default function ProjectDetails() {
             <p className="text-muted-foreground mt-1 text-sm font-mono">ID: {project.id}</p>
           </div>
           
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" className="gap-2">
-                <Trash2 className="w-4 h-4" />
-                Delete Project
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete your project
-                  and all associated error data.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction 
-                  onClick={() => deleteProject.mutate(project.id)}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={simulateError}
+              disabled={isSimulating}
+            >
+              <Play className="w-4 h-4" />
+              {isSimulating ? "Simulating..." : "Simulate Error"}
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" className="gap-2">
+                  <Trash2 className="w-4 h-4" />
+                  Delete Project
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your project
+                    and all associated error data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => deleteProject.mutate(project.id)}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">

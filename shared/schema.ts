@@ -19,7 +19,9 @@ export const projects = pgTable("projects", {
 export const errorEvents = pgTable("error_events", {
   id: serial("id").primaryKey(),
   projectId: integer("project_id").notNull().references(() => projects.id),
-  type: text("type").notNull(), // 'error', 'warning', 'info', 'fatal'
+  type: text("type").notNull(), // 'error', 'warning', 'info', 'fatal', 'exception', 'crash'
+  status: text("status").notNull().default("unresolved"), // 'unresolved', 'resolved', 'ignored', 'in_progress'
+  severity: text("severity").notNull().default("medium"), // 'low', 'medium', 'high', 'critical'
   message: text("message").notNull(),
   stackTrace: text("stack_trace"),
   deviceInfo: jsonb("device_info"), // OS version, device model, etc.

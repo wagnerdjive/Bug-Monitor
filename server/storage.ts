@@ -16,9 +16,10 @@ export interface IStorage {
   deleteProject(id: number): Promise<void>;
 
   // Events
-  getProjectEvents(projectId: number, limit?: number, offset?: number): Promise<ErrorEvent[]>;
+  getProjectEvents(projectId: number, filters?: { limit?: number, offset?: number, type?: string, status?: string, severity?: string }): Promise<ErrorEvent[]>;
   getEvent(id: number): Promise<ErrorEvent | undefined>;
   createErrorEvent(event: InsertErrorEvent): Promise<ErrorEvent>;
+  updateErrorEvent(id: number, updates: Partial<ErrorEvent>): Promise<ErrorEvent>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -37,9 +38,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createProject(insertProject: InsertProject): Promise<Project> {
-    // Generate a random API key if one isn't provided (though schema usually enforces uniqueness, best to generate here)
-    // But our schema says apiKey is required in InsertProject.
-    // Let's assume the route handler generates it.
     const [project] = await db.insert(projects).values(insertProject).returning();
     return project;
   }
@@ -48,10 +46,17 @@ export class DatabaseStorage implements IStorage {
     await db.delete(projects).where(eq(projects.id, id));
   }
 
-  async getProjectEvents(projectId: number, limit: number = 50, offset: number = 0): Promise<ErrorEvent[]> {
-    return await db.select()
+  async getProjectEvents(projectId: number, filters: { limit?: number, offset?: number, type?: string, status?: string, severity?: string } = {}): Promise<ErrorEvent[]> {
+    const { limit = 50, offset = 0, type, status, severity } = filters;
+    let query = db.select()
       .from(errorEvents)
-      .where(eq(errorEvents.projectId, projectId))
+      .where(eq(errorEvents.projectId, projectId));
+    
+    if (type) query = query.where(eq(errorEvents.type, type)) as any;
+    if (status) query = query.where(eq(errorEvents.status, status)) as any;
+    if (severity) query = query.where(eq(errorEvents.severity, severity)) as any;
+
+    return await (query as any)
       .orderBy(desc(errorEvents.occurredAt))
       .limit(limit)
       .offset(offset);
@@ -65,6 +70,14 @@ export class DatabaseStorage implements IStorage {
   async createErrorEvent(insertEvent: InsertErrorEvent): Promise<ErrorEvent> {
     const [event] = await db.insert(errorEvents).values(insertEvent).returning();
     return event;
+  }
+
+  async updateErrorEvent(id: number, updates: Partial<ErrorEvent>): Promise<ErrorEvent> {
+    const [updated] = await db.update(errorEvents)
+      .set(updates)
+      .where(eq(errorEvents.id, id))
+      .returning();
+    return updated;
   }
 }
 

@@ -87,8 +87,27 @@ export async function registerRoutes(
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const events = await storage.getProjectEvents(projectId);
+    const filters = api.events.list.input?.parse(req.query) || {};
+    const events = await storage.getProjectEvents(projectId, filters);
     res.json(events);
+  });
+
+  app.patch(api.events.update.path, isAuthenticated, async (req, res) => {
+    const eventId = Number(req.params.id);
+    const event = await storage.getEvent(eventId);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    const project = await storage.getProject(event.projectId);
+    const userId = (req.user as any).claims.sub;
+    if (!project || project.userId !== userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const input = api.events.update.input.parse(req.body);
+    const updated = await storage.updateErrorEvent(eventId, input);
+    res.json(updated);
   });
 
   app.get(api.events.get.path, isAuthenticated, async (req, res) => {

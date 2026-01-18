@@ -69,9 +69,25 @@ export const api = {
       input: z.object({
         limit: z.coerce.number().optional(),
         offset: z.coerce.number().optional(),
+        type: z.string().optional(),
+        status: z.string().optional(),
+        severity: z.string().optional(),
       }).optional(),
       responses: {
         200: z.array(z.custom<typeof errorEvents.$inferSelect>()),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      },
+    },
+    update: {
+      method: 'PATCH' as const,
+      path: '/api/events/:id',
+      input: z.object({
+        status: z.string().optional(),
+        severity: z.string().optional(),
+      }),
+      responses: {
+        200: z.custom<typeof errorEvents.$inferSelect>(),
         404: errorSchemas.notFound,
         401: errorSchemas.unauthorized,
       },

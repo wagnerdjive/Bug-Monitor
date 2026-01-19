@@ -98,7 +98,7 @@ export function Layout({ children }: LayoutProps) {
                 <SheetTitle className="flex items-center gap-2 font-display text-primary">
                   <ShieldCheck className="w-6 h-6" />
                   TechMonitor
-                </ShieldTitle>
+                </SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-2">
                 {navItems.map((item) => (

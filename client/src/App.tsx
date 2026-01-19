@@ -24,25 +24,24 @@ function Router() {
     );
   }
 
-  if (!user) {
-    return (
-      <Switch>
-        <Route path="/auth" component={AuthPage} />
-        <Route path="/">
-          <Landing />
-        </Route>
-        <Route>
-          <Redirect to="/auth" />
-        </Route>
-      </Switch>
-    );
-  }
-
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/projects/:id" component={ProjectDetails} />
-      <Route path="/events/:id" component={EventDetails} />
+      <Route path="/auth">
+        {user ? <Redirect to="/" /> : <AuthPage />}
+      </Route>
+      <Route path="/">
+        {!user ? <Landing /> : <Dashboard />}
+      </Route>
+      {user ? (
+        <>
+          <Route path="/projects/:id" component={ProjectDetails} />
+          <Route path="/events/:id" component={EventDetails} />
+        </>
+      ) : (
+        <Route path="/:rest*">
+          <Redirect to="/auth" />
+        </Route>
+      )}
       <Route component={NotFound} />
     </Switch>
   );

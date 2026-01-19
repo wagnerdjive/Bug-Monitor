@@ -12,13 +12,13 @@ export interface IStorage {
   getProjects(userId: number): Promise<Project[]>;
   getProject(id: number): Promise<Project | undefined>;
   getProjectByApiKey(apiKey: string): Promise<Project | undefined>;
-  createProject(project: InsertProject): Promise<Project>;
+  createProject(project: any): Promise<Project>;
   deleteProject(id: number): Promise<void>;
 
   // Events
   getProjectEvents(projectId: number, filters?: { limit?: number, offset?: number, type?: string, status?: string, severity?: string }): Promise<ErrorEvent[]>;
   getEvent(id: number): Promise<ErrorEvent | undefined>;
-  createErrorEvent(event: InsertErrorEvent): Promise<ErrorEvent>;
+  createErrorEvent(event: any): Promise<ErrorEvent>;
   updateErrorEvent(id: number, updates: Partial<ErrorEvent>): Promise<ErrorEvent>;
 }
 
@@ -37,8 +37,8 @@ export class DatabaseStorage implements IStorage {
     return project;
   }
 
-  async createProject(insertProject: InsertProject): Promise<Project> {
-    const [project] = await db.insert(projects).values(insertProject).returning();
+  async createProject(insertData: any): Promise<Project> {
+    const [project] = await db.insert(projects).values(insertData).returning();
     return project;
   }
 
@@ -67,8 +67,8 @@ export class DatabaseStorage implements IStorage {
     return event;
   }
 
-  async createErrorEvent(insertEvent: InsertErrorEvent): Promise<ErrorEvent> {
-    const [event] = await db.insert(errorEvents).values(insertEvent).returning();
+  async createErrorEvent(insertData: any): Promise<ErrorEvent> {
+    const [event] = await db.insert(errorEvents).values(insertData).returning();
     return event;
   }
 

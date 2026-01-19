@@ -12,7 +12,7 @@ export const projects = pgTable("projects", {
   name: text("name").notNull(),
   platform: text("platform").notNull(), // 'ios', 'android', 'react-native', 'flutter', etc.
   apiKey: text("api_key").notNull().unique(), // Used by SDK to authenticate
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: integer("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

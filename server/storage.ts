@@ -9,7 +9,7 @@ import { randomBytes } from "crypto";
 
 export interface IStorage {
   // Projects
-  getProjects(userId: string): Promise<Project[]>;
+  getProjects(userId: number): Promise<Project[]>;
   getProject(id: number): Promise<Project | undefined>;
   getProjectByApiKey(apiKey: string): Promise<Project | undefined>;
   createProject(project: InsertProject): Promise<Project>;
@@ -23,7 +23,7 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getProjects(userId: string): Promise<Project[]> {
+  async getProjects(userId: number): Promise<Project[]> {
     return await db.select().from(projects).where(eq(projects.userId, userId));
   }
 

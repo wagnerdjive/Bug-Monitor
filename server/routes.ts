@@ -16,14 +16,14 @@ export async function registerRoutes(
 
   // Projects Routes
   app.get(api.projects.list.path, isAuthenticated, async (req, res) => {
-    const userId = (req.user as any).claims.sub;
+    const userId = (req.user as any).id;
     const projects = await storage.getProjects(userId);
     res.json(projects);
   });
 
   app.post(api.projects.create.path, isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any).claims.sub;
+      const userId = (req.user as any).id;
       // Generate API Key
       const apiKey = randomBytes(32).toString('hex');
       
@@ -53,7 +53,7 @@ export async function registerRoutes(
       return res.status(404).json({ message: 'Project not found' });
     }
     // Check ownership
-    const userId = (req.user as any).claims.sub;
+    const userId = (req.user as any).id;
     if (project.userId !== userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -65,7 +65,7 @@ export async function registerRoutes(
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
-    const userId = (req.user as any).claims.sub;
+    const userId = (req.user as any).id;
     if (project.userId !== userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -82,7 +82,7 @@ export async function registerRoutes(
       return res.status(404).json({ message: 'Project not found' });
     }
     
-    const userId = (req.user as any).claims.sub;
+    const userId = (req.user as any).id;
     if (project.userId !== userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -100,7 +100,7 @@ export async function registerRoutes(
     }
 
     const project = await storage.getProject(event.projectId);
-    const userId = (req.user as any).claims.sub;
+    const userId = (req.user as any).id;
     if (!project || project.userId !== userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -118,7 +118,7 @@ export async function registerRoutes(
     
     // Check ownership via project
     const project = await storage.getProject(event.projectId);
-    const userId = (req.user as any).claims.sub;
+    const userId = (req.user as any).id;
     
     if (!project || project.userId !== userId) {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -169,11 +169,7 @@ export async function registerRoutes(
   });
 
   // Seed Data
-  const existingProjects = await storage.getProjects("test-user"); // Check if we should seed for a test user or just general check
-  // Better check count of all projects or just skip if any exist.
-  // Since we have auth, seeding is tricky because we need a user.
-  // We can skip seeding for now or seed a demo project if we can mock a user, but Replit Auth handles users.
-  // I will skip auto-seeding for now as it requires a valid user ID from Replit Auth.
+  // Removed Replit Auth specific seeding
 
   return httpServer;
 }

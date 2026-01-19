@@ -10,30 +10,12 @@ import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import ProjectDetails from "@/pages/project-details";
 import EventDetails from "@/pages/event-details";
+import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
-
-function ProtectedRoute({ component: Component, ...rest }: any) {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Landing />;
-  }
-
-  return <Component />;
-}
 
 function Router() {
   const { user, isLoading } = useAuth();
 
-  // Show loading spinner for initial auth check
   if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
@@ -42,20 +24,20 @@ function Router() {
     );
   }
 
-  // If user is logged out, show Landing page for root
   if (!user) {
     return (
       <Switch>
-        <Route path="/" component={Landing} />
-        {/* Redirect any other protected routes to Landing/Login if accessed directly */}
-        <Route path="/projects/:id" component={Landing} />
-        <Route path="/events/:id" component={Landing} />
-        <Route component={NotFound} />
+        <Route path="/auth" component={AuthPage} />
+        <Route path="/">
+          <Landing />
+        </Route>
+        <Route>
+          <Redirect to="/auth" />
+        </Route>
       </Switch>
     );
   }
 
-  // If user is logged in
   return (
     <Switch>
       <Route path="/" component={Dashboard} />

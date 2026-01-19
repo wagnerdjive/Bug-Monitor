@@ -13,10 +13,10 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
-              <a href="/api/login">Log In</a>
+              <Link href="/auth">Log In</Link>
             </Button>
             <Button asChild className="bg-primary hover:bg-primary/90">
-              <a href="/api/login">Get Started</a>
+              <Link href="/auth">Get Started</Link>
             </Button>
           </div>
         </div>
@@ -38,7 +38,7 @@ export default function Landing() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
               <Button size="lg" className="h-12 px-8 text-lg rounded-full" asChild>
-                <a href="/api/login">Start Monitoring for Free</a>
+                <Link href="/auth">Start Monitoring for Free</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8 text-lg rounded-full border-border/50 hover:bg-white/5" asChild>
                 <a href="#features">View Documentation</a>

@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ShieldAlert, CheckCircle2, Zap, Lock } from "lucide-react";
+import { ShieldCheck, CheckCircle2, Zap, Lock } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -8,8 +8,8 @@ export default function Landing() {
       <nav className="border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground">
-            <ShieldAlert className="w-6 h-6 text-primary" />
-            <span>SentryClone</span>
+            <ShieldCheck className="w-6 h-6 text-primary" />
+            <span>TechMonitor</span>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
@@ -28,13 +28,13 @@ export default function Landing() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-50" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <span>🚀 Now in Public Beta</span>
+              <span>🚀 Powered by TechTarget</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold font-display tracking-tight mb-6 bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-              Stop guessing why your <br/> app crashed.
+            <h1 className="text-5xl md:text-7xl font-bold font-display tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+              Pare de adivinhar por que seu <br/> app quebrou.
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-              Real-time error tracking and performance monitoring for developers who care about code quality. Installs in 2 minutes.
+              Monitoramento de erros em tempo real para desenvolvedores que se preocupam com qualidade.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
               <Button size="lg" className="h-12 px-8 text-lg rounded-full" asChild>
@@ -106,8 +106,8 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="py-8 border-t border-white/5 text-center text-muted-foreground text-sm">
-        <p>© 2024 SentryClone. All rights reserved.</p>
+      <footer className="py-8 border-t border-border/50 text-center text-muted-foreground text-sm bg-muted/30">
+        <p>© 2024 TechMonitor. All rights reserved. Powered by TechTarget.</p>
       </footer>
     </div>
   );

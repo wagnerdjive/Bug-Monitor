@@ -5,7 +5,7 @@ import {
   LogOut,
   Plus,
   Settings,
-  ShieldAlert,
+  ShieldCheck,
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,8 @@ export function Layout({ children }: LayoutProps) {
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
         <div className="flex items-center gap-2 font-display font-bold text-xl text-primary">
-          <ShieldAlert className="w-6 h-6" />
-          <span>SentryClone</span>
+          <ShieldCheck className="w-6 h-6" />
+          <span>TechMonitor</span>
         </div>
         <Sheet>
           <SheetTrigger asChild>
@@ -85,8 +85,8 @@ export function Layout({ children }: LayoutProps) {
         <div className="p-6 border-b border-border/50">
           <Link href="/">
             <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground hover:opacity-80 transition-opacity cursor-pointer">
-              <ShieldAlert className="w-6 h-6 text-primary" />
-              <span>SentryClone</span>
+              <ShieldCheck className="w-6 h-6 text-primary" />
+              <span>TechMonitor</span>
             </div>
           </Link>
         </div>
@@ -109,6 +109,9 @@ export function Layout({ children }: LayoutProps) {
         </nav>
 
         <div className="p-4 border-t border-border/50 bg-muted/50">
+          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4 text-center">
+            Powered by TechTarget
+          </div>
           <div className="flex items-center gap-3 mb-4 px-2">
             <Avatar className="w-8 h-8 border border-border">
               <AvatarImage src={user?.profileImageUrl || undefined} />

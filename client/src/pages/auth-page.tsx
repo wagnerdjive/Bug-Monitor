@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { ShieldAlert } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -49,8 +49,8 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <div className="flex items-center gap-2 font-display font-bold text-2xl text-foreground mb-8">
-        <ShieldAlert className="w-8 h-8 text-primary" />
-        <span>SentryClone</span>
+        <ShieldCheck className="w-8 h-8 text-primary" />
+        <span>TechMonitor</span>
       </div>
       <Card className="w-full max-w-md">
         <CardHeader>

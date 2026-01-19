@@ -53,7 +53,6 @@ export function useAuth() {
     isAuthenticated: !!user,
     loginMutation,
     registerMutation,
-    logout: logoutMutation.mutate,
-    isLoggingOut: logoutMutation.isPending,
+    logoutMutation,
   };
 }

@@ -108,7 +108,7 @@ export function Layout({ children }: LayoutProps) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-border/50 bg-black/20">
+        <div className="p-4 border-t border-border/50 bg-muted/50">
           <div className="flex items-center gap-3 mb-4 px-2">
             <Avatar className="w-8 h-8 border border-border">
               <AvatarImage src={user?.profileImageUrl || undefined} />

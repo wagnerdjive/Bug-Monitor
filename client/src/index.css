@@ -71,8 +71,8 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-700 rounded-full;
+  @apply bg-zinc-300 rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-zinc-600;
+  @apply bg-zinc-400;
 }

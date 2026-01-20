@@ -2,7 +2,9 @@ package com.errortracker.controller;
 
 import com.errortracker.dto.AuthRequest;
 import com.errortracker.dto.UserResponse;
+import com.errortracker.entity.Invitation;
 import com.errortracker.entity.User;
+import com.errortracker.service.InvitationService;
 import com.errortracker.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -16,16 +18,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final InvitationService invitationService;
     
-    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, InvitationService invitationService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
+        this.invitationService = invitationService;
     }
     
     @PostMapping("/register")
@@ -101,5 +106,81 @@ public class AuthController {
         return userService.findById(userId)
             .map(user -> ResponseEntity.ok(UserResponse.fromUser(user)))
             .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
+    
+    @GetMapping("/register/invite/{token}")
+    public ResponseEntity<?> getInvitation(@PathVariable String token) {
+        Optional<Invitation> invitation = invitationService.findByToken(token);
+        
+        if (invitation.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Invitation not found"));
+        }
+        
+        Invitation inv = invitation.get();
+        if (inv.isExpired()) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Invitation has expired"));
+        }
+        
+        if (!inv.isPending()) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Invitation has already been used"));
+        }
+        
+        return ResponseEntity.ok(Map.of(
+            "email", inv.getEmail(),
+            "token", inv.getToken()
+        ));
+    }
+    
+    @PostMapping("/register/invite/{token}")
+    public ResponseEntity<?> registerWithInvitation(
+            @PathVariable String token,
+            @Valid @RequestBody AuthRequest request,
+            HttpServletRequest httpRequest) {
+        
+        Optional<Invitation> invitation = invitationService.findByToken(token);
+        
+        if (invitation.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Invitation not found"));
+        }
+        
+        Invitation inv = invitation.get();
+        if (inv.isExpired()) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Invitation has expired"));
+        }
+        
+        if (!inv.isPending()) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Invitation has already been used"));
+        }
+        
+        try {
+            User user = userService.createUserFromInvitation(
+                request.getUsername(),
+                request.getPassword(),
+                inv.getEmail(),
+                request.getFirstName(),
+                request.getLastName()
+            );
+            
+            invitationService.markAsAccepted(inv);
+            
+            Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            
+            HttpSession session = httpRequest.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+            session.setAttribute("userId", user.getId());
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.fromUser(user));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 }

@@ -10,6 +10,7 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String profileImageUrl;
+    private String role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
@@ -21,6 +22,7 @@ public class UserResponse {
         response.firstName = user.getFirstName();
         response.lastName = user.getLastName();
         response.profileImageUrl = user.getProfileImageUrl();
+        response.role = user.getRole();
         response.createdAt = user.getCreatedAt();
         response.updatedAt = user.getUpdatedAt();
         return response;
@@ -49,4 +51,7 @@ public class UserResponse {
     
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

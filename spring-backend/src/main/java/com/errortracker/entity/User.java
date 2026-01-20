@@ -28,6 +28,9 @@ public class User {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
     
+    @Column(nullable = false)
+    private String role = "USER";
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
@@ -71,4 +74,9 @@ public class User {
     
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    
+    public boolean isAdmin() { return "ADMIN".equals(role); }
 }

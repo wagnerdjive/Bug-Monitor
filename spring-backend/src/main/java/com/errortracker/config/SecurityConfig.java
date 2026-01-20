@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/api/**")
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/register", "/api/login", "/api/ingest", "/api/auth/user").permitAll()
+                .requestMatchers("/api/register", "/api/login", "/api/ingest", "/api/auth/user", "/api/register/invite/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )

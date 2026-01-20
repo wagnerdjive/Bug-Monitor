@@ -5,47 +5,174 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Clock, Monitor, Tag, Share2, Activity } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  ArrowLeft, 
+  Clock, 
+  Monitor, 
+  Tag, 
+  Share2, 
+  Activity, 
+  AlertTriangle,
+  AlertCircle,
+  Info,
+  CheckCircle2,
+  Copy,
+  Check
+} from "lucide-react";
 import { Link } from "wouter";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function EventDetails() {
   const [, params] = useRoute("/events/:id");
   const id = Number(params?.id);
-  const { data: event, isLoading } = useEvent(id);
+  const { data: event, isLoading, error } = useEvent(id);
+  const [copied, setCopied] = useState(false);
 
-  if (isLoading) return <Layout><div>Loading...</div></Layout>;
-  if (!event) return <Layout><div>Event not found</div></Layout>;
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="max-w-5xl mx-auto">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 w-32 bg-muted rounded" />
+            <div className="h-12 w-3/4 bg-muted rounded" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 h-64 bg-muted rounded" />
+              <div className="h-64 bg-muted rounded" />
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !event) {
+    return (
+      <Layout>
+        <div className="max-w-5xl mx-auto">
+          <Card className="border-destructive/50">
+            <CardContent className="pt-6">
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <AlertCircle className="w-12 h-12 text-destructive mb-4" />
+                <h2 className="text-xl font-semibold mb-2">Event Not Found</h2>
+                <p className="text-muted-foreground mb-4">
+                  This event may have been deleted or you don't have permission to view it.
+                </p>
+                <Link href="/dashboard">
+                  <Button variant="outline">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Dashboard
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
+    );
+  }
+
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
+      case "critical":
+      case "high":
+        return <AlertTriangle className="w-4 h-4" />;
+      case "medium":
+        return <AlertCircle className="w-4 h-4" />;
+      case "low":
+        return <Info className="w-4 h-4" />;
+      default:
+        return <Activity className="w-4 h-4" />;
+    }
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case "critical":
+        return "bg-red-600 text-white";
+      case "high":
+        return "bg-orange-500 text-white";
+      case "medium":
+        return "bg-yellow-500 text-black";
+      case "low":
+        return "bg-blue-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "resolved":
+        return "bg-green-600 text-white";
+      case "ignored":
+        return "bg-gray-500 text-white";
+      default:
+        return "bg-red-600 text-white";
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "error":
+        return "destructive";
+      case "warning":
+        return "secondary";
+      default:
+        return "outline";
+    }
+  };
 
   return (
     <Layout>
       <div className="max-w-5xl mx-auto space-y-6">
         <Link href={`/projects/${event.projectId}`}>
-          <Button variant="ghost" className="gap-2 pl-0 hover:pl-2 transition-all text-muted-foreground">
+          <Button variant="ghost" className="gap-2 pl-0 hover:pl-2 transition-all text-muted-foreground" data-testid="button-back-project">
             <ArrowLeft className="w-4 h-4" />
             Back to Project
           </Button>
         </Link>
 
         <div className="flex flex-col gap-4">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <Badge variant="destructive" className="mb-2 uppercase text-[10px] tracking-widest font-bold">
-                {event.type}
-              </Badge>
-              <h1 className="text-2xl font-bold font-mono break-all">{event.message}</h1>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2">
-                <span className="flex items-center gap-1.5">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div className="space-y-3 flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant={getTypeColor(event.type) as any} className="uppercase text-[10px] tracking-widest font-bold" data-testid="badge-type">
+                  {event.type}
+                </Badge>
+                <Badge className={cn("uppercase text-[10px] tracking-widest font-bold", getSeverityColor(event.severity))} data-testid="badge-severity">
+                  {getSeverityIcon(event.severity)}
+                  <span className="ml-1">{event.severity}</span>
+                </Badge>
+                <Badge className={cn("uppercase text-[10px] tracking-widest font-bold", getStatusColor(event.status))} data-testid="badge-status">
+                  {event.status === "resolved" && <CheckCircle2 className="w-3 h-3 mr-1" />}
+                  {event.status}
+                </Badge>
+              </div>
+              <h1 className="text-xl md:text-2xl font-bold font-mono break-all" data-testid="text-message">{event.message}</h1>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1.5" data-testid="text-occurred-at">
                   <Clock className="w-4 h-4" />
-                  {format(new Date(event.occurredAt!), "MMM d, yyyy h:mm a")}
+                  {format(new Date(event.occurredAt), "MMM d, yyyy h:mm:ss a")}
                 </span>
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 text-xs" data-testid="text-time-ago">
+                  ({formatDistanceToNow(new Date(event.occurredAt), { addSuffix: true })})
+                </span>
+                <span className="flex items-center gap-1.5" data-testid="text-event-id">
                   <Activity className="w-4 h-4" />
                   ID: {event.id}
                 </span>
               </div>
             </div>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 shrink-0" data-testid="button-share">
               <Share2 className="w-4 h-4" /> Share
             </Button>
           </div>
@@ -54,96 +181,138 @@ export default function EventDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card className="border-border">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between gap-2">
                 <CardTitle className="flex items-center gap-2">
                   Stack Trace
                 </CardTitle>
+                {event.stackTrace && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => copyToClipboard(event.stackTrace || "")}
+                    data-testid="button-copy-stack"
+                  >
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span className="ml-1 text-xs">{copied ? "Copied" : "Copy"}</span>
+                  </Button>
+                )}
               </CardHeader>
               <CardContent className="p-0">
-                <div className="bg-black/50 overflow-x-auto p-6 font-mono text-sm leading-relaxed border-t border-border">
-                  {event.stackTrace ? (
-                    <pre className="text-red-200">
-                      {event.stackTrace}
-                    </pre>
-                  ) : (
-                    <span className="text-muted-foreground italic">No stack trace available.</span>
-                  )}
-                </div>
+                <ScrollArea className="h-[300px] md:h-[400px]">
+                  <div className="bg-zinc-950 p-4 md:p-6 font-mono text-xs md:text-sm leading-relaxed border-t border-border">
+                    {event.stackTrace ? (
+                      <pre className="text-red-300 whitespace-pre-wrap break-all" data-testid="text-stack-trace">
+                        {event.stackTrace}
+                      </pre>
+                    ) : (
+                      <span className="text-muted-foreground italic">No stack trace available.</span>
+                    )}
+                  </div>
+                </ScrollArea>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Breadcrumbs</CardTitle>
-                <CardDescription>Actions leading up to this error</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {event.breadcrumbs ? (
-                  <pre className="text-sm font-mono text-muted-foreground whitespace-pre-wrap">
-                    {JSON.stringify(event.breadcrumbs, null, 2)}
-                  </pre>
-                ) : (
-                  <div className="text-muted-foreground text-sm italic">No breadcrumbs recorded.</div>
-                )}
-              </CardContent>
-            </Card>
+            {event.breadcrumbs && Array.isArray(event.breadcrumbs) && event.breadcrumbs.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Breadcrumbs</CardTitle>
+                  <CardDescription>Actions leading up to this error ({event.breadcrumbs.length} items)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea className="h-[200px]">
+                    <div className="space-y-2">
+                      {event.breadcrumbs.map((crumb: any, index: number) => (
+                        <div key={index} className="flex items-start gap-3 text-sm p-2 bg-muted/30 rounded">
+                          <span className="text-muted-foreground text-xs font-mono">{index + 1}</span>
+                          <div className="flex-1 min-w-0">
+                            <pre className="text-xs font-mono whitespace-pre-wrap break-all">
+                              {typeof crumb === "string" ? crumb : JSON.stringify(crumb, null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <div className="space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Tags</CardTitle>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                  <Monitor className="w-4 h-4" /> Device Info
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex flex-wrap gap-2">
-                  {event.tags && Object.entries(event.tags as Record<string, string>).map(([k, v]) => (
-                    <div key={k} className="flex items-center text-sm border border-border rounded-md bg-muted/30 overflow-hidden">
-                      <span className="px-2 py-1 bg-muted/50 border-r border-border text-muted-foreground font-medium">{k}</span>
-                      <span className="px-2 py-1 font-mono text-foreground">{v}</span>
-                    </div>
-                  ))}
-                  {!event.tags && <span className="text-muted-foreground text-sm">No tags</span>}
-                </div>
+              <CardContent>
+                {event.deviceInfo && Object.keys(event.deviceInfo).length > 0 ? (
+                  <div className="space-y-2 text-sm">
+                    {Object.entries(event.deviceInfo).map(([k, v]) => (
+                      <div key={k} className="flex justify-between gap-2 border-b border-border/50 pb-2 last:border-0 last:pb-0">
+                        <span className="text-muted-foreground capitalize shrink-0">{k.replace(/_/g, ' ')}</span>
+                        <span className="font-mono text-right truncate" title={String(v)}>{String(v)}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground text-sm italic">No device info available</span>
+                )}
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Context</CardTitle>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                  <Tag className="w-4 h-4" /> App Info
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
-                    <Monitor className="w-3 h-3" /> Device Info
-                  </h4>
-                  {event.deviceInfo ? (
-                    <div className="space-y-2 text-sm">
-                      {Object.entries(event.deviceInfo as Record<string, any>).map(([k, v]) => (
-                        <div key={k} className="flex justify-between border-b border-border/50 pb-1 last:border-0">
-                          <span className="text-muted-foreground capitalize">{k.replace(/_/g, ' ')}</span>
-                          <span className="font-mono">{String(v)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : <span className="text-muted-foreground text-sm">Unavailable</span>}
+              <CardContent>
+                {event.platformInfo && Object.keys(event.platformInfo).length > 0 ? (
+                  <div className="space-y-2 text-sm">
+                    {Object.entries(event.platformInfo).map(([k, v]) => (
+                      <div key={k} className="flex justify-between gap-2 border-b border-border/50 pb-2 last:border-0 last:pb-0">
+                        <span className="text-muted-foreground capitalize shrink-0">{k.replace(/_/g, ' ')}</span>
+                        <span className="font-mono text-right truncate" title={String(v)}>{String(v)}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground text-sm italic">No app info available</span>
+                )}
+              </CardContent>
+            </Card>
+
+            {event.tags && Object.keys(event.tags).length > 0 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Tags</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(event.tags).map(([k, v]) => (
+                      <div key={k} className="flex items-center text-xs border border-border rounded-md bg-muted/30 overflow-hidden">
+                        <span className="px-2 py-1 bg-muted/50 border-r border-border text-muted-foreground font-medium">{k}</span>
+                        <span className="px-2 py-1 font-mono text-foreground">{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Timestamps</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <div className="flex justify-between gap-2">
+                  <span className="text-muted-foreground">Occurred</span>
+                  <span className="font-mono text-xs">{format(new Date(event.occurredAt), "yyyy-MM-dd HH:mm:ss")}</span>
                 </div>
-
-                <Separator />
-
-                <div>
-                  <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
-                    <Tag className="w-3 h-3" /> App Info
-                  </h4>
-                  {event.platformInfo ? (
-                    <div className="space-y-2 text-sm">
-                      {Object.entries(event.platformInfo as Record<string, any>).map(([k, v]) => (
-                        <div key={k} className="flex justify-between border-b border-border/50 pb-1 last:border-0">
-                          <span className="text-muted-foreground capitalize">{k.replace(/_/g, ' ')}</span>
-                          <span className="font-mono">{String(v)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : <span className="text-muted-foreground text-sm">Unavailable</span>}
+                <div className="flex justify-between gap-2">
+                  <span className="text-muted-foreground">Received</span>
+                  <span className="font-mono text-xs">{format(new Date(event.createdAt), "yyyy-MM-dd HH:mm:ss")}</span>
                 </div>
               </CardContent>
             </Card>

@@ -121,7 +121,9 @@
     "tags": "Etiquetas",
     "timestamps": "Timestamps",
     "occurred": "Ocurrio",
-    "received": "Recibido"
+    "received": "Recibido",
+    "user": "Usuario",
+    "traceId": "ID de Rastreo"
   },
   "sdk": {
     "title": "Integracion SDK",

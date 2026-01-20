@@ -196,6 +196,18 @@ export default function EventDetails() {
                   <Activity className="w-4 h-4" />
                   ID: {event.id}
                 </span>
+                {event.userName && (
+                  <span className="flex items-center gap-1.5" data-testid="text-user-name">
+                    <Tag className="w-4 h-4" />
+                    User: {event.userName}
+                  </span>
+                )}
+                {event.traceId && (
+                  <span className="flex items-center gap-1.5" data-testid="text-trace-id">
+                    <Activity className="w-4 h-4" />
+                    Trace: {event.traceId}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 shrink-0">

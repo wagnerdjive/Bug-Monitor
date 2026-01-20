@@ -120,19 +120,19 @@ async def global_exception_handler(request, exc):
             <div className="p-4 rounded-xl border border-border/40 bg-muted/20">
               <h4 className="font-bold flex items-center gap-2 mb-2">
                 <ShieldCheck className="w-4 h-4 text-primary" />
-                Auth Security
+                {t("docs.securityAuth")}
               </h4>
-              <p className="text-sm text-muted-foreground">Every project generates a unique API Key. Ensure this key is stored securely in environment variables.</p>
+              <p className="text-sm text-muted-foreground">{t("docs.securityAuthDesc")}</p>
             </div>
             <div className="p-4 rounded-xl border border-border/40 bg-muted/20">
               <h4 className="font-bold flex items-center gap-2 mb-2">
                 <Workflow className="w-4 h-4 text-primary" />
-                Workflow
+                {t("docs.workflowTitle")}
               </h4>
-              <p className="text-sm text-muted-foreground">Errors are automatically grouped by fingerprint to reduce noise and help you focus on impact.</p>
+              <p className="text-sm text-muted-foreground">{t("docs.workflowDesc")}</p>
             </div>
           </div>
-          <p className="text-sm leading-relaxed">TechMonitor supports production, staging, and development environments. We recommend using different projects or environment tags for each to keep your data organized.</p>
+          <p className="text-sm leading-relaxed">{t("docs.envSupport")}</p>
         </div>
       )
     },
@@ -141,10 +141,10 @@ async def global_exception_handler(request, exc):
       icon: Code,
       content: t("docs.sdkIntegrationContent"),
       details: (
-        <div className="space-y-4">
+        <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center gap-2 mb-4">
-            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">Latest SDK: v2.1.0</Badge>
-            <Badge variant="outline" className="bg-emerald-500/5 text-emerald-500 border-emerald-500/20">Stable</Badge>
+            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">{t("docs.sdkVersion")}</Badge>
+            <Badge variant="outline" className="bg-emerald-500/5 text-emerald-500 border-emerald-500/20">{t("docs.sdkStable")}</Badge>
           </div>
           <Tabs defaultValue={sdkExamples[0].lang} className="w-full">
             <TabsList className="grid grid-cols-1 md:grid-cols-3 h-auto p-1 bg-muted/30">
@@ -184,9 +184,9 @@ async def global_exception_handler(request, exc):
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { label: 'Breadcrumbs', icon: Search, desc: 'Track events before error' },
-              { label: 'Real-time Alerts', icon: Bell, desc: 'Slack/Email notifications' },
-              { label: 'Smart Grouping', icon: Zap, desc: 'Zero noise tracking' }
+              { label: t('docs.featureBreadcrumbs'), icon: Search, desc: t('docs.featureBreadcrumbsDesc') },
+              { label: t('docs.featureAlerts'), icon: Bell, desc: t('docs.featureAlertsDesc') },
+              { label: t('docs.featureGrouping'), icon: Zap, desc: t('docs.featureGroupingDesc') }
             ].map((feature, i) => (
               <div key={i} className="flex flex-col items-center text-center p-3 rounded-lg bg-muted/20 border border-border/40">
                 <feature.icon className="w-5 h-5 mb-2 text-primary" />
@@ -206,13 +206,13 @@ async def global_exception_handler(request, exc):
         <div className="text-center space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-2">
             <BookOpen className="w-3 h-3" />
-            Documentation Center
+            {t("docs.docsCenter")}
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">
             {t("docs.title")}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Everything you need to integrate monitoring and master your application's health.
+            {t("docs.docsPreamble")}
           </p>
         </div>
 
@@ -267,28 +267,28 @@ async def global_exception_handler(request, exc):
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-blue-400" />
-                Security First
+                {t("docs.securityTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-slate-400 text-sm leading-relaxed mb-4">
-                We take security seriously. All data is encrypted in transit using TLS 1.3 and at rest using AES-256. 
+                {t("docs.securityContent")}
               </p>
-              <Badge variant="outline" className="text-blue-400 border-blue-400/30">Compliance Ready</Badge>
+              <Badge variant="outline" className="text-blue-400 border-blue-400/30">{t("docs.securityBadge")}</Badge>
             </CardContent>
           </Card>
           <Card className="bg-emerald-950/20 border-emerald-500/20 group">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-emerald-400" />
-                High Performance
+                {t("docs.performanceTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                Our SDKs are non-blocking and have a negligible footprint on your application's performance.
+                {t("docs.performanceContent")}
               </p>
-              <Badge variant="outline" className="text-emerald-400 border-emerald-400/30">{'< 1ms latency'}</Badge>
+              <Badge variant="outline" className="text-emerald-400 border-emerald-400/30">{t("docs.performanceBadge")}</Badge>
             </CardContent>
           </Card>
         </div>
@@ -300,14 +300,14 @@ async def global_exception_handler(request, exc):
           </CardHeader>
           <CardContent className="p-10 pt-0 relative z-10">
             <p className="mb-10 text-xl opacity-90 leading-relaxed max-w-2xl">
-              Our engineering team is standing by to help you with integration or custom requirements.
+              {t("docs.supportTextDetailed")}
             </p>
             <div className="flex flex-wrap gap-4">
               <Button size="lg" className="bg-white text-primary hover:bg-slate-100 rounded-xl px-10 h-12 font-bold shadow-xl">
                 {t("docs.contactSupport")}
               </Button>
               <Button size="lg" variant="outline" className="border-white/20 hover:bg-white/10 text-white rounded-xl px-10 h-12 font-bold backdrop-blur-sm">
-                Documentation PDF
+                {t("docs.docsPdf")}
               </Button>
             </div>
           </CardContent>

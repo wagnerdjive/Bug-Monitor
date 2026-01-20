@@ -31,7 +31,7 @@ export default function Documentation() {
   ];
 
   return (
-    <Layout>
+    <Layout simple>
       <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border/60 pb-8 mb-12">
           <div className="space-y-3">

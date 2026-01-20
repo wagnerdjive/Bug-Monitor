@@ -23,12 +23,51 @@ import logoPng from "@assets/IMG_5782_1768827594715.PNG";
 
 interface LayoutProps {
   children: React.ReactNode;
+  simple?: boolean;
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, simple = false }: LayoutProps) {
   const [location] = useLocation();
   const { user, logoutMutation } = useAuth();
   const { t } = useTranslation();
+
+  if (simple) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <Link href="/">
+              <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground hover:opacity-80 transition-opacity cursor-pointer">
+                <ShieldCheck className="w-6 h-6 text-primary" />
+                <span>TechMonitor</span>
+              </div>
+            </Link>
+            <div className="flex items-center gap-4">
+              <LanguageSelector />
+              {!user && (
+                <Link href="/auth">
+                  <Button size="sm">{t("auth.login")}</Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </header>
+        <main className="flex-1">
+          <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+            {children}
+          </div>
+        </main>
+        <footer className="py-8 border-t border-border/50 bg-muted/50">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-4">
+            <img src={logoPng} alt="TechTarget Logo" className="h-8 object-contain opacity-50" />
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+              POWERED BY TECHTARGET
+            </p>
+          </div>
+        </footer>
+      </div>
+    );
+  }
 
   const navItems = [
     { href: "/", label: t("dashboard.title"), icon: LayoutDashboard },

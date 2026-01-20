@@ -1,4 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
@@ -34,314 +35,543 @@ export function SdkInstructions({
 
   const t = {
     en: {
-      title: "SDK Integration Instructions",
+      title: "SDK Integration",
       apiKeyLabel: "API Key",
-      tipTitle: "Important Tip",
+      endpointLabel: "Endpoint",
+      tipTitle: "Quick Start",
       tipText:
-        "Define <code>BACKEND_BASE_URL</code> in your <code>.env</code> file (or equivalent: <code>local.properties</code> for Android, <code>Info.plist</code> for iOS, etc.). This allows switching between development, staging, and production by changing only the .env file, without modifying code.",
-      featuresTitle: "Key Features",
+        "Send errors to TechMonitor using a simple HTTP POST request. Include your API key in the request body along with error details.",
+      featuresTitle: "Payload Fields",
       copy: "Copy",
       copied: "Copied",
       tabs: {
-        androidKotlin: "Android (Kotlin)",
-        androidJava: "Android (Java)",
-        iosSwift: "iOS (Swift)",
+        javascript: "JavaScript",
         python: "Python",
-        typescript: "TypeScript",
-        javaBackend: "Java Backend",
+        kotlin: "Kotlin",
+        swift: "Swift",
+        java: "Java",
+        curl: "cURL",
       },
       details: {
-        androidKotlin: [
-          "BACKEND_BASE_URL read from .env/local.properties for easy environment switch",
-          "Automatic crash capture via UncaughtExceptionHandler",
-          "Offline support: persistent queue in SharedPreferences (max 100 items)",
-          "Automatic retry: BroadcastReceiver detects internet",
-        ],
-        androidJava: [
-          "Same variable as Kotlin - defined in .env/local.properties",
-          "Automatic capture and offline support identical to Kotlin",
-        ],
-        iosSwift: [
-          "BACKEND_BASE_URL read from Info.plist / .xcconfig",
-          "Automatic crash capture: NSUncaughtExceptionHandler + signal handlers",
+        javascript: [
+          "apiKey (required): Your project API key",
+          "message (required): Error message description",
+          "level: 'error', 'warning', or 'info'",
+          "stackTrace: Full stack trace string",
+          "deviceInfo: { model, os } object",
+          "occurredAt: ISO timestamp of when error occurred",
         ],
         python: [
-          "BACKEND_BASE_URL read exclusively from .env",
-          "Change server by editing only .env",
+          "apiKey (required): Your project API key",
+          "message (required): Error message description",
+          "level: 'error', 'warning', or 'info'",
+          "stackTrace: Full stack trace string",
+          "deviceInfo: { model, os } object",
+          "occurredAt: ISO timestamp of when error occurred",
         ],
-        typescript: [
-          "BACKEND_BASE_URL read from .env",
-          "Use VITE_ prefix for Vite/React",
+        kotlin: [
+          "apiKey (required): Your project API key",
+          "message (required): Error message description",
+          "level: 'error', 'warning', or 'info'",
+          "stackTrace: Full stack trace string",
+          "deviceInfo: { model, os } object",
+          "occurredAt: ISO timestamp of when error occurred",
         ],
-        javaBackend: [
-          "BACKEND_BASE_URL read from .env or real environment variables",
-          "Throw error if not defined",
-          "Secure and flexible for dev/staging/prod",
+        swift: [
+          "apiKey (required): Your project API key",
+          "message (required): Error message description",
+          "level: 'error', 'warning', or 'info'",
+          "stackTrace: Full stack trace string",
+          "deviceInfo: { model, os } object",
+          "occurredAt: ISO timestamp of when error occurred",
+        ],
+        java: [
+          "apiKey (required): Your project API key",
+          "message (required): Error message description",
+          "level: 'error', 'warning', or 'info'",
+          "stackTrace: Full stack trace string",
+          "deviceInfo: { model, os } object",
+          "occurredAt: ISO timestamp of when error occurred",
+        ],
+        curl: [
+          "apiKey (required): Your project API key",
+          "message (required): Error message description",
+          "level: 'error', 'warning', or 'info'",
+          "stackTrace: Full stack trace string",
+          "deviceInfo: { model, os } object",
+          "occurredAt: ISO timestamp of when error occurred",
         ],
       },
     },
     pt: {
-      title: "Instrucoes de Integracao do SDK",
+      title: "Integracao SDK",
       apiKeyLabel: "Chave API",
-      tipTitle: "Dica Importante",
+      endpointLabel: "Endpoint",
+      tipTitle: "Inicio Rapido",
       tipText:
-        "Defina <code>BACKEND_BASE_URL</code> no seu arquivo <code>.env</code> (ou equivalente: <code>local.properties</code> no Android, <code>Info.plist</code> no iOS, etc.). Assim voce muda o servidor (localhost, staging, producao) alterando apenas o .env, sem tocar no codigo.",
-      featuresTitle: "Principais Caracteristicas",
+        "Envie erros para o TechMonitor usando uma requisicao HTTP POST simples. Inclua sua chave API no corpo da requisicao junto com os detalhes do erro.",
+      featuresTitle: "Campos do Payload",
       copy: "Copiar",
       copied: "Copiado",
       tabs: {
-        androidKotlin: "Android (Kotlin)",
-        androidJava: "Android (Java)",
-        iosSwift: "iOS (Swift)",
+        javascript: "JavaScript",
         python: "Python",
-        typescript: "TypeScript",
-        javaBackend: "Java Backend",
+        kotlin: "Kotlin",
+        swift: "Swift",
+        java: "Java",
+        curl: "cURL",
       },
       details: {
-        androidKotlin: [
-          "BACKEND_BASE_URL lido do .env/local.properties para troca facil por ambiente",
-          "Captura automatica de crashes via UncaughtExceptionHandler",
-          "Suporte offline: queue persistente em SharedPreferences (max 100 itens)",
-          "Retry automatico: BroadcastReceiver detecta internet",
-        ],
-        androidJava: [
-          "Mesma variavel do Kotlin - definida no .env/local.properties",
-          "Captura automatica e suporte offline iguais ao Kotlin",
-        ],
-        iosSwift: [
-          "BACKEND_BASE_URL lido do Info.plist / .xcconfig",
-          "Captura automatica: NSUncaughtExceptionHandler + signals",
+        javascript: [
+          "apiKey (obrigatorio): Sua chave API do projeto",
+          "message (obrigatorio): Descricao da mensagem de erro",
+          "level: 'error', 'warning', ou 'info'",
+          "stackTrace: String completa do stack trace",
+          "deviceInfo: Objeto { model, os }",
+          "occurredAt: Timestamp ISO de quando o erro ocorreu",
         ],
         python: [
-          "BACKEND_BASE_URL lido exclusivamente do .env",
-          "Troque o servidor alterando apenas o .env",
+          "apiKey (obrigatorio): Sua chave API do projeto",
+          "message (obrigatorio): Descricao da mensagem de erro",
+          "level: 'error', 'warning', ou 'info'",
+          "stackTrace: String completa do stack trace",
+          "deviceInfo: Objeto { model, os }",
+          "occurredAt: Timestamp ISO de quando o erro ocorreu",
         ],
-        typescript: [
-          "BACKEND_BASE_URL lido do .env",
-          "Use prefixo VITE_ no Vite/React",
+        kotlin: [
+          "apiKey (obrigatorio): Sua chave API do projeto",
+          "message (obrigatorio): Descricao da mensagem de erro",
+          "level: 'error', 'warning', ou 'info'",
+          "stackTrace: String completa do stack trace",
+          "deviceInfo: Objeto { model, os }",
+          "occurredAt: Timestamp ISO de quando o erro ocorreu",
         ],
-        javaBackend: [
-          "BACKEND_BASE_URL lido do .env ou variaveis de ambiente reais",
-          "Lance excecao se nao estiver definido",
-          "Seguro e flexivel para dev/staging/prod",
+        swift: [
+          "apiKey (obrigatorio): Sua chave API do projeto",
+          "message (obrigatorio): Descricao da mensagem de erro",
+          "level: 'error', 'warning', ou 'info'",
+          "stackTrace: String completa do stack trace",
+          "deviceInfo: Objeto { model, os }",
+          "occurredAt: Timestamp ISO de quando o erro ocorreu",
+        ],
+        java: [
+          "apiKey (obrigatorio): Sua chave API do projeto",
+          "message (obrigatorio): Descricao da mensagem de erro",
+          "level: 'error', 'warning', ou 'info'",
+          "stackTrace: String completa do stack trace",
+          "deviceInfo: Objeto { model, os }",
+          "occurredAt: Timestamp ISO de quando o erro ocorreu",
+        ],
+        curl: [
+          "apiKey (obrigatorio): Sua chave API do projeto",
+          "message (obrigatorio): Descricao da mensagem de erro",
+          "level: 'error', 'warning', ou 'info'",
+          "stackTrace: String completa do stack trace",
+          "deviceInfo: Objeto { model, os }",
+          "occurredAt: Timestamp ISO de quando o erro ocorreu",
         ],
       },
     },
   }[safeLang];
 
+  const ingestUrl = `${window.location.origin}/api/ingest`;
+
   const tabs = [
     {
-      value: "android-kotlin",
-      label: t.tabs.androidKotlin,
-      code: `// 1. Define in local.properties (Android project root)
-// backend.base.url=https://yourserver.com
-// OR use .env and read via Gradle plugin
+      value: "javascript",
+      label: t.tabs.javascript,
+      code: `// TechMonitor Error Reporter - JavaScript/TypeScript
+const TECHMONITOR_API_KEY = "${project.apiKey}";
+const TECHMONITOR_URL = "${ingestUrl}";
 
-// 2. In build.gradle.kts (module app)
-android {
-    defaultConfig {
-        buildConfigField("String", "BACKEND_BASE_URL", 
-            "\"\${project.property(\\"backend.base.url\\")}\"")
-    }
+async function reportError(error) {
+  try {
+    const response = await fetch(TECHMONITOR_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        apiKey: TECHMONITOR_API_KEY,
+        message: error.message || String(error),
+        level: "error",
+        stackTrace: error.stack || new Error().stack,
+        deviceInfo: {
+          model: navigator.userAgent,
+          os: navigator.platform
+        },
+        occurredAt: new Date().toISOString()
+      })
+    });
+    console.log("Error reported:", response.ok);
+  } catch (e) {
+    console.error("Failed to report error:", e);
+  }
 }
 
-// 3. Initialization (MyApplication.kt)
-import android.app.Application
-import com.bugmonitor.sdk.BugMonitor
+// Global error handler
+window.onerror = (msg, url, line, col, error) => {
+  reportError(error || new Error(msg));
+};
 
-class MyApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        BugMonitor.init(
-            context = this,
-            apiKey = "${project.apiKey}",
-            baseUrl = BuildConfig.BACKEND_BASE_URL
-        )
-    }
-}
+// Promise rejection handler
+window.onunhandledrejection = (event) => {
+  reportError(event.reason);
+};
 
-// Register in manifest: android:name=".MyApplication"`,
-      details: t.details.androidKotlin,
-    },
-    {
-      value: "android-java",
-      label: t.tabs.androidJava,
-      code: `// Same configuration in build.gradle
-buildConfigField "String", "BACKEND_BASE_URL", 
-    "\"\${project.property(\\"backend.base.url\\")}\""
-
-// Initialization (MyApplication.java)
-import android.app.Application;
-import com.bugmonitor.sdk.BugMonitor;
-
-public class MyApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        BugMonitor.init(this, "${project.apiKey}", BuildConfig.BACKEND_BASE_URL);
-    }
+// Manual usage
+try {
+  // your code
+} catch (error) {
+  reportError(error);
 }`,
-      details: t.details.androidJava,
-    },
-    {
-      value: "ios-swift",
-      label: t.tabs.iosSwift,
-      code: `// Define in Info.plist (equivalent to .env on iOS)
-// <key>BACKEND_BASE_URL</key>
-// <string>https://yourserver.com</string>
-
-// In code:
-let baseUrl = Bundle.main.object(forInfoDictionaryKey: "BACKEND_BASE_URL") 
-    as? String ?? "https://yourserver.com"  // fallback
-
-BugMonitor.initialize(
-    apiKey: "${project.apiKey}",
-    baseUrl: baseUrl
-)`,
-      details: t.details.iosSwift,
+      details: t.details.javascript,
     },
     {
       value: "python",
       label: t.tabs.python,
-      code: `import os
-from dotenv import load_dotenv
+      code: `# TechMonitor Error Reporter - Python
+import requests
+import traceback
+import platform
+from datetime import datetime
 
-# Load .env automatically (pip install python-dotenv)
-load_dotenv()
+TECHMONITOR_API_KEY = "${project.apiKey}"
+TECHMONITOR_URL = "${ingestUrl}"
 
-BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL")
-if not BACKEND_BASE_URL:
-    raise ValueError("BACKEND_BASE_URL not defined in .env")
-
-print("Server:", BACKEND_BASE_URL)
+def report_error(error, level="error"):
+    """Report an error to TechMonitor"""
+    try:
+        payload = {
+            "apiKey": TECHMONITOR_API_KEY,
+            "message": str(error),
+            "level": level,
+            "stackTrace": traceback.format_exc(),
+            "deviceInfo": {
+                "model": platform.node(),
+                "os": f"{platform.system()} {platform.release()}"
+            },
+            "occurredAt": datetime.utcnow().isoformat() + "Z"
+        }
+        response = requests.post(
+            TECHMONITOR_URL,
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=5
+        )
+        print(f"Error reported: {response.ok}")
+    except Exception as e:
+        print(f"Failed to report error: {e}")
 
 # Usage
-requests.post(f"{BACKEND_BASE_URL}/api/ingest", json=event)`,
+try:
+    # your code
+    result = 1 / 0
+except Exception as e:
+    report_error(e)
+    raise`,
       details: t.details.python,
     },
     {
-      value: "typescript",
-      label: t.tabs.typescript,
-      code: `// .env in root
-// VITE_BACKEND_BASE_URL=https://yourserver.com   (Vite/React)
-// BACKEND_BASE_URL=https://yourserver.com         (Node)
+      value: "kotlin",
+      label: t.tabs.kotlin,
+      code: `// TechMonitor Error Reporter - Kotlin/Android
+// Add to your build.gradle: implementation("com.squareup.okhttp3:okhttp:4.12.0")
+// implementation("org.json:json:20231013")
 
-const BACKEND_BASE_URL = 
-  import.meta.env.VITE_BACKEND_BASE_URL || 
-  process.env.BACKEND_BASE_URL;
+import android.os.Build
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
-if (!BACKEND_BASE_URL) {
-  throw new Error("BACKEND_BASE_URL not defined in .env");
-}
+object TechMonitor {
+    private const val API_KEY = "${project.apiKey}"
+    private const val INGEST_URL = "${ingestUrl}"
+    private val client = OkHttpClient()
+    private val JSON = "application/json".toMediaType()
 
-console.log("Backend:", BACKEND_BASE_URL);
+    fun reportError(error: Throwable, level: String = "error") {
+        val payload = JSONObject().apply {
+            put("apiKey", API_KEY)
+            put("message", error.message ?: "Unknown error")
+            put("level", level)
+            put("stackTrace", error.stackTraceToString())
+            put("deviceInfo", JSONObject().apply {
+                put("model", Build.MODEL)
+                put("os", "Android " + Build.VERSION.RELEASE)
+            })
+            put("occurredAt", SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US
+            ).apply { timeZone = TimeZone.getTimeZone("UTC") }.format(Date()))
+        }
 
-// Usage
-fetch(\`\${BACKEND_BASE_URL}/api/ingest\`, { ... })`,
-      details: t.details.typescript,
-    },
-    {
-      value: "java-backend",
-      label: t.tabs.javaBackend,
-      code: `// .env in root
-BACKEND_BASE_URL=https://yourserver.com
-BUGMONITOR_API_KEY=${project.apiKey}
+        val request = Request.Builder()
+            .url(INGEST_URL)
+            .post(payload.toString().toRequestBody(JSON))
+            .build()
 
-// Loading with java-dotenv
-import io.github.cdimascio.dotenv.Dotenv;
-
-public class Config {
-    private static final Dotenv dotenv = Dotenv.load();
-
-    public static String getBaseUrl() {
-        return dotenv.get("BACKEND_BASE_URL");
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+            override fun onResponse(call: Call, response: Response) {
+                println("Error reported: " + response.isSuccessful)
+            }
+        })
     }
 }
 
 // Usage
-String baseUrl = Config.getBaseUrl();`,
-      details: t.details.javaBackend,
+try {
+    // your code
+} catch (e: Exception) {
+    TechMonitor.reportError(e)
+    throw e
+}`,
+      details: t.details.kotlin,
+    },
+    {
+      value: "swift",
+      label: t.tabs.swift,
+      code: `// TechMonitor Error Reporter - Swift/iOS
+import Foundation
+import UIKit
+
+class TechMonitor {
+    static let apiKey = "${project.apiKey}"
+    static let ingestURL = URL(string: "${ingestUrl}")!
+    
+    static func reportError(_ error: Error, level: String = "error") {
+        let device = UIDevice.current
+        let payload: [String: Any] = [
+            "apiKey": apiKey,
+            "message": error.localizedDescription,
+            "level": level,
+            "stackTrace": Thread.callStackSymbols.joined(separator: "\\n"),
+            "deviceInfo": [
+                "model": device.model,
+                "os": device.systemName + " " + device.systemVersion
+            ],
+            "occurredAt": ISO8601DateFormatter().string(from: Date())
+        ]
+        
+        var request = URLRequest(url: ingestURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
+        
+        URLSession.shared.dataTask(with: request) { _, response, err in
+            if let err = err {
+                print("Failed to report error: " + err.localizedDescription)
+            } else {
+                print("Error reported successfully")
+            }
+        }.resume()
+    }
+}
+
+// Usage
+do {
+    // your code
+} catch {
+    TechMonitor.reportError(error)
+    throw error
+}`,
+      details: t.details.swift,
+    },
+    {
+      value: "java",
+      label: t.tabs.java,
+      code: `// TechMonitor Error Reporter - Java
+// Add dependency: com.google.code.gson:gson:2.10.1
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.Instant;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+public class TechMonitor {
+    private static final String API_KEY = "${project.apiKey}";
+    private static final String INGEST_URL = "${ingestUrl}";
+    private static final Gson gson = new Gson();
+
+    public static void reportError(Throwable error) {
+        reportError(error, "error");
+    }
+
+    public static void reportError(Throwable error, String level) {
+        new Thread(() -> {
+            try {
+                JsonObject payload = new JsonObject();
+                payload.addProperty("apiKey", API_KEY);
+                payload.addProperty("message", error.getMessage());
+                payload.addProperty("level", level);
+                payload.addProperty("stackTrace", getStackTrace(error));
+                
+                JsonObject deviceInfo = new JsonObject();
+                deviceInfo.addProperty("model", System.getProperty("os.name"));
+                deviceInfo.addProperty("os", System.getProperty("os.version"));
+                payload.add("deviceInfo", deviceInfo);
+                
+                payload.addProperty("occurredAt", Instant.now().toString());
+
+                URL url = new URL(INGEST_URL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(gson.toJson(payload).getBytes());
+                }
+                
+                int status = conn.getResponseCode();
+                System.out.println("Error reported: " + (status == 200));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private static String getStackTrace(Throwable t) {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+}
+
+// Usage
+try {
+    // your code
+} catch (Exception e) {
+    TechMonitor.reportError(e);
+    throw e;
+}`,
+      details: t.details.java,
+    },
+    {
+      value: "curl",
+      label: t.tabs.curl,
+      code: `# TechMonitor Error Reporter - cURL
+# Use this to test the integration or send errors from shell scripts
+
+curl -X POST "${ingestUrl}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "apiKey": "${project.apiKey}",
+    "message": "Test error from shell script",
+    "level": "error",
+    "stackTrace": "at script.sh:15\\nat main.sh:42",
+    "deviceInfo": {
+      "model": "'$(hostname)'",
+      "os": "'$(uname -s) $(uname -r)'"
+    },
+    "occurredAt": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+  }'
+
+# Response: {"success": true, "eventId": "..."}`,
+      details: t.details.curl,
     },
   ];
 
   return (
-    <div className="space-y-8 bg-gradient-to-b from-zinc-950 to-white rounded-2xl p-6 border border-zinc-800/50 shadow-2xl">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-zinc-800/60">
-        <h3 className="text-2xl font-bold tracking-tight text-white">
+    <div className="space-y-6 bg-gradient-to-b from-zinc-950 to-zinc-900 dark:to-zinc-950 rounded-xl p-4 md:p-6 border border-zinc-800/50 shadow-xl">
+      <div className="flex flex-col gap-4 pb-4 border-b border-zinc-800/60">
+        <h3 className="text-xl md:text-2xl font-bold tracking-tight text-white">
           {t.title}
         </h3>
-        <div className="flex items-center gap-4 bg-zinc-900/80 px-5 py-2.5 rounded-full border border-zinc-700/50 shadow-inner">
-          <span className="text-sm font-medium text-zinc-300">
-            {t.apiKeyLabel}:
-          </span>
-          <code className="text-indigo-400 font-mono text-base">
-            {project.apiKey}
-          </code>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 bg-zinc-900/80 px-3 py-2 rounded-lg border border-zinc-700/50">
+            <span className="text-xs font-medium text-zinc-400">
+              {t.apiKeyLabel}:
+            </span>
+            <code className="text-indigo-400 font-mono text-xs md:text-sm break-all">
+              {project.apiKey}
+            </code>
+          </div>
+          <div className="flex items-center gap-2 bg-zinc-900/80 px-3 py-2 rounded-lg border border-zinc-700/50">
+            <span className="text-xs font-medium text-zinc-400">
+              {t.endpointLabel}:
+            </span>
+            <code className="text-emerald-400 font-mono text-xs md:text-sm break-all">
+              {ingestUrl}
+            </code>
+          </div>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-indigo-950/30 to-emerald-950/20 p-5 rounded-xl border border-indigo-800/40 shadow-md">
-        <h4 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+      <div className="bg-gradient-to-r from-indigo-950/30 to-emerald-950/20 p-4 rounded-lg border border-indigo-800/40">
+        <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
           {t.tipTitle}
         </h4>
-        <p
-          className="text-zinc-200 text-sm leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: t.tipText }}
-        />
+        <p className="text-zinc-300 text-sm leading-relaxed">
+          {t.tipText}
+        </p>
       </div>
 
-      <Tabs defaultValue="android-kotlin">
-        <TabsList className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-transparent border-b border-zinc-800 pb-2">
-          {tabs.map((tab) => (
-            <TabsTrigger
-              key={tab.value}
-              value={tab.value}
-              className="rounded-lg data-[state=active]:bg-indigo-950/40 data-[state=active]:text-indigo-50 data-[state=active]:shadow-md data-[state=active]:border-indigo-800/50 border border-transparent hover:border-zinc-700 transition-all"
-            >
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <br />
+      <Tabs defaultValue="javascript" className="w-full">
+        <ScrollArea className="w-full whitespace-nowrap">
+          <TabsList className="inline-flex w-max gap-1 bg-zinc-900/50 p-1 rounded-lg">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="px-3 py-1.5 text-xs md:text-sm rounded-md data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-zinc-400 hover:text-zinc-200 transition-colors whitespace-nowrap"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <ScrollBar orientation="horizontal" className="invisible" />
+        </ScrollArea>
+
         {tabs.map((tab) => (
-          <TabsContent key={tab.value} value={tab.value} className="mt-6">
-            <div className="relative rounded-xl overflow-hidden border border-zinc-700/60 bg-zinc-950/80 backdrop-blur-sm shadow-lg">
-              <div className="absolute right-4 top-4 z-10 flex gap-2">
+          <TabsContent key={tab.value} value={tab.value} className="mt-4">
+            <div className="relative rounded-lg border border-zinc-700/60 bg-zinc-950/80">
+              <div className="absolute right-2 top-2 z-10">
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   className={cn(
-                    "border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/80 text-zinc-300 hover:text-white",
-                    copiedTab === tab.value &&
-                      "border-emerald-600 text-emerald-400",
+                    "h-8 px-2 text-xs bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300",
+                    copiedTab === tab.value && "text-emerald-400"
                   )}
                   onClick={() => handleCopy(tab.value, tab.code)}
                 >
                   {copiedTab === tab.value ? (
-                    <Check className="mr-2 h-4 w-4" />
+                    <Check className="mr-1 h-3 w-3" />
                   ) : (
-                    <Copy className="mr-2 h-4 w-4" />
+                    <Copy className="mr-1 h-3 w-3" />
                   )}
                   {copiedTab === tab.value ? t.copied : t.copy}
                 </Button>
               </div>
 
-              <pre className="p-6 pt-16 text-sm font-mono text-zinc-200 leading-6 overflow-x-auto whitespace-pre">
-                <code>{tab.code.trim()}</code>
-              </pre>
+              <ScrollArea className="max-h-[400px]">
+                <pre className="p-4 pt-12 text-xs md:text-sm font-mono text-zinc-200 leading-relaxed">
+                  <code>{tab.code.trim()}</code>
+                </pre>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
             </div>
 
-            <div className="mt-6 p-6 rounded-xl bg-zinc-900/50 border border-zinc-800/60 backdrop-blur-sm">
-              <h4 className="text-lg font-semibold text-indigo-300 mb-4 flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+            <div className="mt-4 p-4 rounded-lg bg-zinc-900/50 border border-zinc-800/60">
+              <h4 className="text-sm font-semibold text-indigo-300 mb-3 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                 {t.featuresTitle}
               </h4>
-              <ul className="space-y-3 text-zinc-300">
+              <ul className="space-y-2 text-zinc-300 text-sm">
                 {tab.details.map((detail, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <div className="mt-1.5 h-2 w-2 rounded-full bg-indigo-500 flex-shrink-0" />
-                    <span>{detail}</span>
+                  <li key={i} className="flex items-start gap-2">
+                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
+                    <span className="text-xs md:text-sm">{detail}</span>
                   </li>
                 ))}
               </ul>
@@ -349,12 +579,6 @@ String baseUrl = Config.getBaseUrl();`,
           </TabsContent>
         ))}
       </Tabs>
-
-      <div className="text-center text-sm text-zinc-500 pt-6 border-t border-zinc-800">
-        {safeLang === "en"
-          ? "All platforms read the URL from .env for easy environment switching"
-          : "Todas as plataformas leem a URL do .env para facilitar a troca de ambiente"}
-      </div>
     </div>
   );
 }

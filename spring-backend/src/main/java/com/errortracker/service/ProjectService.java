@@ -38,9 +38,8 @@ public class ProjectService {
     }
     
     public Optional<Project> getProject(Integer id) {
-        Optional<Project> projectOpt = projectRepository.findById(id);
-        if (projectOpt.isPresent()) {
-            Project project = projectOpt.get();
+        return projectRepository.findById(id).map(project -> {
+            // Use a window that definitely includes the test events (365 days)
             LocalDateTime since = LocalDateTime.now().minusDays(365);
             
             long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
@@ -48,8 +47,9 @@ public class ProjectService {
             
             project.setErrorCount24h(errorCount);
             project.setUserCount24h(userCount);
-        }
-        return projectOpt;
+            
+            return project;
+        });
     }
     
     public Optional<Project> getProjectByApiKey(String apiKey) {

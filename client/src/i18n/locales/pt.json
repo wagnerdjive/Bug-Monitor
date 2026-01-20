@@ -181,5 +181,25 @@
     "noInvitations": "Nenhum convite enviado ainda",
     "copyLink": "Copiar Link",
     "expires": "Expira"
+  },
+  "docs": {
+    "title": "Documentação",
+    "subtitle": "Aprenda como integrar, monitorar e escalar com o TechMonitor.",
+    "introTitle": "Introdução",
+    "introContent": "O TechMonitor é uma plataforma de rastreamento de erros e monitoramento de desempenho em tempo real projetada para equipes de desenvolvimento modernas. Ele fornece visibilidade profunda sobre erros de aplicação, permitindo que você corrija problemas antes que eles impactem seus usuários.",
+    "getStartedTitle": "Primeiros Passos",
+    "getStartedContent": "Para começar a monitorar sua aplicação, crie um novo projeto no painel para receber sua chave de API exclusiva. Em seguida, siga as instruções específicas da plataforma para integrar nosso SDK ao seu código.",
+    "sdkIntegrationTitle": "Integração do SDK",
+    "sdkIntegrationContent": "Nossos SDKs são projetados para serem não intrusivos e leves. Eles capturam automaticamente exceções não tratadas, erros de rede e logs de console, fornecendo um contexto rico para cada evento, incluindo breadcrumbs e informações do dispositivo.",
+    "errorTrackingTitle": "Rastreamento de Erros",
+    "errorTrackingContent": "Cada erro reportado ao TechMonitor inclui um stack trace completo, suporte a source maps e dados do ambiente. Você pode filtrar erros por severidade, status e tags personalizadas para focar no que é mais importante.",
+    "architectureTitle": "Arquitetura",
+    "architectureContent": "Construído sobre um backend Spring Boot resiliente e um frontend React responsivo, o TechMonitor garante que seus dados sejam processados rapidamente e apresentados de forma clara. Usamos PostgreSQL para persistência de dados confiável e gerenciamento de sessões.",
+    "securityTitle": "Segurança",
+    "securityContent": "A segurança é integrada. Toda a ingestão de dados é autenticada via chaves de API, e o acesso do usuário é gerenciado através de controle de acesso baseado em funções. Usamos criptografia padrão da indústria para dados em repouso e em trânsito.",
+    "needHelp": "Precisa de mais ajuda?",
+    "supportText": "Nossa equipe de suporte técnico está disponível para clientes corporativos. Para suporte da comunidade, verifique nossas discussões no GitHub.",
+    "contactSupport": "Contatar Suporte",
+    "joinCommunity": "Participar da Comunidade"
   }
 }

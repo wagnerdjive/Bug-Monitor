@@ -181,5 +181,25 @@
     "noInvitations": "No invitations sent yet",
     "copyLink": "Copy Link",
     "expires": "Expires"
+  },
+  "docs": {
+    "title": "Documentation",
+    "subtitle": "Learn how to integrate, monitor, and scale with TechMonitor.",
+    "introTitle": "Introduction",
+    "introContent": "TechMonitor is a real-time error tracking and performance monitoring platform designed for modern development teams. It provides deep visibility into application errors, allowing you to fix issues before they impact your users.",
+    "getStartedTitle": "Getting Started",
+    "getStartedContent": "To start monitoring your application, create a new project in the dashboard to receive your unique API key. Then, follow the platform-specific instructions to integrate our SDK into your codebase.",
+    "sdkIntegrationTitle": "SDK Integration",
+    "sdkIntegrationContent": "Our SDKs are designed to be non-intrusive and lightweight. They automatically capture unhandled exceptions, network errors, and console logs, providing a rich context for every event including breadcrumbs and device information.",
+    "errorTrackingTitle": "Error Tracking",
+    "errorTrackingContent": "Every error reported to TechMonitor includes a full stack trace, source maps support, and environment data. You can filter errors by severity, status, and custom tags to focus on what matters most.",
+    "architectureTitle": "Architecture",
+    "architectureContent": "Built on a resilient Spring Boot backend and a responsive React frontend, TechMonitor ensures your data is processed quickly and presented clearly. We use PostgreSQL for reliable data persistence and session management.",
+    "securityTitle": "Security",
+    "securityContent": "Security is built-in. All data ingestion is authenticated via API keys, and user access is managed through role-based access control. We use industry-standard encryption for data at rest and in transit.",
+    "needHelp": "Need more help?",
+    "supportText": "Our technical support team is available for enterprise customers. For community support, please check our GitHub discussions.",
+    "contactSupport": "Contact Support",
+    "joinCommunity": "Join Community"
   }
 }

@@ -181,5 +181,25 @@
     "noInvitations": "Sin invitaciones enviadas aun",
     "copyLink": "Copiar Enlace",
     "expires": "Expira"
+  },
+  "docs": {
+    "title": "Documentación",
+    "subtitle": "Aprenda a integrar, monitorear y escalar con TechMonitor.",
+    "introTitle": "Introducción",
+    "introContent": "TechMonitor es una plataforma de seguimiento de errores y monitoreo de rendimiento en tiempo real diseñada para equipos de desarrollo modernos. Proporciona visibilidad profunda sobre errores de aplicación, permitiéndole corregir problemas antes de que impacten a sus usuarios.",
+    "getStartedTitle": "Primeros Pasos",
+    "getStartedContent": "Para comenzar a monitorear su aplicación, cree un nuevo proyecto en el panel para recibir su clave de API única. Luego, siga las instrucciones específicas de la plataforma para integrar nuestro SDK en su código base.",
+    "sdkIntegrationTitle": "Integración del SDK",
+    "sdkIntegrationContent": "Nuestros SDK están diseñados para ser no intrusivos y ligeros. Capturan automáticamente excepciones no controladas, errores de red y registros de consola, proporcionando un contexto rico para cada evento, incluidos breadcrumbs e información del dispositivo.",
+    "errorTrackingTitle": "Seguimiento de Erros",
+    "errorTrackingContent": "Cada error reportado a TechMonitor incluye un stack trace completo, soporte para source maps y datos del entorno. Puede filtrar errores por severidad, estado y etiquetas personalizadas para enfocarse en lo que más importa.",
+    "architectureTitle": "Arquitectura",
+    "architectureContent": "Construido sobre un backend Spring Boot resiliente y un frontend React receptivo, TechMonitor garantiza que sus datos se procesen rápidamente y se presenten de forma clara. Utilizamos PostgreSQL para una persistencia de datos confiable y gestión de sesiones.",
+    "securityTitle": "Seguridad",
+    "securityContent": "La seguridad está integrada. Toda la ingestión de datos está autenticada mediante claves de API, y el acceso del usuario se gestiona a través de control de acceso basado en roles. Utilizamos cifrado estándar de la industria para datos en reposo y en tránsito.",
+    "needHelp": "¿Necesitas más ayuda?",
+    "supportText": "Nuestro equipo de soporte técnico está disponible para clientes corporativos. Para soporte de la comunidad, consulte nuestras discusiones en GitHub.",
+    "contactSupport": "Contactar Soporte",
+    "joinCommunity": "Unirse a la Comunidad"
   }
 }

@@ -2,56 +2,63 @@ import { Layout } from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
 import { BookOpen, Code, Terminal, Shield, Cpu, Layers } from "lucide-react";
+import { LanguageSelector } from "@/components/language-selector";
 
 export default function Documentation() {
   const { t } = useTranslation();
 
   const sections = [
     {
-      title: "Introduction",
+      title: t("docs.introTitle"),
       icon: BookOpen,
-      content: "TechMonitor is a real-time error tracking and performance monitoring platform designed for modern development teams. It provides deep visibility into application errors, allowing you to fix issues before they impact your users."
+      content: t("docs.introContent")
     },
     {
-      title: "Getting Started",
+      title: t("docs.getStartedTitle"),
       icon: Terminal,
-      content: "To start monitoring your application, create a new project in the dashboard to receive your unique API key. Then, follow the platform-specific instructions to integrate our SDK into your codebase."
+      content: t("docs.getStartedContent")
     },
     {
-      title: "SDK Integration",
+      title: t("docs.sdkIntegrationTitle"),
       icon: Code,
-      content: "Our SDKs are designed to be non-intrusive and lightweight. They automatically capture unhandled exceptions, network errors, and console logs, providing a rich context for every event including breadcrumbs and device information."
+      content: t("docs.sdkIntegrationContent")
     },
     {
-      title: "Error Tracking",
+      title: t("docs.errorTrackingTitle"),
       icon: Cpu,
-      content: "Every error reported to TechMonitor includes a full stack trace, source maps support, and environment data. You can filter errors by severity, status, and custom tags to focus on what matters most."
+      content: t("docs.errorTrackingContent")
     },
     {
-      title: "Architecture",
+      title: t("docs.architectureTitle"),
       icon: Layers,
-      content: "Built on a resilient Spring Boot backend and a responsive React frontend, TechMonitor ensures your data is processed quickly and presented clearly. We use PostgreSQL for reliable data persistence and session management."
+      content: t("docs.architectureContent")
     },
     {
-      title: "Security",
+      title: t("docs.securityTitle"),
       icon: Shield,
-      content: "Security is built-in. All data ingestion is authenticated via API keys, and user access is managed through role-based access control. We use industry-standard encryption for data at rest and in transit."
+      content: t("docs.securityContent")
     }
   ];
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto space-y-8 py-8">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">Documentation</h1>
-          <p className="text-xl text-muted-foreground">
-            Learn how to integrate, monitor, and scale with TechMonitor.
-          </p>
+      <div className="max-w-4xl mx-auto space-y-8 py-8 px-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight">{t("docs.title")}</h1>
+            <p className="text-xl text-muted-foreground">
+              {t("docs.subtitle")}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-muted-foreground">{t("common.language")}:</span>
+            <LanguageSelector />
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {sections.map((section, idx) => (
-            <Card key={idx} className="hover-elevate transition-all">
+            <Card key={idx} className="hover-elevate transition-all border-border/50 bg-card/50">
               <CardHeader className="flex flex-row items-center gap-4 space-y-0">
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
                   <section.icon className="w-6 h-6" />
@@ -69,18 +76,18 @@ export default function Documentation() {
 
         <Card className="bg-primary text-primary-foreground">
           <CardHeader>
-            <CardTitle>Need more help?</CardTitle>
+            <CardTitle>{t("docs.needHelp")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="mb-4">
-              Our technical support team is available for enterprise customers. For community support, please check our GitHub discussions.
+            <p className="mb-6 opacity-90 leading-relaxed">
+              {t("docs.supportText")}
             </p>
-            <div className="flex gap-4">
-              <div className="px-4 py-2 bg-primary-foreground text-primary rounded-md font-medium text-sm">
-                Contact Support
+            <div className="flex flex-wrap gap-4">
+              <div className="px-6 py-2.5 bg-primary-foreground text-primary rounded-full font-semibold text-sm cursor-pointer hover:bg-white transition-colors shadow-lg">
+                {t("docs.contactSupport")}
               </div>
-              <div className="px-4 py-2 border border-primary-foreground rounded-md font-medium text-sm">
-                Join Community
+              <div className="px-6 py-2.5 border border-primary-foreground/30 rounded-full font-semibold text-sm cursor-pointer hover:bg-primary-foreground/10 transition-colors">
+                {t("docs.joinCommunity")}
               </div>
             </div>
           </CardContent>

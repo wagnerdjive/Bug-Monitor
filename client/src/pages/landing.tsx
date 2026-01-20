@@ -52,7 +52,7 @@ export default function Landing() {
                 className="h-12 px-8 text-lg rounded-full border-border/50 hover:bg-zinc-50"
                 asChild
               >
-                <a href="#features">{t("landing.viewDocs")}</a>
+                <Link href="/documentation">{t("landing.viewDocs")}</Link>
               </Button>
             </div>
           </div>

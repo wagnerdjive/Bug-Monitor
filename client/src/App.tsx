@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 
 import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
+import Documentation from "@/pages/documentation";
 import ProjectDetails from "@/pages/project-details";
 import EventDetails from "@/pages/event-details";
 import AuthPage from "@/pages/auth-page";
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/admin">
         {user && user.role === "ADMIN" ? <Admin /> : <Redirect to="/" />}
       </Route>
+      <Route path="/documentation" component={Documentation} />
       <Route path="/projects/:id">
         {user ? <ProjectDetails /> : <Redirect to="/auth" />}
       </Route>

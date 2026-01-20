@@ -272,7 +272,7 @@ export default function ProjectDetails() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardDescription>{t("project.totalEvents24h")}</CardDescription>
-                  <CardTitle className="text-2xl md:text-3xl" data-testid="stat-events-24h">{events24h.length}</CardTitle>
+                  <CardTitle className="text-2xl md:text-3xl" data-testid="stat-events-24h">{project.errorCount24h}</CardTitle>
                 </CardHeader>
               </Card>
               <Card>
@@ -289,8 +289,8 @@ export default function ProjectDetails() {
               </Card>
               <Card>
                 <CardHeader className="pb-2">
-                  <CardDescription>{t("project.resolved")}</CardDescription>
-                  <CardTitle className="text-2xl md:text-3xl text-green-500" data-testid="stat-resolved">{stats.resolved}</CardTitle>
+                  <CardDescription>{t("project.uniqueUsers") || "Unique Users"}</CardDescription>
+                  <CardTitle className="text-2xl md:text-3xl text-blue-500" data-testid="stat-unique-users">{project.userCount24h}</CardTitle>
                 </CardHeader>
               </Card>
             </div>

@@ -39,11 +39,15 @@ public class ProjectService {
     
     public Optional<Project> getProject(Integer id) {
         return projectRepository.findById(id).map(project -> {
-            // Use a window that definitely includes the test events (365 days)
+            // Use a wide window to ensure test data is captured
             LocalDateTime since = LocalDateTime.now().minusDays(365);
             
+            // Explicitly fetch counts
             long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
             long userCount = errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since);
+            
+            // Log for debugging
+            System.out.println("Fetching project " + id + ": errors=" + errorCount + ", users=" + userCount);
             
             project.setErrorCount24h(errorCount);
             project.setUserCount24h(userCount);

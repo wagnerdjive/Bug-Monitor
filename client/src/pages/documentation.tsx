@@ -27,16 +27,6 @@ export default function Documentation() {
       title: t("docs.errorTrackingTitle"),
       icon: Cpu,
       content: t("docs.errorTrackingContent")
-    },
-    {
-      title: t("docs.architectureTitle"),
-      icon: Layers,
-      content: t("docs.architectureContent")
-    },
-    {
-      title: t("docs.securityTitle"),
-      icon: Shield,
-      content: t("docs.securityContent")
     }
   ];
 

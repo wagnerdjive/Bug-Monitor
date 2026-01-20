@@ -155,5 +155,31 @@
   "nav": {
     "logIn": "Iniciar Sesion",
     "getStarted": "Comenzar"
+  },
+  "admin": {
+    "title": "Panel de Admin",
+    "description": "Gestionar usuarios e invitaciones",
+    "users": "Usuarios",
+    "invitations": "Invitaciones",
+    "usersList": "Todos los Usuarios",
+    "invitationsList": "Todas las Invitaciones",
+    "inviteUser": "Invitar Usuario",
+    "email": "Email",
+    "enterEmail": "Ingresa la direccion de email",
+    "sendInvite": "Enviar Invitacion",
+    "inviteSent": "Invitacion Enviada",
+    "inviteSentDesc": "El usuario recibira un email con el enlace de invitacion.",
+    "inviteFailed": "Error al enviar invitacion",
+    "assignProject": "Asignar Proyecto",
+    "assignToProject": "Asignar Usuario al Proyecto",
+    "selectProject": "Proyecto",
+    "selectProjectPlaceholder": "Selecciona un proyecto",
+    "assign": "Asignar",
+    "userAssigned": "Usuario Asignado",
+    "userAssignedDesc": "Usuario ha sido asignado al proyecto.",
+    "assignFailed": "Error al asignar usuario",
+    "noInvitations": "Sin invitaciones enviadas aun",
+    "copyLink": "Copiar Enlace",
+    "expires": "Expira"
   }
 }

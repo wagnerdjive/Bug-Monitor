@@ -12,6 +12,7 @@ import Dashboard from "@/pages/dashboard";
 import ProjectDetails from "@/pages/project-details";
 import EventDetails from "@/pages/event-details";
 import AuthPage from "@/pages/auth-page";
+import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -29,6 +30,9 @@ function Router() {
     <Switch>
       <Route path="/auth">
         {user ? <Redirect to="/" /> : <AuthPage />}
+      </Route>
+      <Route path="/admin">
+        {user && user.role === "ADMIN" ? <Admin /> : <Redirect to="/" />}
       </Route>
       <Route path="/projects/:id">
         {user ? <ProjectDetails /> : <Redirect to="/auth" />}

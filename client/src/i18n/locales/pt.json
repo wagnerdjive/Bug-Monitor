@@ -155,5 +155,31 @@
   "nav": {
     "logIn": "Entrar",
     "getStarted": "Comecar"
+  },
+  "admin": {
+    "title": "Painel Admin",
+    "description": "Gerenciar usuarios e convites",
+    "users": "Usuarios",
+    "invitations": "Convites",
+    "usersList": "Todos os Usuarios",
+    "invitationsList": "Todos os Convites",
+    "inviteUser": "Convidar Usuario",
+    "email": "Email",
+    "enterEmail": "Digite o endereco de email",
+    "sendInvite": "Enviar Convite",
+    "inviteSent": "Convite Enviado",
+    "inviteSentDesc": "O usuario recebera um email com o link do convite.",
+    "inviteFailed": "Falha ao enviar convite",
+    "assignProject": "Atribuir Projeto",
+    "assignToProject": "Atribuir Usuario ao Projeto",
+    "selectProject": "Projeto",
+    "selectProjectPlaceholder": "Selecione um projeto",
+    "assign": "Atribuir",
+    "userAssigned": "Usuario Atribuido",
+    "userAssignedDesc": "Usuario foi atribuido ao projeto.",
+    "assignFailed": "Falha ao atribuir usuario",
+    "noInvitations": "Nenhum convite enviado ainda",
+    "copyLink": "Copiar Link",
+    "expires": "Expira"
   }
 }

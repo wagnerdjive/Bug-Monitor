@@ -5,6 +5,7 @@ import {
   LogOut,
   ShieldCheck,
   Menu,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ export function Layout({ children }: LayoutProps) {
 
   const navItems = [
     { href: "/", label: t("dashboard.title"), icon: LayoutDashboard },
+    ...(user?.role === "ADMIN" ? [{ href: "/admin", label: t("admin.title"), icon: Users }] : []),
   ];
 
   return (

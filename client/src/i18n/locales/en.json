@@ -155,5 +155,31 @@
   "nav": {
     "logIn": "Log In",
     "getStarted": "Get Started"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "description": "Manage users and invitations",
+    "users": "Users",
+    "invitations": "Invitations",
+    "usersList": "All Users",
+    "invitationsList": "All Invitations",
+    "inviteUser": "Invite User",
+    "email": "Email",
+    "enterEmail": "Enter email address",
+    "sendInvite": "Send Invitation",
+    "inviteSent": "Invitation Sent",
+    "inviteSentDesc": "The user will receive an email with the invitation link.",
+    "inviteFailed": "Failed to send invitation",
+    "assignProject": "Assign Project",
+    "assignToProject": "Assign User to Project",
+    "selectProject": "Project",
+    "selectProjectPlaceholder": "Select a project",
+    "assign": "Assign",
+    "userAssigned": "User Assigned",
+    "userAssignedDesc": "User has been assigned to the project.",
+    "assignFailed": "Failed to assign user",
+    "noInvitations": "No invitations sent yet",
+    "copyLink": "Copy Link",
+    "expires": "Expires"
   }
 }

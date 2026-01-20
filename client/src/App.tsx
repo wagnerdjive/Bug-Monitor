@@ -29,19 +29,15 @@ function Router() {
       <Route path="/auth">
         {user ? <Redirect to="/" /> : <AuthPage />}
       </Route>
+      <Route path="/projects/:id">
+        {user ? <ProjectDetails /> : <Redirect to="/auth" />}
+      </Route>
+      <Route path="/events/:id">
+        {user ? <EventDetails /> : <Redirect to="/auth" />}
+      </Route>
       <Route path="/">
         {!user ? <Landing /> : <Dashboard />}
       </Route>
-      {user ? (
-        <>
-          <Route path="/projects/:id" component={ProjectDetails} />
-          <Route path="/events/:id" component={EventDetails} />
-        </>
-      ) : (
-        <Route path="/:rest*">
-          <Redirect to="/auth" />
-        </Route>
-      )}
       <Route component={NotFound} />
     </Switch>
   );

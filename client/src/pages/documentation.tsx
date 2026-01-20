@@ -1,13 +1,73 @@
 import { Layout } from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
-import { BookOpen, Code, Terminal, Cpu, ChevronDown, ChevronUp } from "lucide-react";
+import { BookOpen, Code, Terminal, Cpu, ChevronDown, ChevronUp, Box } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Documentation() {
   const { t } = useTranslation();
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
+
+  const sdkExamples = [
+    {
+      lang: "JavaScript / TypeScript",
+      code: `// Install SDK
+npm install @techmonitor/sdk
+
+// Initialize
+import { init } from "@techmonitor/sdk";
+
+init({
+  apiKey: "YOUR_PROJECT_API_KEY",
+  environment: "production"
+});
+
+// Manual reporting
+try {
+  // your code
+} catch (error) {
+  TechMonitor.captureException(error);
+}`
+    },
+    {
+      lang: "Java / Spring Boot",
+      code: `// Add dependency (Maven)
+<dependency>
+    <groupId>com.techmonitor</groupId>
+    <artifactId>techmonitor-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+
+// application.yml
+techmonitor:
+  api-key: "YOUR_PROJECT_API_KEY"
+  enabled: true
+
+// Capture manually
+@Autowired
+private TechMonitorClient client;
+
+client.captureException(new RuntimeException("Oops!"));`
+    },
+    {
+      lang: "Python",
+      code: `# Install
+pip install techmonitor-sdk
+
+# Initialize
+import techmonitor
+
+techmonitor.init(
+    api_key="YOUR_PROJECT_API_KEY",
+    environment="staging"
+)
+
+# Automatic tracking for Flask/Django
+# is enabled by default.`
+    }
+  ];
 
   const sections = [
     {
@@ -26,7 +86,27 @@ export default function Documentation() {
       title: t("docs.sdkIntegrationTitle"),
       icon: Code,
       content: t("docs.sdkIntegrationContent"),
-      details: "Our SDK integration is designed to be minimal and high-performance. It hooks into your application's error handling lifecycle to capture unhandled exceptions automatically. You can also manually log events, attach custom metadata, and record breadcrumbs (navigation events, API calls, etc.) to recreate the exact state leading up to an error."
+      details: (
+        <div className="space-y-4">
+          <p>Our SDK integration is designed to be minimal and high-performance. Select your platform below for implementation details:</p>
+          <Tabs defaultValue={sdkExamples[0].lang} className="w-full">
+            <TabsList className="grid grid-cols-1 md:grid-cols-3 h-auto">
+              {sdkExamples.map((example) => (
+                <TabsTrigger key={example.lang} value={example.lang} className="text-xs py-2">
+                  {example.lang}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {sdkExamples.map((example) => (
+              <TabsContent key={example.lang} value={example.lang}>
+                <div className="bg-slate-950 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto border border-border/50">
+                  <pre>{example.code}</pre>
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </div>
+      )
     },
     {
       title: t("docs.errorTrackingTitle"),
@@ -55,13 +135,16 @@ export default function Documentation() {
             <Card 
               key={idx} 
               className={cn(
-                "hover-elevate transition-all duration-300 border-border/40 bg-card/40 flex flex-col group overflow-hidden shadow-sm hover:shadow-md cursor-pointer",
-                expandedSection === idx && "ring-2 ring-primary/20"
+                "transition-all duration-300 border-border/40 bg-card/40 flex flex-col group overflow-hidden shadow-sm hover:shadow-md cursor-pointer",
+                expandedSection === idx && "ring-2 ring-primary/20 bg-card/60 shadow-lg"
               )}
               onClick={() => setExpandedSection(expandedSection === idx ? null : idx)}
             >
               <CardHeader className="flex flex-row items-center gap-5 space-y-0 p-6">
-                <div className="p-3 bg-primary/10 rounded-2xl text-primary shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 transform shadow-inner">
+                <div className={cn(
+                  "p-3 rounded-2xl shrink-0 transition-all duration-300 shadow-inner",
+                  expandedSection === idx ? "bg-primary text-primary-foreground rotate-3" : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                )}>
                   <section.icon className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
@@ -74,10 +157,14 @@ export default function Documentation() {
                   {section.content}
                 </p>
                 {expandedSection === idx && (
-                  <div className="mt-4 pt-4 border-t border-border/40 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <p className="text-foreground/80 leading-relaxed italic">
-                      {section.details}
-                    </p>
+                  <div className="mt-6 pt-6 border-t border-border/40 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="text-foreground/90 leading-relaxed">
+                      {typeof section.details === 'string' ? (
+                        <p className="italic">{section.details}</p>
+                      ) : (
+                        section.details
+                      )}
+                    </div>
                   </div>
                 )}
               </CardContent>

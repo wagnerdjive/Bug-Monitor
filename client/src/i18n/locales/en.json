@@ -10,7 +10,8 @@
     "search": "Search",
     "clear": "Clear",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "language": "Language"
   },
   "landing": {
     "title": "Stop guessing why your app broke.",
@@ -62,6 +63,7 @@
     "overview": "Overview",
     "issues": "Issues",
     "setup": "Setup",
+    "notFound": "Project not found",
     "deleteProject": "Delete Project",
     "deleteConfirm": "Are you absolutely sure?",
     "deleteWarning": "This action cannot be undone. This will permanently delete your project and all associated error data.",
@@ -122,9 +124,11 @@
     "received": "Received"
   },
   "sdk": {
-    "title": "SDK Setup Instructions",
+    "title": "SDK Integration",
     "description": "Integrate TechMonitor into your application using our SDK.",
-    "apiKey": "Your API Key",
+    "apiKey": "API Key",
+    "quickStart": "Quick Start",
+    "quickStartDesc": "Send errors to TechMonitor using a simple HTTP POST request. Include your API key in the request body along with error details.",
     "step1": "Step 1: Add Dependency",
     "step2": "Step 2: Initialize SDK",
     "step3": "Step 3: Report Errors",

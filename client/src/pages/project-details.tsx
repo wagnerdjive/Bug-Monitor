@@ -52,8 +52,9 @@ import {
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 export default function ProjectDetails() {
   const [, params] = useRoute("/projects/:id");
@@ -63,6 +64,7 @@ export default function ProjectDetails() {
   const { data: events, isLoading: loadingEvents } = useProjectEvents({ projectId });
   const deleteProject = useDeleteProject();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isSimulating, setIsSimulating] = useState(false);
   
   const urlParams = new URLSearchParams(searchString);
@@ -135,11 +137,11 @@ export default function ProjectDetails() {
   const hasActiveFilters = searchQuery || statusFilter !== "all" || severityFilter !== "all" || typeFilter !== "all";
 
   if (loadingProject) {
-    return <Layout><div className="animate-pulse">Loading...</div></Layout>;
+    return <Layout><div className="animate-pulse">{t("common.loading")}</div></Layout>;
   }
 
   if (!project) {
-    return <Layout><div>Project not found</div></Layout>;
+    return <Layout><div>{t("project.notFound")}</div></Layout>;
   }
 
   const simulateError = async () => {
@@ -156,15 +158,15 @@ export default function ProjectDetails() {
       });
       
       toast({
-        title: "Success",
-        description: "Simulated error ingested successfully.",
+        title: t("common.success"),
+        description: t("project.simulateSuccess"),
       });
       
       queryClient.invalidateQueries({ queryKey: ["/api/projects", project.id, "events"] });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to ingest simulated error.",
+        title: t("common.error"),
+        description: t("project.simulateFailed"),
         variant: "destructive"
       });
     } finally {
@@ -222,31 +224,30 @@ export default function ProjectDetails() {
               data-testid="button-simulate-error"
             >
               <Play className="w-4 h-4" />
-              {isSimulating ? "Simulating..." : "Simulate Error"}
+              {isSimulating ? t("project.simulating") : t("project.simulateError")}
             </Button>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="sm" className="gap-2" data-testid="button-delete-project">
                   <Trash2 className="w-4 h-4" />
-                  Delete
+                  {t("common.delete")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("project.deleteConfirm")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your project
-                    and all associated error data.
+                    {t("project.deleteWarning")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
                   <AlertDialogAction 
                     onClick={() => deleteProject.mutate(project.id)}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    Delete
+                    {t("common.delete")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -257,13 +258,13 @@ export default function ProjectDetails() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="w-full md:w-auto grid grid-cols-3 md:inline-flex">
             <TabsTrigger value="overview" className="gap-2" data-testid="tab-overview">
-              <Activity className="w-4 h-4 hidden sm:inline" /> Overview
+              <Activity className="w-4 h-4 hidden sm:inline" /> {t("project.overview")}
             </TabsTrigger>
             <TabsTrigger value="issues" className="gap-2" data-testid="tab-issues">
-              <AlertTriangle className="w-4 h-4 hidden sm:inline" /> Issues
+              <AlertTriangle className="w-4 h-4 hidden sm:inline" /> {t("project.issues")}
             </TabsTrigger>
             <TabsTrigger value="setup" className="gap-2" data-testid="tab-setup">
-              Setup
+              {t("project.setup")}
             </TabsTrigger>
           </TabsList>
 
@@ -271,25 +272,25 @@ export default function ProjectDetails() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardDescription>Total Events (24h)</CardDescription>
+                  <CardDescription>{t("project.totalEvents24h")}</CardDescription>
                   <CardTitle className="text-2xl md:text-3xl" data-testid="stat-events-24h">{events24h.length}</CardTitle>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader className="pb-2">
-                  <CardDescription>Unresolved</CardDescription>
+                  <CardDescription>{t("project.unresolved")}</CardDescription>
                   <CardTitle className="text-2xl md:text-3xl text-red-500" data-testid="stat-unresolved">{stats.unresolved}</CardTitle>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader className="pb-2">
-                  <CardDescription>Critical/High</CardDescription>
+                  <CardDescription>{t("project.criticalHigh")}</CardDescription>
                   <CardTitle className="text-2xl md:text-3xl text-orange-500" data-testid="stat-critical">{stats.critical}</CardTitle>
                 </CardHeader>
               </Card>
               <Card>
                 <CardHeader className="pb-2">
-                  <CardDescription>Resolved</CardDescription>
+                  <CardDescription>{t("project.resolved")}</CardDescription>
                   <CardTitle className="text-2xl md:text-3xl text-green-500" data-testid="stat-resolved">{stats.resolved}</CardTitle>
                 </CardHeader>
               </Card>
@@ -297,7 +298,7 @@ export default function ProjectDetails() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Error Volume (24h)</CardTitle>
+                <CardTitle>{t("project.errorVolume")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-[200px]">
@@ -317,8 +318,8 @@ export default function ProjectDetails() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Recent Issues</CardTitle>
-                <CardDescription>Latest errors from your application</CardDescription>
+                <CardTitle>{t("project.recentIssues")}</CardTitle>
+                <CardDescription>{t("project.latestErrors")}</CardDescription>
               </CardHeader>
               <CardContent>
                 {loadingEvents ? (
@@ -346,7 +347,7 @@ export default function ProjectDetails() {
                   </div>
                 ) : (
                   <div className="py-8 text-center text-muted-foreground">
-                    No errors recorded yet
+                    {t("project.noErrors")}
                   </div>
                 )}
               </CardContent>
@@ -358,10 +359,10 @@ export default function ProjectDetails() {
               <CardHeader className="pb-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <CardTitle>All Issues</CardTitle>
+                    <CardTitle>{t("project.allIssues")}</CardTitle>
                     <CardDescription>
-                      {filteredEvents.length} of {events?.length || 0} issues
-                      {hasActiveFilters && " (filtered)"}
+                      {filteredEvents.length} {t("project.issuesOf")} {events?.length || 0}
+                      {hasActiveFilters && ` ${t("project.issuesFiltered")}`}
                     </CardDescription>
                   </div>
                 </div>
@@ -371,7 +372,7 @@ export default function ProjectDetails() {
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search errors..."
+                      placeholder={t("project.searchErrors")}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-9"
@@ -384,10 +385,10 @@ export default function ProjectDetails() {
                         <SelectValue placeholder="Status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="unresolved">Unresolved</SelectItem>
-                        <SelectItem value="resolved">Resolved</SelectItem>
-                        <SelectItem value="ignored">Ignored</SelectItem>
+                        <SelectItem value="all">{t("project.allStatus")}</SelectItem>
+                        <SelectItem value="unresolved">{t("status.unresolved")}</SelectItem>
+                        <SelectItem value="resolved">{t("status.resolved")}</SelectItem>
+                        <SelectItem value="ignored">{t("status.ignored")}</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select value={severityFilter} onValueChange={setSeverityFilter}>
@@ -395,11 +396,11 @@ export default function ProjectDetails() {
                         <SelectValue placeholder="Severity" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Severity</SelectItem>
-                        <SelectItem value="critical">Critical</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="all">{t("project.allSeverity")}</SelectItem>
+                        <SelectItem value="critical">{t("severity.critical")}</SelectItem>
+                        <SelectItem value="high">{t("severity.high")}</SelectItem>
+                        <SelectItem value="medium">{t("severity.medium")}</SelectItem>
+                        <SelectItem value="low">{t("severity.low")}</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -407,16 +408,16 @@ export default function ProjectDetails() {
                         <SelectValue placeholder="Type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="error">Error</SelectItem>
-                        <SelectItem value="warning">Warning</SelectItem>
-                        <SelectItem value="info">Info</SelectItem>
+                        <SelectItem value="all">{t("project.allTypes")}</SelectItem>
+                        <SelectItem value="error">{t("type.error")}</SelectItem>
+                        <SelectItem value="warning">{t("type.warning")}</SelectItem>
+                        <SelectItem value="info">{t("type.info")}</SelectItem>
                       </SelectContent>
                     </Select>
                     {hasActiveFilters && (
                       <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1" data-testid="button-clear-filters">
                         <X className="w-4 h-4" />
-                        Clear
+                        {t("common.clear")}
                       </Button>
                     )}
                   </div>
@@ -431,17 +432,17 @@ export default function ProjectDetails() {
                     {hasActiveFilters ? (
                       <>
                         <Filter className="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
-                        <h3 className="font-medium mb-1">No matching issues</h3>
-                        <p className="text-sm text-muted-foreground">Try adjusting your filters</p>
+                        <h3 className="font-medium mb-1">{t("project.noMatchingIssues")}</h3>
+                        <p className="text-sm text-muted-foreground">{t("project.tryAdjusting")}</p>
                         <Button variant="outline" size="sm" onClick={clearFilters} className="mt-4">
-                          Clear Filters
+                          {t("project.clearFilters")}
                         </Button>
                       </>
                     ) : (
                       <>
                         <Activity className="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
-                        <h3 className="font-medium mb-1">No issues reported</h3>
-                        <p className="text-sm text-muted-foreground">Everything looks good! Or the SDK isn't installed yet.</p>
+                        <h3 className="font-medium mb-1">{t("project.noIssuesReported")}</h3>
+                        <p className="text-sm text-muted-foreground">{t("project.everythingLooksGood")}</p>
                       </>
                     )}
                   </div>
@@ -451,11 +452,11 @@ export default function ProjectDetails() {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[50%]">Error</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Severity</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>When</TableHead>
+                            <TableHead className="w-[50%]">{t("project.errorColumn")}</TableHead>
+                            <TableHead>{t("project.typeColumn")}</TableHead>
+                            <TableHead>{t("project.severityColumn")}</TableHead>
+                            <TableHead>{t("project.statusColumn")}</TableHead>
+                            <TableHead>{t("project.whenColumn")}</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -466,7 +467,7 @@ export default function ProjectDetails() {
                                   <div className="space-y-1">
                                     <div className="text-primary truncate">{event.message}</div>
                                     <div className="text-xs text-muted-foreground font-mono truncate">
-                                      {event.stackTrace?.split('\n')[0] || 'No stack trace'}
+                                      {event.stackTrace?.split('\n')[0] || t("project.noStackTrace")}
                                     </div>
                                   </div>
                                 </Link>

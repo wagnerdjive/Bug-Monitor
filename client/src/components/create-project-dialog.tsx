@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Loader2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 const PLATFORMS = [
   { value: "react", label: "React" },
@@ -49,6 +50,7 @@ type InsertProject = z.infer<typeof insertProjectSchema>;
 export function CreateProjectDialog() {
   const [open, setOpen] = useState(false);
   const createProject = useCreateProject();
+  const { t } = useTranslation();
 
   const form = useForm<InsertProject>({
     resolver: zodResolver(insertProjectSchema),
@@ -67,16 +69,16 @@ export function CreateProjectDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
+        <Button className="gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all" data-testid="button-create-project">
           <Plus className="w-4 h-4" />
-          Create Project
+          {t("dashboard.createProject")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>{t("dashboard.newProject")}</DialogTitle>
           <DialogDescription>
-            Add a new project to start monitoring errors.
+            {t("dashboard.createFirst")}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -86,9 +88,9 @@ export function CreateProjectDialog() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name</FormLabel>
+                  <FormLabel>{t("dashboard.projectName")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="My Awesome App" {...field} />
+                    <Input placeholder={t("dashboard.enterProjectName")} {...field} data-testid="input-project-name" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,14 +101,14 @@ export function CreateProjectDialog() {
               name="platform"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Platform</FormLabel>
+                  <FormLabel>{t("dashboard.platform")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select platform" />
+                      <SelectTrigger data-testid="select-platform">
+                        <SelectValue placeholder={t("dashboard.selectPlatform")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -126,14 +128,15 @@ export function CreateProjectDialog() {
                 type="submit"
                 disabled={createProject.isPending}
                 className="w-full sm:w-auto"
+                data-testid="button-submit-project"
               >
                 {createProject.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    {t("dashboard.creating")}
                   </>
                 ) : (
-                  "Create Project"
+                  t("dashboard.createProject")
                 )}
               </Button>
             </DialogFooter>

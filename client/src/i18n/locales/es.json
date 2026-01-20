@@ -10,7 +10,8 @@
     "search": "Buscar",
     "clear": "Limpiar",
     "copy": "Copiar",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "language": "Idioma"
   },
   "landing": {
     "title": "Deja de adivinar por que tu app fallo.",
@@ -62,6 +63,7 @@
     "overview": "Vista General",
     "issues": "Problemas",
     "setup": "Configuracion",
+    "notFound": "Proyecto no encontrado",
     "deleteProject": "Eliminar Proyecto",
     "deleteConfirm": "Estas absolutamente seguro?",
     "deleteWarning": "Esta accion no se puede deshacer. Esto eliminara permanentemente tu proyecto y todos los datos de error asociados.",
@@ -122,9 +124,11 @@
     "received": "Recibido"
   },
   "sdk": {
-    "title": "Instrucciones de Configuracion del SDK",
+    "title": "Integracion SDK",
     "description": "Integra TechMonitor en tu aplicacion usando nuestro SDK.",
-    "apiKey": "Tu Clave de API",
+    "apiKey": "Clave API",
+    "quickStart": "Inicio Rapido",
+    "quickStartDesc": "Envia errores a TechMonitor usando una solicitud HTTP POST simple. Incluye tu clave API en el cuerpo de la solicitud junto con los detalles del error.",
     "step1": "Paso 1: Agregar Dependencia",
     "step2": "Paso 2: Inicializar SDK",
     "step3": "Paso 3: Reportar Errores",

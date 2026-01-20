@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Copy, Check, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface Project {
   id: number;
@@ -16,14 +17,11 @@ interface Project {
 
 interface SdkInstructionsProps {
   project: Project;
-  lang?: "en" | "pt";
 }
 
-export function SdkInstructions({
-  project,
-  lang = "en",
-}: SdkInstructionsProps) {
+export function SdkInstructions({ project }: SdkInstructionsProps) {
   const [copiedTab, setCopiedTab] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const handleCopy = (tab: string, code: string) => {
     navigator.clipboard.writeText(code);
@@ -31,155 +29,12 @@ export function SdkInstructions({
     setTimeout(() => setCopiedTab(null), 1800);
   };
 
-  const safeLang = lang === "pt" ? "pt" : "en";
-
-  const t = {
-    en: {
-      title: "SDK Integration",
-      apiKeyLabel: "API Key",
-      endpointLabel: "Endpoint",
-      tipTitle: "Quick Start",
-      tipText:
-        "Send errors to TechMonitor using a simple HTTP POST request. Include your API key in the request body along with error details.",
-      featuresTitle: "Payload Fields",
-      copy: "Copy",
-      copied: "Copied",
-      tabs: {
-        javascript: "JavaScript",
-        python: "Python",
-        kotlin: "Kotlin",
-        swift: "Swift",
-        java: "Java",
-        curl: "cURL",
-      },
-      details: {
-        javascript: [
-          "apiKey (required): Your project API key",
-          "message (required): Error message description",
-          "level: 'error', 'warning', or 'info'",
-          "stackTrace: Full stack trace string",
-          "deviceInfo: { model, os } object",
-          "occurredAt: ISO timestamp of when error occurred",
-        ],
-        python: [
-          "apiKey (required): Your project API key",
-          "message (required): Error message description",
-          "level: 'error', 'warning', or 'info'",
-          "stackTrace: Full stack trace string",
-          "deviceInfo: { model, os } object",
-          "occurredAt: ISO timestamp of when error occurred",
-        ],
-        kotlin: [
-          "apiKey (required): Your project API key",
-          "message (required): Error message description",
-          "level: 'error', 'warning', or 'info'",
-          "stackTrace: Full stack trace string",
-          "deviceInfo: { model, os } object",
-          "occurredAt: ISO timestamp of when error occurred",
-        ],
-        swift: [
-          "apiKey (required): Your project API key",
-          "message (required): Error message description",
-          "level: 'error', 'warning', or 'info'",
-          "stackTrace: Full stack trace string",
-          "deviceInfo: { model, os } object",
-          "occurredAt: ISO timestamp of when error occurred",
-        ],
-        java: [
-          "apiKey (required): Your project API key",
-          "message (required): Error message description",
-          "level: 'error', 'warning', or 'info'",
-          "stackTrace: Full stack trace string",
-          "deviceInfo: { model, os } object",
-          "occurredAt: ISO timestamp of when error occurred",
-        ],
-        curl: [
-          "apiKey (required): Your project API key",
-          "message (required): Error message description",
-          "level: 'error', 'warning', or 'info'",
-          "stackTrace: Full stack trace string",
-          "deviceInfo: { model, os } object",
-          "occurredAt: ISO timestamp of when error occurred",
-        ],
-      },
-    },
-    pt: {
-      title: "Integracao SDK",
-      apiKeyLabel: "Chave API",
-      endpointLabel: "Endpoint",
-      tipTitle: "Inicio Rapido",
-      tipText:
-        "Envie erros para o TechMonitor usando uma requisicao HTTP POST simples. Inclua sua chave API no corpo da requisicao junto com os detalhes do erro.",
-      featuresTitle: "Campos do Payload",
-      copy: "Copiar",
-      copied: "Copiado",
-      tabs: {
-        javascript: "JavaScript",
-        python: "Python",
-        kotlin: "Kotlin",
-        swift: "Swift",
-        java: "Java",
-        curl: "cURL",
-      },
-      details: {
-        javascript: [
-          "apiKey (obrigatorio): Sua chave API do projeto",
-          "message (obrigatorio): Descricao da mensagem de erro",
-          "level: 'error', 'warning', ou 'info'",
-          "stackTrace: String completa do stack trace",
-          "deviceInfo: Objeto { model, os }",
-          "occurredAt: Timestamp ISO de quando o erro ocorreu",
-        ],
-        python: [
-          "apiKey (obrigatorio): Sua chave API do projeto",
-          "message (obrigatorio): Descricao da mensagem de erro",
-          "level: 'error', 'warning', ou 'info'",
-          "stackTrace: String completa do stack trace",
-          "deviceInfo: Objeto { model, os }",
-          "occurredAt: Timestamp ISO de quando o erro ocorreu",
-        ],
-        kotlin: [
-          "apiKey (obrigatorio): Sua chave API do projeto",
-          "message (obrigatorio): Descricao da mensagem de erro",
-          "level: 'error', 'warning', ou 'info'",
-          "stackTrace: String completa do stack trace",
-          "deviceInfo: Objeto { model, os }",
-          "occurredAt: Timestamp ISO de quando o erro ocorreu",
-        ],
-        swift: [
-          "apiKey (obrigatorio): Sua chave API do projeto",
-          "message (obrigatorio): Descricao da mensagem de erro",
-          "level: 'error', 'warning', ou 'info'",
-          "stackTrace: String completa do stack trace",
-          "deviceInfo: Objeto { model, os }",
-          "occurredAt: Timestamp ISO de quando o erro ocorreu",
-        ],
-        java: [
-          "apiKey (obrigatorio): Sua chave API do projeto",
-          "message (obrigatorio): Descricao da mensagem de erro",
-          "level: 'error', 'warning', ou 'info'",
-          "stackTrace: String completa do stack trace",
-          "deviceInfo: Objeto { model, os }",
-          "occurredAt: Timestamp ISO de quando o erro ocorreu",
-        ],
-        curl: [
-          "apiKey (obrigatorio): Sua chave API do projeto",
-          "message (obrigatorio): Descricao da mensagem de erro",
-          "level: 'error', 'warning', ou 'info'",
-          "stackTrace: String completa do stack trace",
-          "deviceInfo: Objeto { model, os }",
-          "occurredAt: Timestamp ISO de quando o erro ocorreu",
-        ],
-      },
-    },
-  }[safeLang];
-
   const ingestUrl = `${window.location.origin}/api/ingest`;
 
   const tabs = [
     {
       value: "javascript",
-      label: t.tabs.javascript,
+      label: "JavaScript",
       code: `// TechMonitor Error Reporter - JavaScript/TypeScript
 const TECHMONITOR_API_KEY = "${project.apiKey}";
 const TECHMONITOR_URL = "${ingestUrl}";
@@ -223,11 +78,10 @@ try {
 } catch (error) {
   reportError(error);
 }`,
-      details: t.details.javascript,
     },
     {
       value: "python",
-      label: t.tabs.python,
+      label: "Python",
       code: `# TechMonitor Error Reporter - Python
 import requests
 import traceback
@@ -268,11 +122,10 @@ try:
 except Exception as e:
     report_error(e)
     raise`,
-      details: t.details.python,
     },
     {
       value: "kotlin",
-      label: t.tabs.kotlin,
+      label: "Kotlin",
       code: `// TechMonitor Error Reporter - Kotlin/Android
 // Add to your build.gradle: implementation("com.squareup.okhttp3:okhttp:4.12.0")
 // implementation("org.json:json:20231013")
@@ -330,11 +183,10 @@ try {
     TechMonitor.reportError(e)
     throw e
 }`,
-      details: t.details.kotlin,
     },
     {
       value: "swift",
-      label: t.tabs.swift,
+      label: "Swift",
       code: `// TechMonitor Error Reporter - Swift/iOS
 import Foundation
 import UIKit
@@ -379,11 +231,10 @@ do {
     TechMonitor.reportError(error)
     throw error
 }`,
-      details: t.details.swift,
     },
     {
       value: "java",
-      label: t.tabs.java,
+      label: "Java",
       code: `// TechMonitor Error Reporter - Java
 // Add dependency: com.google.code.gson:gson:2.10.1
 
@@ -453,11 +304,10 @@ try {
     TechMonitor.reportError(e);
     throw e;
 }`,
-      details: t.details.java,
     },
     {
       value: "curl",
-      label: t.tabs.curl,
+      label: "cURL",
       code: `# TechMonitor Error Reporter - cURL
 # Use this to test the integration or send errors from shell scripts
 
@@ -476,7 +326,6 @@ curl -X POST "${ingestUrl}" \\
   }'
 
 # Response: {"success": true, "eventId": "..."}`,
-      details: t.details.curl,
     },
   ];
 
@@ -484,12 +333,13 @@ curl -X POST "${ingestUrl}" \\
     <div className="space-y-6 bg-gradient-to-b from-zinc-950 to-zinc-900 dark:to-zinc-950 rounded-xl p-4 md:p-6 border border-zinc-800/50 shadow-xl">
       <div className="flex flex-col gap-4 pb-4 border-b border-zinc-800/60">
         <h3 className="text-xl md:text-2xl font-bold tracking-tight text-white">
-          {t.title}
+          {t("sdk.title")}
         </h3>
+        <p className="text-zinc-400 text-sm">{t("sdk.description")}</p>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           <div className="flex items-center gap-2 bg-zinc-900/80 px-3 py-2 rounded-lg border border-zinc-700/50">
             <span className="text-xs font-medium text-zinc-400">
-              {t.apiKeyLabel}:
+              {t("sdk.apiKey")}:
             </span>
             <code className="text-indigo-400 font-mono text-xs md:text-sm break-all">
               {project.apiKey}
@@ -497,7 +347,7 @@ curl -X POST "${ingestUrl}" \\
           </div>
           <div className="flex items-center gap-2 bg-zinc-900/80 px-3 py-2 rounded-lg border border-zinc-700/50">
             <span className="text-xs font-medium text-zinc-400">
-              {t.endpointLabel}:
+              Endpoint:
             </span>
             <code className="text-emerald-400 font-mono text-xs md:text-sm break-all">
               {ingestUrl}
@@ -509,10 +359,10 @@ curl -X POST "${ingestUrl}" \\
       <div className="bg-gradient-to-r from-indigo-950/30 to-emerald-950/20 p-4 rounded-lg border border-indigo-800/40">
         <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-          {t.tipTitle}
+          {t("sdk.quickStart")}
         </h4>
         <p className="text-zinc-300 text-sm leading-relaxed">
-          {t.tipText}
+          {t("sdk.quickStartDesc")}
         </p>
       </div>
 
@@ -550,7 +400,7 @@ curl -X POST "${ingestUrl}" \\
                   ) : (
                     <Copy className="mr-1 h-3 w-3" />
                   )}
-                  {copiedTab === tab.value ? t.copied : t.copy}
+                  {copiedTab === tab.value ? t("common.copied") : t("common.copy")}
                 </Button>
               </div>
 
@@ -560,21 +410,6 @@ curl -X POST "${ingestUrl}" \\
                 </pre>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
-            </div>
-
-            <div className="mt-4 p-4 rounded-lg bg-zinc-900/50 border border-zinc-800/60">
-              <h4 className="text-sm font-semibold text-indigo-300 mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                {t.featuresTitle}
-              </h4>
-              <ul className="space-y-2 text-zinc-300 text-sm">
-                {tab.details.map((detail, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
-                    <span className="text-xs md:text-sm">{detail}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           </TabsContent>
         ))}

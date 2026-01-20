@@ -25,6 +25,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/i18n";
 
 export default function EventDetails() {
   const [, params] = useRoute("/events/:id");
@@ -32,6 +33,7 @@ export default function EventDetails() {
   const { data: event, isLoading, error } = useEvent(id);
   const updateStatus = useUpdateEventStatus();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = (text: string) => {
@@ -46,14 +48,14 @@ export default function EventDetails() {
       {
         onSuccess: () => {
           toast({
-            title: "Status Updated",
-            description: `Event marked as ${newStatus}`,
+            title: t("event.statusUpdated"),
+            description: `${t("event.markedAs")} ${newStatus}`,
           });
         },
         onError: () => {
           toast({
-            title: "Error",
-            description: "Failed to update status",
+            title: t("common.error"),
+            description: t("event.updateFailed"),
             variant: "destructive",
           });
         },
@@ -86,14 +88,14 @@ export default function EventDetails() {
             <CardContent className="pt-6">
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <AlertCircle className="w-12 h-12 text-destructive mb-4" />
-                <h2 className="text-xl font-semibold mb-2">Event Not Found</h2>
+                <h2 className="text-xl font-semibold mb-2">{t("event.eventNotFound")}</h2>
                 <p className="text-muted-foreground mb-4">
-                  This event may have been deleted or you don't have permission to view it.
+                  {t("event.eventNotFoundDesc")}
                 </p>
                 <Link href="/dashboard">
                   <Button variant="outline">
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Dashboard
+                    {t("event.backToDashboard")}
                   </Button>
                 </Link>
               </div>
@@ -161,7 +163,7 @@ export default function EventDetails() {
         <Link href={`/projects/${event.projectId}?tab=issues`}>
           <Button variant="ghost" className="gap-2 pl-0 hover:pl-2 transition-all text-muted-foreground" data-testid="button-back-issues">
             <ArrowLeft className="w-4 h-4" />
-            Back to Issues
+            {t("event.backToIssues")}
           </Button>
         </Link>
 
@@ -206,7 +208,7 @@ export default function EventDetails() {
                   data-testid="button-resolve"
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  Mark Resolved
+                  {t("event.markResolved")}
                 </Button>
               )}
               {event.status === "resolved" && (
@@ -218,7 +220,7 @@ export default function EventDetails() {
                   data-testid="button-reopen"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  Reopen
+                  {t("event.reopen")}
                 </Button>
               )}
               {event.status !== "ignored" && (
@@ -230,7 +232,7 @@ export default function EventDetails() {
                   data-testid="button-ignore"
                 >
                   <XCircle className="w-4 h-4" />
-                  Ignore
+                  {t("event.ignore")}
                 </Button>
               )}
             </div>
@@ -242,7 +244,7 @@ export default function EventDetails() {
             <Card className="border-border">
               <CardHeader className="flex flex-row items-center justify-between gap-2">
                 <CardTitle className="flex items-center gap-2">
-                  Stack Trace
+                  {t("event.stackTrace")}
                 </CardTitle>
                 {event.stackTrace && (
                   <Button 
@@ -252,7 +254,7 @@ export default function EventDetails() {
                     data-testid="button-copy-stack"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span className="ml-1 text-xs">{copied ? "Copied" : "Copy"}</span>
+                    <span className="ml-1 text-xs">{copied ? t("common.copied") : t("common.copy")}</span>
                   </Button>
                 )}
               </CardHeader>
@@ -264,7 +266,7 @@ export default function EventDetails() {
                         {event.stackTrace}
                       </pre>
                     ) : (
-                      <span className="text-muted-foreground italic">No stack trace available.</span>
+                      <span className="text-muted-foreground italic">{t("event.noStackTraceAvailable")}</span>
                     )}
                   </div>
                 </ScrollArea>
@@ -274,8 +276,8 @@ export default function EventDetails() {
             {event.breadcrumbs && Array.isArray(event.breadcrumbs) && event.breadcrumbs.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Breadcrumbs</CardTitle>
-                  <CardDescription>Actions leading up to this error ({event.breadcrumbs.length} items)</CardDescription>
+                  <CardTitle>{t("event.breadcrumbs")}</CardTitle>
+                  <CardDescription>{t("event.actionsLeading")} ({event.breadcrumbs.length} {t("event.items")})</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[200px]">
@@ -301,7 +303,7 @@ export default function EventDetails() {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Monitor className="w-4 h-4" /> Device Info
+                  <Monitor className="w-4 h-4" /> {t("event.deviceInfo")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -315,7 +317,7 @@ export default function EventDetails() {
                     ))}
                   </div>
                 ) : (
-                  <span className="text-muted-foreground text-sm italic">No device info available</span>
+                  <span className="text-muted-foreground text-sm italic">{t("event.noDeviceInfo")}</span>
                 )}
               </CardContent>
             </Card>
@@ -323,7 +325,7 @@ export default function EventDetails() {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <Tag className="w-4 h-4" /> App Info
+                  <Tag className="w-4 h-4" /> {t("event.appInfo")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -337,7 +339,7 @@ export default function EventDetails() {
                     ))}
                   </div>
                 ) : (
-                  <span className="text-muted-foreground text-sm italic">No app info available</span>
+                  <span className="text-muted-foreground text-sm italic">{t("event.noAppInfo")}</span>
                 )}
               </CardContent>
             </Card>
@@ -345,7 +347,7 @@ export default function EventDetails() {
             {event.tags && Object.keys(event.tags).length > 0 && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Tags</CardTitle>
+                  <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">{t("event.tags")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
@@ -362,15 +364,15 @@ export default function EventDetails() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">Timestamps</CardTitle>
+                <CardTitle className="text-sm uppercase tracking-wider text-muted-foreground">{t("event.timestamps")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 <div className="flex justify-between gap-2">
-                  <span className="text-muted-foreground">Occurred</span>
+                  <span className="text-muted-foreground">{t("event.occurred")}</span>
                   <span className="font-mono text-xs">{format(new Date(event.occurredAt), "yyyy-MM-dd HH:mm:ss")}</span>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <span className="text-muted-foreground">Received</span>
+                  <span className="text-muted-foreground">{t("event.received")}</span>
                   <span className="font-mono text-xs">{format(new Date(event.createdAt), "yyyy-MM-dd HH:mm:ss")}</span>
                 </div>
               </CardContent>

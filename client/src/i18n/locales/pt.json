@@ -10,7 +10,8 @@
     "search": "Buscar",
     "clear": "Limpar",
     "copy": "Copiar",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "language": "Idioma"
   },
   "landing": {
     "title": "Pare de adivinhar por que seu app quebrou.",
@@ -62,6 +63,7 @@
     "overview": "Visao Geral",
     "issues": "Problemas",
     "setup": "Configuracao",
+    "notFound": "Projeto nao encontrado",
     "deleteProject": "Excluir Projeto",
     "deleteConfirm": "Voce tem certeza absoluta?",
     "deleteWarning": "Esta acao nao pode ser desfeita. Isso excluira permanentemente seu projeto e todos os dados de erro associados.",
@@ -122,9 +124,11 @@
     "received": "Recebido"
   },
   "sdk": {
-    "title": "Instrucoes de Configuracao do SDK",
+    "title": "Integracao SDK",
     "description": "Integre o TechMonitor na sua aplicacao usando nosso SDK.",
-    "apiKey": "Sua Chave de API",
+    "apiKey": "Chave API",
+    "quickStart": "Inicio Rapido",
+    "quickStartDesc": "Envie erros para o TechMonitor usando uma requisicao HTTP POST simples. Inclua sua chave API no corpo da requisicao junto com os detalhes do erro.",
     "step1": "Passo 1: Adicionar Dependencia",
     "step2": "Passo 2: Inicializar SDK",
     "step3": "Passo 3: Reportar Erros",

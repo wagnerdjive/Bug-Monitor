@@ -41,7 +41,7 @@ import {
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 export default function ProjectDetails() {
   const [, params] = useRoute("/projects/:id");
@@ -90,14 +90,37 @@ export default function ProjectDetails() {
     }
   };
 
-  const chartData = [
-    { name: '00:00', errors: 0 },
-    { name: '04:00', errors: 0 },
-    { name: '08:00', errors: 0 },
-    { name: '12:00', errors: 0 },
-    { name: '16:00', errors: 0 },
-    { name: '20:00', errors: 0 },
-  ];
+  const now = new Date();
+  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  const events24h = useMemo(() => {
+    if (!events) return [];
+    return events.filter(event => {
+      const eventDate = new Date(event.occurredAt);
+      return eventDate >= twentyFourHoursAgo;
+    });
+  }, [events, twentyFourHoursAgo.getTime()]);
+
+  const chartData = useMemo(() => {
+    const hours = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'];
+    const buckets: Record<string, number> = {};
+    hours.forEach(h => buckets[h] = 0);
+
+    if (events24h) {
+      events24h.forEach(event => {
+        const eventDate = new Date(event.occurredAt);
+        const hour = eventDate.getHours();
+        if (hour < 4) buckets['00:00']++;
+        else if (hour < 8) buckets['04:00']++;
+        else if (hour < 12) buckets['08:00']++;
+        else if (hour < 16) buckets['12:00']++;
+        else if (hour < 20) buckets['16:00']++;
+        else buckets['20:00']++;
+      });
+    }
+
+    return hours.map(name => ({ name, errors: buckets[name] }));
+  }, [events24h]);
 
   return (
     <Layout>
@@ -169,7 +192,7 @@ export default function ProjectDetails() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold font-mono">
-                    {events?.length || 0}
+                    {events24h.length}
                   </div>
                 </CardContent>
               </Card>
@@ -245,8 +268,8 @@ export default function ProjectDetails() {
                               </Link>
                             </TableCell>
                             <TableCell>
-                              <Badge variant={event.type === 'error' ? 'destructive' : 'secondary'}>
-                                {event.type}
+                              <Badge variant={event.level === 'error' ? 'destructive' : 'secondary'}>
+                                {event.level}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-muted-foreground text-sm whitespace-nowrap">

@@ -19,11 +19,16 @@ Preferred communication style: Simple, everyday language.
 - **Forms**: React Hook Form with Zod validation via @hookform/resolvers
 
 ### Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **API Design**: RESTful API with routes defined in `server/routes.ts`
-- **Shared Types**: API contracts and schemas shared between frontend and backend via `shared/routes.ts`
-- **Authentication**: Replit Auth integration using OpenID Connect with Passport.js
-- **Session Management**: PostgreSQL-backed sessions via connect-pg-simple
+- **Framework**: Spring Boot 3.2 with Java 17+
+- **Location**: `spring-backend/` directory
+- **API Design**: RESTful API with controllers in `spring-backend/src/main/java/com/errortracker/controller/`
+- **Data Layer**: Spring Data JPA with repositories
+- **Authentication**: Spring Security with session-based authentication (BCrypt password hashing)
+- **Session Management**: PostgreSQL-backed sessions via Spring Session JDBC
+
+### Legacy Backend (deprecated)
+- The original Express.js backend in `server/` is still present but not in use
+- The new Spring Boot backend runs on port 5001, with Vite proxying API calls from port 5000
 
 ### Data Storage
 - **Database**: PostgreSQL with Drizzle ORM

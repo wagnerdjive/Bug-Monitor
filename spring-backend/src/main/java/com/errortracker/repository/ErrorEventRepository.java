@@ -27,10 +27,10 @@ public interface ErrorEventRepository extends JpaRepository<ErrorEvent, Integer>
            "AND (:status IS NULL OR e.status = :status) " +
            "AND (:severity IS NULL OR e.severity = :severity) " +
            "AND (:type IS NULL OR e.type = :type) " +
-           "AND (:search IS NULL OR LOWER(e.message) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(e.stackTrace) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(e.userName) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(e.traceId) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+           "AND (:search IS NULL OR LOWER(CAST(e.message AS string)) LIKE LOWER(CONCAT('%', :search, '%')) " +
+           "OR LOWER(CAST(e.stackTrace AS string)) LIKE LOWER(CONCAT('%', :search, '%')) " +
+           "OR LOWER(CAST(e.userName AS string)) LIKE LOWER(CONCAT('%', :search, '%')) " +
+           "OR LOWER(CAST(e.traceId AS string)) LIKE LOWER(CONCAT('%', :search, '%'))) " +
            "ORDER BY e.createdAt DESC")
     List<ErrorEvent> findByProjectIdWithFilters(
         @Param("projectId") Integer projectId,

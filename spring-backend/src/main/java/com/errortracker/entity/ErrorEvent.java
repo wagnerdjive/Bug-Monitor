@@ -72,6 +72,8 @@ public class ErrorEvent {
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
 
+    @PrePersist
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
         if (occurredAt == null) {
             occurredAt = LocalDateTime.now();

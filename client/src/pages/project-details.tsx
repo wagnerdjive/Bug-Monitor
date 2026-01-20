@@ -52,6 +52,35 @@ export default function ProjectDetails() {
   const { toast } = useToast();
   const [isSimulating, setIsSimulating] = useState(false);
 
+  const events24h = useMemo(() => {
+    if (!events) return [];
+    const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    return events.filter(event => {
+      const eventDate = new Date(event.occurredAt);
+      return eventDate >= twentyFourHoursAgo;
+    });
+  }, [events]);
+
+  const chartData = useMemo(() => {
+    const hours = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'];
+    const buckets: Record<string, number> = {};
+    hours.forEach(h => buckets[h] = 0);
+
+    events24h.forEach(event => {
+      const eventDate = new Date(event.occurredAt);
+      const hour = eventDate.getHours();
+      if (hour < 4) buckets['00:00']++;
+      else if (hour < 8) buckets['04:00']++;
+      else if (hour < 12) buckets['08:00']++;
+      else if (hour < 16) buckets['12:00']++;
+      else if (hour < 20) buckets['16:00']++;
+      else buckets['20:00']++;
+    });
+
+    return hours.map(name => ({ name, errors: buckets[name] }));
+  }, [events24h]);
+
   if (loadingProject) {
     return <Layout><div>Loading...</div></Layout>;
   }
@@ -89,38 +118,6 @@ export default function ProjectDetails() {
       setIsSimulating(false);
     }
   };
-
-  const now = new Date();
-  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-  const events24h = useMemo(() => {
-    if (!events) return [];
-    return events.filter(event => {
-      const eventDate = new Date(event.occurredAt);
-      return eventDate >= twentyFourHoursAgo;
-    });
-  }, [events, twentyFourHoursAgo.getTime()]);
-
-  const chartData = useMemo(() => {
-    const hours = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'];
-    const buckets: Record<string, number> = {};
-    hours.forEach(h => buckets[h] = 0);
-
-    if (events24h) {
-      events24h.forEach(event => {
-        const eventDate = new Date(event.occurredAt);
-        const hour = eventDate.getHours();
-        if (hour < 4) buckets['00:00']++;
-        else if (hour < 8) buckets['04:00']++;
-        else if (hour < 12) buckets['08:00']++;
-        else if (hour < 16) buckets['12:00']++;
-        else if (hour < 20) buckets['16:00']++;
-        else buckets['20:00']++;
-      });
-    }
-
-    return hours.map(name => ({ name, errors: buckets[name] }));
-  }, [events24h]);
 
   return (
     <Layout>

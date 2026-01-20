@@ -53,7 +53,7 @@ Preferred communication style: Simple, everyday language.
 ### Build System
 - Development: Vite dev server with HMR on port 5000, Spring Boot on port 5001
 - Vite proxies `/api` requests to Spring Boot backend
-- Path aliases: `@/` for client src, `@shared/` for shared code, `@assets/` for assets
+- Path aliases: `@/` for client src, `@assets/` for attached assets
 
 ## External Dependencies
 

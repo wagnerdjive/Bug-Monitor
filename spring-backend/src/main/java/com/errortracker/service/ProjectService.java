@@ -1,29 +1,35 @@
 package com.errortracker.service;
 
 import com.errortracker.entity.Project;
+import com.errortracker.entity.ProjectUser;
 import com.errortracker.repository.ProjectRepository;
 import com.errortracker.repository.ErrorEventRepository;
+import com.errortracker.repository.ProjectUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ErrorEventRepository errorEventRepository;
+    private final ProjectUserRepository projectUserRepository;
     private static final SecureRandom secureRandom = new SecureRandom();
     
-    public ProjectService(ProjectRepository projectRepository, ErrorEventRepository errorEventRepository) {
+    public ProjectService(ProjectRepository projectRepository, ErrorEventRepository errorEventRepository, ProjectUserRepository projectUserRepository) {
         this.projectRepository = projectRepository;
         this.errorEventRepository = errorEventRepository;
+        this.projectUserRepository = projectUserRepository;
     }
     
-    public List<Project> getProjectsByUserId(Integer userId) {
-        List<Project> projects = projectRepository.findByUserId(userId);
-        // Use a window that definitely includes the test events (365 days)
+    public List<Project> getAllProjects() {
+        List<Project> projects = projectRepository.findAll();
         LocalDateTime since = LocalDateTime.now().minusDays(365);
         
         for (Project project : projects) {
@@ -35,6 +41,41 @@ public class ProjectService {
         }
         
         return projects;
+    }
+    
+    public List<Project> getProjectsByUserId(Integer userId) {
+        // Get projects owned by the user
+        List<Project> ownedProjects = projectRepository.findByUserId(userId);
+        
+        // Get projects assigned to the user
+        List<ProjectUser> assignments = projectUserRepository.findByUserId(userId);
+        Set<Integer> projectIds = new HashSet<>();
+        for (Project p : ownedProjects) {
+            projectIds.add(p.getId());
+        }
+        
+        List<Project> allProjects = new ArrayList<>(ownedProjects);
+        for (ProjectUser pu : assignments) {
+            if (!projectIds.contains(pu.getProjectId())) {
+                projectRepository.findById(pu.getProjectId()).ifPresent(project -> {
+                    allProjects.add(project);
+                    projectIds.add(project.getId());
+                });
+            }
+        }
+        
+        // Use a window that definitely includes the test events (365 days)
+        LocalDateTime since = LocalDateTime.now().minusDays(365);
+        
+        for (Project project : allProjects) {
+            long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
+            long userCount = errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since);
+            
+            project.setErrorCount24h(errorCount);
+            project.setUserCount24h(userCount);
+        }
+        
+        return allProjects;
     }
     
     public Optional<Project> getProject(Integer id) {

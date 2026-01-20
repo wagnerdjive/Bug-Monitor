@@ -4,8 +4,11 @@ import com.errortracker.dto.IngestRequest;
 import com.errortracker.dto.UpdateEventRequest;
 import com.errortracker.entity.ErrorEvent;
 import com.errortracker.entity.Project;
+import com.errortracker.entity.User;
 import com.errortracker.service.ErrorEventService;
 import com.errortracker.service.ProjectService;
+import com.errortracker.service.ProjectUserService;
+import com.errortracker.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -22,16 +25,35 @@ import java.util.Optional;
 public class EventController {
     private final ErrorEventService errorEventService;
     private final ProjectService projectService;
+    private final UserService userService;
+    private final ProjectUserService projectUserService;
     
-    public EventController(ErrorEventService errorEventService, ProjectService projectService) {
+    public EventController(ErrorEventService errorEventService, ProjectService projectService, UserService userService, ProjectUserService projectUserService) {
         this.errorEventService = errorEventService;
         this.projectService = projectService;
+        this.userService = userService;
+        this.projectUserService = projectUserService;
     }
     
     private Integer getUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) return null;
         return (Integer) session.getAttribute("userId");
+    }
+    
+    private boolean isAdmin(Integer userId) {
+        if (userId == null) return false;
+        Optional<User> user = userService.findById(userId);
+        return user.map(User::isAdmin).orElse(false);
+    }
+    
+    private boolean hasProjectAccess(Integer projectId, Integer userId, Project project) {
+        // User is the owner
+        if (project.getUserId().equals(userId)) {
+            return true;
+        }
+        // User is assigned to the project
+        return projectUserService.hasAccess(projectId, userId);
     }
     
     @GetMapping("/projects/{projectId}/events")
@@ -53,7 +75,9 @@ public class EventController {
             return ResponseEntity.notFound().build();
         }
         
-        if (!projectOpt.get().getUserId().equals(userId)) {
+        // Admins have access to all projects' events, owners and assigned users have access
+        Project project = projectOpt.get();
+        if (!isAdmin(userId) && !hasProjectAccess(projectId, userId, project)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("message", "Unauthorized"));
         }
@@ -73,7 +97,13 @@ public class EventController {
         return errorEventService.getEvent(id)
             .map(event -> {
                 Optional<Project> projectOpt = projectService.getProject(event.getProjectId());
-                if (projectOpt.isEmpty() || !projectOpt.get().getUserId().equals(userId)) {
+                if (projectOpt.isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Unauthorized"));
+                }
+                Project project = projectOpt.get();
+                // Admins, owners, and assigned users have access to events
+                if (!isAdmin(userId) && !hasProjectAccess(event.getProjectId(), userId, project)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Unauthorized"));
                 }
@@ -96,7 +126,13 @@ public class EventController {
         return errorEventService.getEvent(id)
             .map(event -> {
                 Optional<Project> projectOpt = projectService.getProject(event.getProjectId());
-                if (projectOpt.isEmpty() || !projectOpt.get().getUserId().equals(userId)) {
+                if (projectOpt.isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Unauthorized"));
+                }
+                Project project = projectOpt.get();
+                // Admins, owners, and assigned users can update events
+                if (!isAdmin(userId) && !hasProjectAccess(event.getProjectId(), userId, project)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Unauthorized"));
                 }

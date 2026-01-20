@@ -23,15 +23,15 @@ public interface ErrorEventRepository extends JpaRepository<ErrorEvent, Integer>
     @Query("SELECT COUNT(DISTINCT e.userName) FROM ErrorEvent e WHERE e.projectId = :projectId AND e.createdAt > :since AND e.userName IS NOT NULL")
     long countDistinctUsersByProjectIdAndCreatedAtAfter(@Param("projectId") Integer projectId, @Param("since") LocalDateTime since);
     
-    @Query("SELECT e FROM ErrorEvent e WHERE e.projectId = :projectId " +
-           "AND (:status IS NULL OR e.status = :status) " +
-           "AND (:severity IS NULL OR e.severity = :severity) " +
-           "AND (:type IS NULL OR e.type = :type) " +
-           "AND (:search IS NULL OR LOWER(CAST(e.message AS string)) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(CAST(e.stackTrace AS string)) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(CAST(e.userName AS string)) LIKE LOWER(CONCAT('%', :search, '%')) " +
-           "OR LOWER(CAST(e.traceId AS string)) LIKE LOWER(CONCAT('%', :search, '%'))) " +
-           "ORDER BY e.createdAt DESC")
+    @Query(value = "SELECT * FROM error_events WHERE project_id = :projectId " +
+           "AND (:status IS NULL OR status = :status) " +
+           "AND (:severity IS NULL OR severity = :severity) " +
+           "AND (:type IS NULL OR type = :type) " +
+           "AND (:search IS NULL OR LOWER(message::text) LIKE LOWER('%' || :search || '%') " +
+           "OR LOWER(stack_trace::text) LIKE LOWER('%' || :search || '%') " +
+           "OR LOWER(user_name::text) LIKE LOWER('%' || :search || '%') " +
+           "OR LOWER(trace_id::text) LIKE LOWER('%' || :search || '%')) " +
+           "ORDER BY created_at DESC", nativeQuery = true)
     List<ErrorEvent> findByProjectIdWithFilters(
         @Param("projectId") Integer projectId,
         @Param("status") String status,

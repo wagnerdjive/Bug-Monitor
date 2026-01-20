@@ -2,7 +2,10 @@ package com.errortracker.controller;
 
 import com.errortracker.dto.ProjectRequest;
 import com.errortracker.entity.Project;
+import com.errortracker.entity.User;
 import com.errortracker.service.ProjectService;
+import com.errortracker.service.ProjectUserService;
+import com.errortracker.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -12,20 +15,40 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
     private final ProjectService projectService;
+    private final UserService userService;
+    private final ProjectUserService projectUserService;
     
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, UserService userService, ProjectUserService projectUserService) {
         this.projectService = projectService;
+        this.userService = userService;
+        this.projectUserService = projectUserService;
     }
     
     private Integer getUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) return null;
         return (Integer) session.getAttribute("userId");
+    }
+    
+    private boolean isAdmin(Integer userId) {
+        if (userId == null) return false;
+        Optional<User> user = userService.findById(userId);
+        return user.map(User::isAdmin).orElse(false);
+    }
+    
+    private boolean hasProjectAccess(Integer projectId, Integer userId, Project project) {
+        // User is the owner
+        if (project.getUserId().equals(userId)) {
+            return true;
+        }
+        // User is assigned to the project
+        return projectUserService.hasAccess(projectId, userId);
     }
     
     @GetMapping
@@ -35,7 +58,13 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         
-        List<Project> projects = projectService.getProjectsByUserId(userId);
+        // Admin users have access to all projects
+        List<Project> projects;
+        if (isAdmin(userId)) {
+            projects = projectService.getAllProjects();
+        } else {
+            projects = projectService.getProjectsByUserId(userId);
+        }
         return ResponseEntity.ok(projects);
     }
     
@@ -63,7 +92,8 @@ public class ProjectController {
         
         return projectService.getProject(id)
             .map(project -> {
-                if (!project.getUserId().equals(userId)) {
+                // Admins have access to all projects, owners and assigned users have access
+                if (!isAdmin(userId) && !hasProjectAccess(id, userId, project)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Unauthorized"));
                 }
@@ -81,7 +111,8 @@ public class ProjectController {
         
         return projectService.getProject(id)
             .map(project -> {
-                if (!project.getUserId().equals(userId)) {
+                // Only admins and owners can delete projects (not assigned users)
+                if (!isAdmin(userId) && !project.getUserId().equals(userId)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Unauthorized"));
                 }

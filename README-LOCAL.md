@@ -151,15 +151,24 @@ Ensure you have a `.env` file in the root directory for any frontend secrets if 
 ## Common Issues & Troubleshooting
 
 ### Java Version Error (`UnsupportedClassVersionError`)
-If you see an error like `java.lang.UnsupportedClassVersionError: ... has been compiled by a more recent version of the Java Runtime (class file version 61.0)`, it means:
-- The project was compiled with **Java 17** (version 61).
-- Your local environment is running an older version (e.g., **Java 11**, which is version 55).
+If you see an error like `java.lang.UnsupportedClassVersionError: ... has been compiled by a more recent version of the Java Runtime (class file version 61.0)`, but `javac -version` shows `17`, it means your **Runtime (java)** is different from your **Compiler (javac)**.
 
-**Solution**: Install **Java 17** or higher and ensure your `JAVA_HOME` points to it.
+**Solution**: 
+1. Check which `java` version is being used: `java -version`.
+2. Ensure `java` also points to version 17. On Ubuntu, you can use:
+   ```bash
+   sudo update-alternatives --config java
+   ```
+   And select the version 17.
 
 ### Script Path Errors
-If `start-dev.sh` fails with "No such file or directory" for `/home/runner/workspace`, ensure you are using the updated version of the script which uses relative paths. Run it from the project root:
+If `start-dev.sh` still shows path errors, make sure you are running it from the **root** directory of the project, not from inside the `client` folder.
 ```bash
+# Correct way (from root):
+npm run dev
+
+# If you are inside client/, go back:
+cd ..
 npm run dev
 ```
 

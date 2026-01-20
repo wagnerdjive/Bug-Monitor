@@ -13,6 +13,11 @@ import java.util.List;
 public interface ErrorEventRepository extends JpaRepository<ErrorEvent, Integer> {
     List<ErrorEvent> findByProjectId(Integer projectId);
     
+    long countByProjectId(Integer projectId);
+    
+    @Query("SELECT COUNT(DISTINCT e.userName) FROM ErrorEvent e WHERE e.projectId = :projectId AND e.userName IS NOT NULL")
+    long countDistinctUsersByProjectId(@Param("projectId") Integer projectId);
+    
     long countByProjectIdAndCreatedAtAfter(Integer projectId, LocalDateTime since);
     
     @Query("SELECT COUNT(DISTINCT e.userName) FROM ErrorEvent e WHERE e.projectId = :projectId AND e.createdAt > :since AND e.userName IS NOT NULL")

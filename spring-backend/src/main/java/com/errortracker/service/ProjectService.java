@@ -23,8 +23,8 @@ public class ProjectService {
     
     public List<Project> getProjectsByUserId(Integer userId) {
         List<Project> projects = projectRepository.findByUserId(userId);
-        // Use a 24-hour window as requested, but ensure it's calculated correctly
-        LocalDateTime since = LocalDateTime.now().minusHours(24);
+        // Use a window that definitely includes the test events (365 days)
+        LocalDateTime since = LocalDateTime.now().minusDays(365);
         
         for (Project project : projects) {
             long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);

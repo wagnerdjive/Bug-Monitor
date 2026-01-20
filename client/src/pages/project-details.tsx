@@ -1,6 +1,6 @@
 import { useRoute, useSearch } from "wouter";
 import { useProject, useDeleteProject } from "@/hooks/use-projects";
-import { useProjectEvents, ErrorEvent } from "@/hooks/use-events";
+import { useProjectEvents } from "@/hooks/use-events";
 import { Layout } from "@/components/layout";
 import { SdkInstructions } from "@/components/sdk-instructions";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,17 @@ export default function ProjectDetails() {
   const [, params] = useRoute("/projects/:id");
   const searchString = useSearch();
   const projectId = Number(params?.id);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [severityFilter, setSeverityFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [isSimulating, setIsSimulating] = useState(false);
+
+  const urlParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
+  const initialTab = urlParams.get("tab") || "overview";
+  const [activeTab, setActiveTab] = useState(initialTab);
+
   const { data: project, isLoading: loadingProject } = useProject(projectId);
   const { data: events, isLoading: loadingEvents } = useProjectEvents({ 
     projectId,
@@ -72,16 +83,6 @@ export default function ProjectDetails() {
   const deleteProject = useDeleteProject();
   const { toast } = useToast();
   const { t } = useTranslation();
-  const [isSimulating, setIsSimulating] = useState(false);
-  
-  const urlParams = new URLSearchParams(searchString);
-  const initialTab = urlParams.get("tab") || "overview";
-  const [activeTab, setActiveTab] = useState(initialTab);
-  
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [severityFilter, setSeverityFilter] = useState<string>("all");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
 
   const filteredEvents = events || [];
 

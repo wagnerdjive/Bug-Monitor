@@ -1,18 +1,31 @@
 import { Layout } from "@/components/layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
-import { BookOpen, Code, Terminal, Cpu, ChevronDown, ChevronUp, Box } from "lucide-react";
+import { 
+  BookOpen, Code, Terminal, Cpu, ChevronDown, ChevronUp, 
+  Copy, Check, ShieldCheck, Zap, Bell, Workflow, Search 
+} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function Documentation() {
   const { t } = useTranslation();
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const handleCopy = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
 
   const sdkExamples = [
     {
       lang: "JavaScript / TypeScript",
+      icon: "SiTypescript",
       code: `// Install SDK
 npm install @techmonitor/sdk
 
@@ -21,38 +34,54 @@ import { init } from "@techmonitor/sdk";
 
 init({
   apiKey: "YOUR_PROJECT_API_KEY",
-  environment: "production"
+  environment: "production",
+  release: "v1.0.0"
 });
 
 // Manual reporting
 try {
   // your code
 } catch (error) {
-  TechMonitor.captureException(error);
+  TechMonitor.captureException(error, {
+    level: 'fatal',
+    tags: { section: 'checkout' }
+  });
 }`
     },
     {
       lang: "Java / Spring Boot",
+      icon: "SiSpringboot",
       code: `// Add dependency (Maven)
 <dependency>
     <groupId>com.techmonitor</groupId>
     <artifactId>techmonitor-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 
 // application.yml
 techmonitor:
   api-key: "YOUR_PROJECT_API_KEY"
+  environment: \${SPRING_PROFILES_ACTIVE}
   enabled: true
 
-// Capture manually
-@Autowired
-private TechMonitorClient client;
+// Service usage
+@Service
+public class PaymentService {
+    @Autowired
+    private TechMonitorClient client;
 
-client.captureException(new RuntimeException("Oops!"));`
+    public void process() {
+        try {
+            // business logic
+        } catch (Exception e) {
+            client.capture(e, Map.of("userId", "123"));
+        }
+    }
+}`
     },
     {
-      lang: "Python",
+      lang: "Python / Django / Flask",
+      icon: "SiPython",
       code: `# Install
 pip install techmonitor-sdk
 
@@ -61,11 +90,16 @@ import techmonitor
 
 techmonitor.init(
     api_key="YOUR_PROJECT_API_KEY",
-    environment="staging"
+    environment="production",
+    debug=False
 )
 
-# Automatic tracking for Flask/Django
-# is enabled by default.`
+# Integrations are automatic for 
+# Django, Flask, and FastAPI
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    techmonitor.capture_exception(exc)
+    return JSONResponse(status_code=500)`
     }
   ];
 
@@ -80,7 +114,27 @@ techmonitor.init(
       title: t("docs.getStartedTitle"),
       icon: Terminal,
       content: t("docs.getStartedContent"),
-      details: "Getting started is as simple as creating an account and initializing your first project. Once your project is created, you'll be provided with a unique API key that authenticates all data sent from your application. We support various platforms and frameworks, ensuring you can monitor all your services from a single dashboard."
+      details: (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl border border-border/40 bg-muted/20">
+              <h4 className="font-bold flex items-center gap-2 mb-2">
+                <ShieldCheck className="w-4 h-4 text-primary" />
+                Auth Security
+              </h4>
+              <p className="text-sm text-muted-foreground">Every project generates a unique API Key. Ensure this key is stored securely in environment variables.</p>
+            </div>
+            <div className="p-4 rounded-xl border border-border/40 bg-muted/20">
+              <h4 className="font-bold flex items-center gap-2 mb-2">
+                <Workflow className="w-4 h-4 text-primary" />
+                Workflow
+              </h4>
+              <p className="text-sm text-muted-foreground">Errors are automatically grouped by fingerprint to reduce noise and help you focus on impact.</p>
+            </div>
+          </div>
+          <p className="text-sm leading-relaxed">TechMonitor supports production, staging, and development environments. We recommend using different projects or environment tags for each to keep your data organized.</p>
+        </div>
+      )
     },
     {
       title: t("docs.sdkIntegrationTitle"),
@@ -88,18 +142,32 @@ techmonitor.init(
       content: t("docs.sdkIntegrationContent"),
       details: (
         <div className="space-y-4">
-          <p>Our SDK integration is designed to be minimal and high-performance. Select your platform below for implementation details:</p>
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">Latest SDK: v2.1.0</Badge>
+            <Badge variant="outline" className="bg-emerald-500/5 text-emerald-500 border-emerald-500/20">Stable</Badge>
+          </div>
           <Tabs defaultValue={sdkExamples[0].lang} className="w-full">
-            <TabsList className="grid grid-cols-1 md:grid-cols-3 h-auto">
+            <TabsList className="grid grid-cols-1 md:grid-cols-3 h-auto p-1 bg-muted/30">
               {sdkExamples.map((example) => (
-                <TabsTrigger key={example.lang} value={example.lang} className="text-xs py-2">
+                <TabsTrigger key={example.lang} value={example.lang} className="text-xs py-2 data-[state=active]:bg-card">
                   {example.lang}
                 </TabsTrigger>
               ))}
             </TabsList>
             {sdkExamples.map((example) => (
-              <TabsContent key={example.lang} value={example.lang}>
-                <div className="bg-slate-950 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto border border-border/50">
+              <TabsContent key={example.lang} value={example.lang} className="relative mt-2">
+                <Button 
+                  size="icon" 
+                  variant="ghost" 
+                  className="absolute right-2 top-2 h-8 w-8 z-20 text-slate-400 hover:text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopy(example.code);
+                  }}
+                >
+                  {copiedCode === example.code ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                </Button>
+                <div className="bg-slate-950 rounded-lg p-5 font-mono text-[11px] md:text-xs text-slate-300 overflow-x-auto border border-border/50 shadow-inner">
                   <pre>{example.code}</pre>
                 </div>
               </TabsContent>
@@ -112,82 +180,135 @@ techmonitor.init(
       title: t("docs.errorTrackingTitle"),
       icon: Cpu,
       content: t("docs.errorTrackingContent"),
-      details: "Advanced error tracking features include automatic grouping of similar issues, stack trace symbolication for minified code, and real-time alerts. You can configure notification rules to stay informed via email or webhooks when critical errors exceed defined thresholds, ensuring your team can respond immediately to production incidents."
+      details: (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { label: 'Breadcrumbs', icon: Search, desc: 'Track events before error' },
+              { label: 'Real-time Alerts', icon: Bell, desc: 'Slack/Email notifications' },
+              { label: 'Smart Grouping', icon: Zap, desc: 'Zero noise tracking' }
+            ].map((feature, i) => (
+              <div key={i} className="flex flex-col items-center text-center p-3 rounded-lg bg-muted/20 border border-border/40">
+                <feature.icon className="w-5 h-5 mb-2 text-primary" />
+                <span className="text-xs font-bold block mb-1">{feature.label}</span>
+                <span className="text-[10px] text-muted-foreground">{feature.desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
     }
   ];
 
   return (
     <Layout simple>
-      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border/60 pb-8 mb-12">
-          <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              {t("docs.title")}
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-              {t("docs.subtitle")}
-            </p>
+      <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div className="text-center space-y-4 mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-2">
+            <BookOpen className="w-3 h-3" />
+            Documentation Center
           </div>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">
+            {t("docs.title")}
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Everything you need to integrate monitoring and master your application's health.
+          </p>
         </div>
 
-        <div className="grid gap-8 mb-16">
+        <div className="grid gap-6 mb-16">
           {sections.map((section, idx) => (
             <Card 
               key={idx} 
               className={cn(
-                "transition-all duration-300 border-border/40 bg-card/40 flex flex-col group overflow-hidden shadow-sm hover:shadow-md cursor-pointer",
-                expandedSection === idx && "ring-2 ring-primary/20 bg-card/60 shadow-lg"
+                "transition-all duration-500 border-border/40 bg-card/30 backdrop-blur-sm flex flex-col group overflow-hidden shadow-none hover:shadow-2xl hover:bg-card/50 cursor-pointer",
+                expandedSection === idx && "ring-1 ring-primary/30 bg-card/60"
               )}
               onClick={() => setExpandedSection(expandedSection === idx ? null : idx)}
             >
-              <CardHeader className="flex flex-row items-center gap-5 space-y-0 p-6">
+              <CardHeader className="flex flex-row items-center gap-6 space-y-0 p-8">
                 <div className={cn(
-                  "p-3 rounded-2xl shrink-0 transition-all duration-300 shadow-inner",
-                  expandedSection === idx ? "bg-primary text-primary-foreground rotate-3" : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                  "p-4 rounded-2xl shrink-0 transition-all duration-500 shadow-xl border border-white/5",
+                  expandedSection === idx ? "bg-primary text-primary-foreground scale-110 shadow-primary/20" : "bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
                 )}>
                   <section.icon className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors">{section.title}</CardTitle>
+                  <CardTitle className="text-2xl font-bold tracking-tight mb-1">{section.title}</CardTitle>
+                  <CardDescription className="text-base text-muted-foreground/80 line-clamp-1">{section.content}</CardDescription>
                 </div>
-                {expandedSection === idx ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500",
+                  expandedSection === idx ? "bg-primary/10 text-primary rotate-0" : "bg-muted/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+                )}>
+                  {expandedSection === idx ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </div>
               </CardHeader>
-              <CardContent className="px-6 pb-6 pt-0">
-                <p className="text-muted-foreground leading-relaxed">
-                  {section.content}
-                </p>
-                {expandedSection === idx && (
-                  <div className="mt-6 pt-6 border-t border-border/40 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div className="text-foreground/90 leading-relaxed">
-                      {typeof section.details === 'string' ? (
-                        <p className="italic">{section.details}</p>
-                      ) : (
-                        section.details
-                      )}
-                    </div>
+              <CardContent className={cn(
+                "px-8 transition-all duration-500 ease-in-out",
+                expandedSection === idx ? "pb-8 opacity-100 max-h-[2000px] translate-y-0" : "pb-0 opacity-0 max-h-0 -translate-y-4 pointer-events-none"
+              )}>
+                <div className="pt-6 border-t border-border/40">
+                  <div className="text-foreground/90 leading-relaxed text-base">
+                    {typeof section.details === 'string' ? (
+                      <p className="italic text-muted-foreground/80 border-l-2 border-primary/40 pl-4 py-1">{section.details}</p>
+                    ) : (
+                      section.details
+                    )}
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+          <Card className="bg-slate-900 border-slate-800 text-white overflow-hidden group">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-blue-400" />
+                Security First
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                We take security seriously. All data is encrypted in transit using TLS 1.3 and at rest using AES-256. 
+              </p>
+              <Badge variant="outline" className="text-blue-400 border-blue-400/30">Compliance Ready</Badge>
+            </CardContent>
+          </Card>
+          <Card className="bg-emerald-950/20 border-emerald-500/20 group">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-400" />
+                High Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                Our SDKs are non-blocking and have a negligible footprint on your application's performance.
+              </p>
+              <Badge variant="outline" className="text-emerald-400 border-emerald-400/30">{'< 1ms latency'}</Badge>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="bg-primary text-primary-foreground border-none shadow-2xl overflow-hidden relative group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/20 transition-all duration-500" />
-          <CardHeader className="p-8 pb-4 relative z-10">
-            <CardTitle className="text-3xl font-bold">{t("docs.needHelp")}</CardTitle>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/10 transition-all duration-700" />
+          <CardHeader className="p-10 pb-4 relative z-10">
+            <CardTitle className="text-4xl font-black">{t("docs.needHelp")}</CardTitle>
           </CardHeader>
-          <CardContent className="p-8 pt-0 relative z-10">
-            <p className="mb-8 text-lg opacity-90 leading-relaxed max-w-2xl">
-              {t("docs.supportText")}
+          <CardContent className="p-10 pt-0 relative z-10">
+            <p className="mb-10 text-xl opacity-90 leading-relaxed max-w-2xl">
+              Our engineering team is standing by to help you with integration or custom requirements.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-3 bg-white text-primary rounded-full font-bold text-sm cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-lg hover:shadow-xl">
+              <Button size="lg" className="bg-white text-primary hover:bg-slate-100 rounded-xl px-10 h-12 font-bold shadow-xl">
                 {t("docs.contactSupport")}
-              </button>
-              <button className="px-8 py-3 border-2 border-white/30 rounded-full font-bold text-sm cursor-pointer hover:bg-white/10 active:scale-95 transition-all">
-                {t("docs.joinCommunity")}
-              </button>
+              </Button>
+              <Button size="lg" variant="outline" className="border-white/20 hover:bg-white/10 text-white rounded-xl px-10 h-12 font-bold backdrop-blur-sm">
+                Documentation PDF
+              </Button>
             </div>
           </CardContent>
         </Card>

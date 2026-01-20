@@ -148,6 +148,21 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES (
 
 Ensure you have a `.env` file in the root directory for any frontend secrets if needed, though most configuration is handled via Spring Boot properties for the backend.
 
+## Common Issues & Troubleshooting
+
+### Java Version Error (`UnsupportedClassVersionError`)
+If you see an error like `java.lang.UnsupportedClassVersionError: ... has been compiled by a more recent version of the Java Runtime (class file version 61.0)`, it means:
+- The project was compiled with **Java 17** (version 61).
+- Your local environment is running an older version (e.g., **Java 11**, which is version 55).
+
+**Solution**: Install **Java 17** or higher and ensure your `JAVA_HOME` points to it.
+
+### Script Path Errors
+If `start-dev.sh` fails with "No such file or directory" for `/home/runner/workspace`, ensure you are using the updated version of the script which uses relative paths. Run it from the project root:
+```bash
+npm run dev
+```
+
 ## Production Build
 
 1. **Frontend**: `npm run build` (outputs to `dist/`)

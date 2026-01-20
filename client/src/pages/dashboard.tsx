@@ -67,14 +67,16 @@ export default function Dashboard() {
                         <Activity className="w-3 h-3" /> 24h {t("dashboard.errors")}
                       </span>
                       <p className="text-2xl font-bold font-mono text-red-400">
-                        0
+                        {project.errorCount24h || 0}
                       </p>
                     </div>
                     <div className="space-y-1">
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Users className="w-3 h-3" /> Users
                       </span>
-                      <p className="text-2xl font-bold font-mono">0</p>
+                      <p className="text-2xl font-bold font-mono">
+                        {project.userCount24h || 0}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-6 flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">

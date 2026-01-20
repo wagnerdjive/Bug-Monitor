@@ -8,6 +8,8 @@ interface Project {
   platform: string | null;
   apiKey: string;
   createdAt: string;
+  errorCount24h?: number;
+  userCount24h?: number;
 }
 
 interface CreateProjectData {

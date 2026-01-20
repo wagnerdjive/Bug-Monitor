@@ -36,6 +36,18 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ErrorEvent> events;
     
+    @Transient
+    private Long errorCount24h;
+    
+    @Transient
+    private Long userCount24h;
+
+    public Long getErrorCount24h() { return errorCount24h; }
+    public void setErrorCount24h(Long errorCount24h) { this.errorCount24h = errorCount24h; }
+    
+    public Long getUserCount24h() { return userCount24h; }
+    public void setUserCount24h(Long userCount24h) { this.userCount24h = userCount24h; }
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -6,11 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface ErrorEventRepository extends JpaRepository<ErrorEvent, Integer> {
     List<ErrorEvent> findByProjectId(Integer projectId);
+    
+    long countByProjectIdAndCreatedAtAfter(Integer projectId, LocalDateTime since);
+    
+    @Query("SELECT COUNT(DISTINCT e.userName) FROM ErrorEvent e WHERE e.projectId = :projectId AND e.createdAt > :since AND e.userName IS NOT NULL")
+    long countDistinctUsersByProjectIdAndCreatedAtAfter(@Param("projectId") Integer projectId, @Param("since") LocalDateTime since);
     
     @Query("SELECT e FROM ErrorEvent e WHERE e.projectId = :projectId " +
            "AND (:status IS NULL OR e.status = :status) " +

@@ -2,23 +2,35 @@ package com.errortracker.service;
 
 import com.errortracker.entity.Project;
 import com.errortracker.repository.ProjectRepository;
+import com.errortracker.repository.ErrorEventRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final ErrorEventRepository errorEventRepository;
     private static final SecureRandom secureRandom = new SecureRandom();
     
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, ErrorEventRepository errorEventRepository) {
         this.projectRepository = projectRepository;
+        this.errorEventRepository = errorEventRepository;
     }
     
     public List<Project> getProjectsByUserId(Integer userId) {
-        return projectRepository.findByUserId(userId);
+        List<Project> projects = projectRepository.findByUserId(userId);
+        LocalDateTime since = LocalDateTime.now().minusHours(24);
+        
+        for (Project project : projects) {
+            project.setErrorCount24h(errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since));
+            project.setUserCount24h(errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since));
+        }
+        
+        return projects;
     }
     
     public Optional<Project> getProject(Integer id) {

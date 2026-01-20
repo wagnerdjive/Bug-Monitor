@@ -26,8 +26,11 @@ public class ProjectService {
         LocalDateTime since = LocalDateTime.now().minusHours(24);
         
         for (Project project : projects) {
-            project.setErrorCount24h(errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since));
-            project.setUserCount24h(errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since));
+            long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
+            long userCount = errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since);
+            
+            project.setErrorCount24h(errorCount);
+            project.setUserCount24h(userCount);
         }
         
         return projects;

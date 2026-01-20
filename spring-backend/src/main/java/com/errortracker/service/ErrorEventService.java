@@ -17,9 +17,10 @@ public class ErrorEventService {
         this.errorEventRepository = errorEventRepository;
     }
     
-    public List<ErrorEvent> getProjectEvents(Integer projectId, String status, String severity, String type) {
-        return errorEventRepository.findByProjectIdWithFilters(projectId, status, severity, type);
+    public List<ErrorEvent> getProjectEvents(Integer projectId, String status, String severity, String type, String search) {
+        return errorEventRepository.findByProjectIdWithFilters(projectId, status, severity, type, search);
     }
+
     
     public Optional<ErrorEvent> getEvent(Integer id) {
         return errorEventRepository.findById(id);
@@ -36,6 +37,9 @@ public class ErrorEventService {
         event.setTags(request.getTags());
         event.setBreadcrumbs(request.getBreadcrumbs());
         event.setOccurredAt(request.getOccurredAt());
+        event.setTraceId(request.getTraceId());
+        event.setUserName(request.getUserName());
+
         
         if (request.getSeverity() != null) {
             event.setSeverity(request.getSeverity());

@@ -15,6 +15,8 @@ export interface ErrorEvent {
   breadcrumbs: unknown[] | null;
   occurredAt: string;
   createdAt: string;
+  userName?: string;
+  traceId?: string;
 }
 
 interface UseProjectEventsOptions {
@@ -24,6 +26,7 @@ interface UseProjectEventsOptions {
   status?: string;
   severity?: string;
   type?: string;
+  search?: string;
 }
 
 export function useProjectEvents({ 
@@ -32,17 +35,19 @@ export function useProjectEvents({
   offset = 0,
   status,
   severity,
-  type
+  type,
+  search
 }: UseProjectEventsOptions) {
   return useQuery<ErrorEvent[]>({
-    queryKey: ["/api/projects", projectId, "events", { limit, offset, status, severity, type }],
+    queryKey: ["/api/projects", projectId, "events", { limit, offset, status, severity, type, search }],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (limit) params.set("limit", limit.toString());
       if (offset) params.set("offset", offset.toString());
-      if (status) params.set("status", status);
-      if (severity) params.set("severity", severity);
-      if (type) params.set("type", type);
+      if (status && status !== "all") params.set("status", status);
+      if (severity && severity !== "all") params.set("severity", severity);
+      if (type && type !== "all") params.set("type", type);
+      if (search) params.set("search", search);
 
       const res = await fetch(`/api/projects/${projectId}/events?${params.toString()}`, { 
         credentials: "include" 

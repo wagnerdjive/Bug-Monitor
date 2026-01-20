@@ -40,6 +40,7 @@ public class EventController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String severity,
             @RequestParam(required = false) String type,
+            @RequestParam(required = false) String search,
             HttpServletRequest request) {
         
         Integer userId = getUserId(request);
@@ -57,9 +58,10 @@ public class EventController {
                 .body(Map.of("message", "Unauthorized"));
         }
         
-        List<ErrorEvent> events = errorEventService.getProjectEvents(projectId, status, severity, type);
+        List<ErrorEvent> events = errorEventService.getProjectEvents(projectId, status, severity, type, search);
         return ResponseEntity.ok(events);
     }
+
     
     @GetMapping("/events/{id}")
     public ResponseEntity<?> getEvent(@PathVariable Integer id, HttpServletRequest request) {

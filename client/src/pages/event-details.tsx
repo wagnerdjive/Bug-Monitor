@@ -307,18 +307,30 @@ export default function EventDetails() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {event.deviceInfo && Object.keys(event.deviceInfo).length > 0 ? (
-                  <div className="space-y-2 text-sm">
-                    {Object.entries(event.deviceInfo).map(([k, v]) => (
+                <div className="space-y-2 text-sm">
+                  {event.userName && (
+                    <div className="flex justify-between gap-2 border-b border-border/50 pb-2">
+                      <span className="text-muted-foreground">User</span>
+                      <span className="font-mono text-right">{event.userName}</span>
+                    </div>
+                  )}
+                  {event.traceId && (
+                    <div className="flex justify-between gap-2 border-b border-border/50 pb-2">
+                      <span className="text-muted-foreground">Trace ID</span>
+                      <span className="font-mono text-right">{event.traceId}</span>
+                    </div>
+                  )}
+                  {event.deviceInfo && Object.keys(event.deviceInfo).length > 0 ? (
+                    Object.entries(event.deviceInfo).map(([k, v]) => (
                       <div key={k} className="flex justify-between gap-2 border-b border-border/50 pb-2 last:border-0 last:pb-0">
                         <span className="text-muted-foreground capitalize shrink-0">{k.replace(/_/g, ' ')}</span>
                         <span className="font-mono text-right truncate" title={String(v)}>{String(v)}</span>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <span className="text-muted-foreground text-sm italic">{t("event.noDeviceInfo")}</span>
-                )}
+                    ))
+                  ) : (
+                    !event.userName && !event.traceId && <span className="text-muted-foreground text-sm italic">{t("event.noDeviceInfo")}</span>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

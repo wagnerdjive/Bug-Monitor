@@ -60,8 +60,18 @@ public class ErrorEvent {
     @JoinColumn(name = "project_id", insertable = false, updatable = false)
     private Project project;
     
-    @PrePersist
-    protected void onCreate() {
+    @Column(name = "trace_id")
+    private String traceId;
+    
+    @Column(name = "user_name")
+    private String userName;
+
+    public String getTraceId() { return traceId; }
+    public void setTraceId(String traceId) { this.traceId = traceId; }
+    
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
         createdAt = LocalDateTime.now();
         if (occurredAt == null) {
             occurredAt = LocalDateTime.now();

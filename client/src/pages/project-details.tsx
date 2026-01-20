@@ -61,7 +61,14 @@ export default function ProjectDetails() {
   const searchString = useSearch();
   const projectId = Number(params?.id);
   const { data: project, isLoading: loadingProject } = useProject(projectId);
-  const { data: events, isLoading: loadingEvents } = useProjectEvents({ projectId });
+  const { data: events, isLoading: loadingEvents } = useProjectEvents({ 
+    projectId,
+    status: statusFilter,
+    severity: severityFilter,
+    type: typeFilter,
+    search: searchQuery
+  });
+
   const deleteProject = useDeleteProject();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -76,18 +83,7 @@ export default function ProjectDetails() {
   const [severityFilter, setSeverityFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
 
-  const filteredEvents = useMemo(() => {
-    if (!events) return [];
-    return events.filter(event => {
-      const matchesSearch = searchQuery === "" || 
-        event.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (event.stackTrace && event.stackTrace.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesStatus = statusFilter === "all" || event.status === statusFilter;
-      const matchesSeverity = severityFilter === "all" || event.severity === severityFilter;
-      const matchesType = typeFilter === "all" || event.type === typeFilter;
-      return matchesSearch && matchesStatus && matchesSeverity && matchesType;
-    });
-  }, [events, searchQuery, statusFilter, severityFilter, typeFilter]);
+  const filteredEvents = events || [];
 
   const events24h = useMemo(() => {
     if (!events) return [];
@@ -151,6 +147,8 @@ export default function ProjectDetails() {
         apiKey: project.apiKey,
         type: 'error',
         message: 'Simulated UI Error: User profile failed to load',
+        userName: 'john_doe',
+        traceId: 'tr-88291-abc',
         stackTrace: 'Error: Failed to load user data\n    at UserProfile.fetchData (UserProfile.tsx:42:15)\n    at async loadUser (api.ts:128:5)\n    at async App.componentDidMount (App.tsx:23:7)',
         deviceInfo: { model: 'Chrome Browser', os: 'Web Demo' },
         platformInfo: { version: '1.0.0', environment: 'development' },

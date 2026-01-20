@@ -23,7 +23,15 @@ public class IngestRequest {
     private String severity;
     private String status;
 
-    public String getApiKey() { return apiKey; }
+    private String traceId;
+    private String userName;
+
+    public String getTraceId() { return traceId; }
+    public void setTraceId(String traceId) { this.traceId = traceId; }
+    
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
     public void setApiKey(String apiKey) { this.apiKey = apiKey; }
     
     public String getType() { return type; }

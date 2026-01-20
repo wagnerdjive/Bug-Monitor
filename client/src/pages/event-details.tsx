@@ -1,40 +1,64 @@
 import { useRoute } from "wouter";
-import { useEvent } from "@/hooks/use-events";
+import { useEvent, useUpdateEventStatus } from "@/hooks/use-events";
 import { Layout } from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   ArrowLeft, 
   Clock, 
   Monitor, 
   Tag, 
-  Share2, 
   Activity, 
   AlertTriangle,
   AlertCircle,
   Info,
   CheckCircle2,
   Copy,
-  Check
+  Check,
+  XCircle,
+  RotateCcw
 } from "lucide-react";
 import { Link } from "wouter";
 import { format, formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export default function EventDetails() {
   const [, params] = useRoute("/events/:id");
   const id = Number(params?.id);
   const { data: event, isLoading, error } = useEvent(id);
+  const updateStatus = useUpdateEventStatus();
+  const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    updateStatus.mutate(
+      { id, status: newStatus },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Status Updated",
+            description: `Event marked as ${newStatus}`,
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Error",
+            description: "Failed to update status",
+            variant: "destructive",
+          });
+        },
+      }
+    );
   };
 
   if (isLoading) {
@@ -134,10 +158,10 @@ export default function EventDetails() {
   return (
     <Layout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <Link href={`/projects/${event.projectId}`}>
-          <Button variant="ghost" className="gap-2 pl-0 hover:pl-2 transition-all text-muted-foreground" data-testid="button-back-project">
+        <Link href={`/projects/${event.projectId}?tab=issues`}>
+          <Button variant="ghost" className="gap-2 pl-0 hover:pl-2 transition-all text-muted-foreground" data-testid="button-back-issues">
             <ArrowLeft className="w-4 h-4" />
-            Back to Project
+            Back to Issues
           </Button>
         </Link>
 
@@ -172,9 +196,44 @@ export default function EventDetails() {
                 </span>
               </div>
             </div>
-            <Button variant="outline" className="gap-2 shrink-0" data-testid="button-share">
-              <Share2 className="w-4 h-4" /> Share
-            </Button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {event.status !== "resolved" && (
+                <Button 
+                  variant="default" 
+                  className="gap-2 bg-green-600 hover:bg-green-700"
+                  onClick={() => handleStatusChange("resolved")}
+                  disabled={updateStatus.isPending}
+                  data-testid="button-resolve"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  Mark Resolved
+                </Button>
+              )}
+              {event.status === "resolved" && (
+                <Button 
+                  variant="outline" 
+                  className="gap-2"
+                  onClick={() => handleStatusChange("unresolved")}
+                  disabled={updateStatus.isPending}
+                  data-testid="button-reopen"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  Reopen
+                </Button>
+              )}
+              {event.status !== "ignored" && (
+                <Button 
+                  variant="ghost" 
+                  className="gap-2"
+                  onClick={() => handleStatusChange("ignored")}
+                  disabled={updateStatus.isPending}
+                  data-testid="button-ignore"
+                >
+                  <XCircle className="w-4 h-4" />
+                  Ignore
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

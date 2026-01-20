@@ -1,4 +1,4 @@
-import { useRoute } from "wouter";
+import { useRoute, useSearch } from "wouter";
 import { useProject, useDeleteProject } from "@/hooks/use-projects";
 import { useProjectEvents, ErrorEvent } from "@/hooks/use-events";
 import { Layout } from "@/components/layout";
@@ -52,17 +52,22 @@ import {
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export default function ProjectDetails() {
   const [, params] = useRoute("/projects/:id");
+  const searchString = useSearch();
   const projectId = Number(params?.id);
   const { data: project, isLoading: loadingProject } = useProject(projectId);
   const { data: events, isLoading: loadingEvents } = useProjectEvents({ projectId });
   const deleteProject = useDeleteProject();
   const { toast } = useToast();
   const [isSimulating, setIsSimulating] = useState(false);
+  
+  const urlParams = new URLSearchParams(searchString);
+  const initialTab = urlParams.get("tab") || "overview";
+  const [activeTab, setActiveTab] = useState(initialTab);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -249,7 +254,7 @@ export default function ProjectDetails() {
           </div>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="w-full md:w-auto grid grid-cols-3 md:inline-flex">
             <TabsTrigger value="overview" className="gap-2" data-testid="tab-overview">
               <Activity className="w-4 h-4 hidden sm:inline" /> Overview

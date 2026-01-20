@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export interface ErrorEvent {
   id: number;
@@ -63,5 +64,18 @@ export function useEvent(id: number) {
       return res.json();
     },
     enabled: !!id,
+  });
+}
+
+export function useUpdateEventStatus() {
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const res = await apiRequest("PATCH", `/api/events/${id}`, { status });
+      return res.json();
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/events", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+    },
   });
 }

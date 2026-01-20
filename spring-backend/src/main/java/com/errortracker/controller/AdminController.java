@@ -96,11 +96,19 @@ public class AdminController {
         return ResponseEntity.ok(invitations);
     }
     
+    private static final List<String> VALID_ROLES = List.of("VIEWER", "CONTRIBUTOR", "ADMIN");
+    
     @PostMapping("/projects/assign")
     public ResponseEntity<?> assignUserToProject(@RequestBody AssignProjectRequest request, HttpSession session) {
         if (!isAdmin(session)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(Map.of("error", "Admin access required"));
+        }
+        
+        String role = request.getRole() != null ? request.getRole().toUpperCase() : "VIEWER";
+        if (!VALID_ROLES.contains(role)) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Invalid role. Must be one of: " + String.join(", ", VALID_ROLES)));
         }
         
         Optional<User> user = userService.findById(request.getUserId());
@@ -118,7 +126,7 @@ public class AdminController {
         ProjectUser pu = projectUserService.assignUserToProject(
             request.getProjectId(), 
             request.getUserId(), 
-            request.getRole()
+            role
         );
         
         return ResponseEntity.ok(Map.of(

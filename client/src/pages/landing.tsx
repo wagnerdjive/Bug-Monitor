@@ -1,57 +1,12 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, CheckCircle2, Zap, Lock, Globe } from "lucide-react";
-import { useState, useEffect } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ShieldCheck, CheckCircle2, Zap, Lock } from "lucide-react";
+import { LanguageSelector } from "@/components/language-selector";
+import { useTranslation } from "@/i18n";
 import logoPng from "@assets/IMG_5782_1768827594715.PNG";
 
-const landingTranslations = {
-  en: {
-    login: "Log In",
-    getStarted: "Get Started",
-    beta: "",
-    heroTitle: "Stop guessing why your app broke.",
-    heroSubtitle:
-      "Real-time error tracking for developers who care about quality.",
-    cta: "Start Monitoring for Free",
-    docs: "View Documentation",
-    featuresTitle: "Everything you need to debug faster",
-    featuresSubtitle: "Built for modern engineering teams.",
-    footer: "© 2024 TechMonitor. All rights reserved. Powered by TechTarget.",
-    lang: "Language",
-  },
-  pt: {
-    login: "Entrar",
-    getStarted: "Começar Agora",
-    beta: "",
-    heroTitle: "Pare de adivinhar por que seu app quebrou.",
-    heroSubtitle:
-      "Monitoramento de erros em tempo real para desenvolvedores que se preocupam com qualidade.",
-    cta: "Começar Monitoramento Grátis",
-    docs: "Ver Documentação",
-    featuresTitle: "Tudo o que você precisa para depurar mais rápido",
-    featuresSubtitle: "Feito para equipes de engenharia modernas.",
-    footer:
-      "© 2024 TechMonitor. Todos os direitos reservados. Desenvolvido por TechTarget.",
-    lang: "Idioma",
-  },
-};
-
 export default function Landing() {
-  const [lang, setLang] = useState<"en" | "pt">(() => {
-    return (localStorage.getItem("lang") as "en" | "pt") || "en";
-  });
-
-  useEffect(() => {
-    localStorage.setItem("lang", lang);
-  }, [lang]);
-
-  const t = landingTranslations[lang];
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -62,26 +17,26 @@ export default function Landing() {
             <span>TechMonitor</span>
           </div>
           <div className="flex items-center gap-4">
+            <LanguageSelector />
             <Button variant="ghost" asChild>
-              <Link href="/auth">{t.login}</Link>
+              <Link href="/auth">{t("nav.logIn")}</Link>
             </Button>
             <Button asChild className="bg-primary hover:bg-primary/90">
-              <Link href="/auth">{t.getStarted}</Link>
+              <Link href="/auth">{t("nav.getStarted")}</Link>
             </Button>
           </div>
         </div>
       </nav>
 
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="relative pt-20 pb-32 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-50" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <h1 className="text-5xl md:text-7xl font-bold font-display tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-              {t.heroTitle}
+              {t("landing.title")}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-              {t.heroSubtitle}
+              {t("landing.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
               <Button
@@ -89,7 +44,7 @@ export default function Landing() {
                 className="h-12 px-8 text-lg rounded-full"
                 asChild
               >
-                <Link href="/auth">{t.cta}</Link>
+                <Link href="/auth">{t("landing.startMonitoring")}</Link>
               </Button>
               <Button
                 size="lg"
@@ -97,13 +52,12 @@ export default function Landing() {
                 className="h-12 px-8 text-lg rounded-full border-border/50 hover:bg-zinc-50"
                 asChild
               >
-                <a href="#features">{t.docs}</a>
+                <a href="#features">{t("landing.viewDocs")}</a>
               </Button>
             </div>
           </div>
         </section>
 
-        {/* Features Grid */}
         <section
           id="features"
           className="py-24 bg-muted/30 border-t border-border/50"
@@ -111,41 +65,27 @@ export default function Landing() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold font-display mb-4">
-                {t.featuresTitle}
+                {t("landing.featuresTitle")}
               </h2>
-              <p className="text-muted-foreground">{t.featuresSubtitle}</p>
+              <p className="text-muted-foreground">{t("landing.featuresSubtitle")}</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
                   icon: Zap,
-                  title:
-                    lang === "en"
-                      ? "Real-time Alerts"
-                      : "Alertas em Tempo Real",
-                  desc:
-                    lang === "en"
-                      ? "Get notified immediately when exceptions occur."
-                      : "Seja notificado imediatamente quando ocorrerem exceções.",
+                  titleKey: "landing.feature1Title",
+                  descKey: "landing.feature1Desc",
                 },
                 {
                   icon: Lock,
-                  title:
-                    lang === "en" ? "Secure by Default" : "Seguro por Padrão",
-                  desc:
-                    lang === "en"
-                      ? "Enterprise-grade security and data encryption."
-                      : "Segurança de nível empresarial e criptografia de dados.",
+                  titleKey: "landing.feature2Title",
+                  descKey: "landing.feature2Desc",
                 },
                 {
                   icon: CheckCircle2,
-                  title:
-                    lang === "en" ? "Easy Integration" : "Fácil Integração",
-                  desc:
-                    lang === "en"
-                      ? "Drop-in SDKs. Get started in minutes."
-                      : "SDKs prontos para uso. Comece em minutos.",
+                  titleKey: "landing.feature3Title",
+                  descKey: "landing.feature3Desc",
                 },
               ].map((feature, i) => (
                 <div
@@ -155,11 +95,23 @@ export default function Landing() {
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.desc}</p>
+                  <h3 className="text-xl font-bold mb-2">{t(feature.titleKey)}</h3>
+                  <p className="text-muted-foreground">{t(feature.descKey)}</p>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="py-24 border-t border-border/50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl font-bold font-display mb-4">
+              {t("landing.ctaTitle")}
+            </h2>
+            <p className="text-muted-foreground mb-8">{t("landing.ctaSubtitle")}</p>
+            <Button size="lg" className="h-12 px-8 text-lg rounded-full" asChild>
+              <Link href="/auth">{t("landing.getStarted")}</Link>
+            </Button>
           </div>
         </section>
       </main>
@@ -173,26 +125,9 @@ export default function Landing() {
               className="h-32 object-contain"
             />
           </div>
-
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Globe className="w-4 h-4" />
-                  {t.lang}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLang("en")}>
-                  English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLang("pt")}>
-                  Português
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <p className="text-sm text-muted-foreground">{t.footer}</p>
-          </div>
+          <p className="text-sm text-muted-foreground text-center">
+            POWERED BY TECHTARGET
+          </p>
         </div>
       </footer>
     </div>

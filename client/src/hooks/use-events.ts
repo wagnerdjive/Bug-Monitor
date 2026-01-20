@@ -1,5 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { api, buildUrl } from "@shared/routes";
+
+interface ErrorEvent {
+  id: number;
+  projectId: number;
+  message: string;
+  stackTrace: string | null;
+  level: string;
+  environment: string | null;
+  release: string | null;
+  userAgent: string | null;
+  url: string | null;
+  tags: Record<string, string> | null;
+  extra: Record<string, unknown> | null;
+  breadcrumbs: unknown[] | null;
+  fingerprint: string | null;
+  occurredAt: string;
+}
 
 interface UseProjectEventsOptions {
   projectId: number;
@@ -8,31 +24,31 @@ interface UseProjectEventsOptions {
 }
 
 export function useProjectEvents({ projectId, limit = 50, offset = 0 }: UseProjectEventsOptions) {
-  return useQuery({
-    queryKey: [api.events.list.path, projectId, limit, offset],
+  return useQuery<ErrorEvent[]>({
+    queryKey: ["/api/projects", projectId, "events", limit, offset],
     queryFn: async () => {
-      const url = buildUrl(api.events.list.path, { projectId });
       const params = new URLSearchParams();
       if (limit) params.set("limit", limit.toString());
       if (offset) params.set("offset", offset.toString());
 
-      const res = await fetch(`${url}?${params.toString()}`, { credentials: "include" });
+      const res = await fetch(`/api/projects/${projectId}/events?${params.toString()}`, { 
+        credentials: "include" 
+      });
       if (!res.ok) throw new Error("Failed to fetch events");
-      return api.events.list.responses[200].parse(await res.json());
+      return res.json();
     },
     enabled: !!projectId,
-    refetchInterval: 5000, // Poll every 5s for new errors
+    refetchInterval: 5000,
   });
 }
 
 export function useEvent(id: number) {
-  return useQuery({
-    queryKey: [api.events.get.path, id],
+  return useQuery<ErrorEvent>({
+    queryKey: ["/api/events", id],
     queryFn: async () => {
-      const url = buildUrl(api.events.get.path, { id });
-      const res = await fetch(url, { credentials: "include" });
+      const res = await fetch(`/api/events/${id}`, { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch event details");
-      return api.events.get.responses[200].parse(await res.json());
+      return res.json();
     },
     enabled: !!id,
   });

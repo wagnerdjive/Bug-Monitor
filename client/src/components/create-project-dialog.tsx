@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertProjectSchema, type InsertProject } from "@shared/schema";
+import { z } from "zod";
 import { useCreateProject } from "@/hooks/use-projects";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +38,13 @@ const PLATFORMS = [
   { value: "ios", label: "iOS (Swift)" },
   { value: "android", label: "Android" },
 ];
+
+const insertProjectSchema = z.object({
+  name: z.string().min(1, "Project name is required"),
+  platform: z.string().optional(),
+});
+
+type InsertProject = z.infer<typeof insertProjectSchema>;
 
 export function CreateProjectDialog() {
   const [open, setOpen] = useState(false);

@@ -1,13 +1,21 @@
-import { Project } from "@shared/schema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+interface Project {
+  id: number;
+  userId: number;
+  name: string;
+  platform: string | null;
+  apiKey: string;
+  createdAt: string;
+}
+
 interface SdkInstructionsProps {
   project: Project;
-  lang?: "en" | "pt"; // Opcional, com fallback para "en"
+  lang?: "en" | "pt";
 }
 
 export function SdkInstructions({
@@ -22,10 +30,8 @@ export function SdkInstructions({
     setTimeout(() => setCopiedTab(null), 1800);
   };
 
-  // Proteção: fallback seguro para inglês
   const safeLang = lang === "pt" ? "pt" : "en";
 
-  // Traduções completas
   const t = {
     en: {
       title: "SDK Integration Instructions",
@@ -46,13 +52,13 @@ export function SdkInstructions({
       },
       details: {
         androidKotlin: [
-          "BACKEND_BASE_URL read from .env/local.properties → easy environment switch",
+          "BACKEND_BASE_URL read from .env/local.properties for easy environment switch",
           "Automatic crash capture via UncaughtExceptionHandler",
           "Offline support: persistent queue in SharedPreferences (max 100 items)",
           "Automatic retry: BroadcastReceiver detects internet",
         ],
         androidJava: [
-          "Same variable as Kotlin – defined in .env/local.properties",
+          "Same variable as Kotlin - defined in .env/local.properties",
           "Automatic capture and offline support identical to Kotlin",
         ],
         iosSwift: [
@@ -75,12 +81,12 @@ export function SdkInstructions({
       },
     },
     pt: {
-      title: "Instruções de Integração do SDK",
+      title: "Instrucoes de Integracao do SDK",
       apiKeyLabel: "Chave API",
       tipTitle: "Dica Importante",
       tipText:
-        "Defina <code>BACKEND_BASE_URL</code> no seu arquivo <code>.env</code> (ou equivalente: <code>local.properties</code> no Android, <code>Info.plist</code> no iOS, etc.). Assim você muda o servidor (localhost, staging, produção) alterando apenas o .env, sem tocar no código.",
-      featuresTitle: "Principais Características",
+        "Defina <code>BACKEND_BASE_URL</code> no seu arquivo <code>.env</code> (ou equivalente: <code>local.properties</code> no Android, <code>Info.plist</code> no iOS, etc.). Assim voce muda o servidor (localhost, staging, producao) alterando apenas o .env, sem tocar no codigo.",
+      featuresTitle: "Principais Caracteristicas",
       copy: "Copiar",
       copied: "Copiado",
       tabs: {
@@ -93,18 +99,18 @@ export function SdkInstructions({
       },
       details: {
         androidKotlin: [
-          "BACKEND_BASE_URL lido do .env/local.properties → troca fácil por ambiente",
-          "Captura automática de crashes via UncaughtExceptionHandler",
-          "Suporte offline: queue persistente em SharedPreferences (máx 100 itens)",
-          "Retry automático: BroadcastReceiver detecta internet",
+          "BACKEND_BASE_URL lido do .env/local.properties para troca facil por ambiente",
+          "Captura automatica de crashes via UncaughtExceptionHandler",
+          "Suporte offline: queue persistente em SharedPreferences (max 100 itens)",
+          "Retry automatico: BroadcastReceiver detecta internet",
         ],
         androidJava: [
-          "Mesma variável do Kotlin – definida no .env/local.properties",
-          "Captura automática e suporte offline iguais ao Kotlin",
+          "Mesma variavel do Kotlin - definida no .env/local.properties",
+          "Captura automatica e suporte offline iguais ao Kotlin",
         ],
         iosSwift: [
           "BACKEND_BASE_URL lido do Info.plist / .xcconfig",
-          "Captura automática: NSUncaughtExceptionHandler + signals",
+          "Captura automatica: NSUncaughtExceptionHandler + signals",
         ],
         python: [
           "BACKEND_BASE_URL lido exclusivamente do .env",
@@ -115,9 +121,9 @@ export function SdkInstructions({
           "Use prefixo VITE_ no Vite/React",
         ],
         javaBackend: [
-          "BACKEND_BASE_URL lido do .env ou variáveis de ambiente reais",
-          "Lance exceção se não estiver definido",
-          "Seguro e flexível para dev/staging/prod",
+          "BACKEND_BASE_URL lido do .env ou variaveis de ambiente reais",
+          "Lance excecao se nao estiver definido",
+          "Seguro e flexivel para dev/staging/prod",
         ],
       },
     },
@@ -127,11 +133,11 @@ export function SdkInstructions({
     {
       value: "android-kotlin",
       label: t.tabs.androidKotlin,
-      code: `// 1. Defina no local.properties (raiz do projeto Android)
-// backend.base.url=https://seuservidor.com
-// OU use .env e leia via Gradle plugin
+      code: `// 1. Define in local.properties (Android project root)
+// backend.base.url=https://yourserver.com
+// OR use .env and read via Gradle plugin
 
-// 2. No build.gradle.kts (module app)
+// 2. In build.gradle.kts (module app)
 android {
     defaultConfig {
         buildConfigField("String", "BACKEND_BASE_URL", 
@@ -139,7 +145,7 @@ android {
     }
 }
 
-// 3. Inicialização (MyApplication.kt)
+// 3. Initialization (MyApplication.kt)
 import android.app.Application
 import com.bugmonitor.sdk.BugMonitor
 
@@ -149,22 +155,22 @@ class MyApplication : Application() {
         BugMonitor.init(
             context = this,
             apiKey = "${project.apiKey}",
-            baseUrl = BuildConfig.BACKEND_BASE_URL   // ← valor vem do .env / local.properties
+            baseUrl = BuildConfig.BACKEND_BASE_URL
         )
     }
 }
 
-// Registre no manifest: android:name=".MyApplication"`,
+// Register in manifest: android:name=".MyApplication"`,
       details: t.details.androidKotlin,
     },
     {
       value: "android-java",
       label: t.tabs.androidJava,
-      code: `// Mesma configuração no build.gradle
+      code: `// Same configuration in build.gradle
 buildConfigField "String", "BACKEND_BASE_URL", 
     "\"\${project.property(\\"backend.base.url\\")}\""
 
-// Inicialização (MyApplication.java)
+// Initialization (MyApplication.java)
 import android.app.Application;
 import com.bugmonitor.sdk.BugMonitor;
 
@@ -180,13 +186,13 @@ public class MyApplication extends Application {
     {
       value: "ios-swift",
       label: t.tabs.iosSwift,
-      code: `// Defina no Info.plist (equivalente ao .env no iOS)
+      code: `// Define in Info.plist (equivalent to .env on iOS)
 // <key>BACKEND_BASE_URL</key>
-// <string>https://seuservidor.com</string>
+// <string>https://yourserver.com</string>
 
-// No código:
+// In code:
 let baseUrl = Bundle.main.object(forInfoDictionaryKey: "BACKEND_BASE_URL") 
-    as? String ?? "https://seuservidor.com"  // fallback
+    as? String ?? "https://yourserver.com"  // fallback
 
 BugMonitor.initialize(
     apiKey: "${project.apiKey}",
@@ -200,48 +206,48 @@ BugMonitor.initialize(
       code: `import os
 from dotenv import load_dotenv
 
-# Carrega .env automaticamente (pip install python-dotenv)
+# Load .env automatically (pip install python-dotenv)
 load_dotenv()
 
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL")
 if not BACKEND_BASE_URL:
-    raise ValueError("BACKEND_BASE_URL não definido no .env")
+    raise ValueError("BACKEND_BASE_URL not defined in .env")
 
-print("Servidor:", BACKEND_BASE_URL)
+print("Server:", BACKEND_BASE_URL)
 
-// Uso
+# Usage
 requests.post(f"{BACKEND_BASE_URL}/api/ingest", json=event)`,
       details: t.details.python,
     },
     {
       value: "typescript",
       label: t.tabs.typescript,
-      code: `// .env na raiz
-// VITE_BACKEND_BASE_URL=https://seuservidor.com   (Vite/React)
-// BACKEND_BASE_URL=https://seuservidor.com         (Node)
+      code: `// .env in root
+// VITE_BACKEND_BASE_URL=https://yourserver.com   (Vite/React)
+// BACKEND_BASE_URL=https://yourserver.com         (Node)
 
 const BACKEND_BASE_URL = 
   import.meta.env.VITE_BACKEND_BASE_URL || 
   process.env.BACKEND_BASE_URL;
 
 if (!BACKEND_BASE_URL) {
-  throw new Error("BACKEND_BASE_URL não definido no .env");
+  throw new Error("BACKEND_BASE_URL not defined in .env");
 }
 
 console.log("Backend:", BACKEND_BASE_URL);
 
-// Uso
+// Usage
 fetch(\`\${BACKEND_BASE_URL}/api/ingest\`, { ... })`,
       details: t.details.typescript,
     },
     {
       value: "java-backend",
       label: t.tabs.javaBackend,
-      code: `// .env na raiz
-BACKEND_BASE_URL=https://seuservidor.com
+      code: `// .env in root
+BACKEND_BASE_URL=https://yourserver.com
 BUGMONITOR_API_KEY=${project.apiKey}
 
-// Carregamento com java-dotenv
+// Loading with java-dotenv
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class Config {
@@ -252,7 +258,7 @@ public class Config {
     }
 }
 
-// Uso
+// Usage
 String baseUrl = Config.getBaseUrl();`,
       details: t.details.javaBackend,
     },
@@ -260,7 +266,6 @@ String baseUrl = Config.getBaseUrl();`,
 
   return (
     <div className="space-y-8 bg-gradient-to-b from-zinc-950 to-white rounded-2xl p-6 border border-zinc-800/50 shadow-2xl">
-      {/* Cabeçalho premium */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-zinc-800/60">
         <h3 className="text-2xl font-bold tracking-tight text-white">
           {t.title}

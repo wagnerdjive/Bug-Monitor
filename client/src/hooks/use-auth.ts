@@ -1,6 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { User } from "@shared/models/auth";
 import { apiRequest } from "@/lib/queryClient";
+
+export interface User {
+  id: number;
+  username: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  profileImageUrl: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
 
 async function fetchUser(): Promise<User | null> {
   const response = await fetch("/api/auth/user");

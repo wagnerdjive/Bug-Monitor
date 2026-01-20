@@ -1,29 +1,40 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, buildUrl } from "@shared/routes";
 import { useToast } from "@/hooks/use-toast";
-import type { InsertProject } from "@shared/schema";
+
+interface Project {
+  id: number;
+  userId: number;
+  name: string;
+  platform: string | null;
+  apiKey: string;
+  createdAt: string;
+}
+
+interface CreateProjectData {
+  name: string;
+  platform?: string;
+}
 
 export function useProjects() {
-  return useQuery({
-    queryKey: [api.projects.list.path],
+  return useQuery<Project[] | null>({
+    queryKey: ["/api/projects"],
     queryFn: async () => {
-      const res = await fetch(api.projects.list.path, { credentials: "include" });
-      if (res.status === 401) return null; // Handle unauthorized in UI
+      const res = await fetch("/api/projects", { credentials: "include" });
+      if (res.status === 401) return null;
       if (!res.ok) throw new Error("Failed to fetch projects");
-      return api.projects.list.responses[200].parse(await res.json());
+      return res.json();
     },
   });
 }
 
 export function useProject(id: number) {
-  return useQuery({
-    queryKey: [api.projects.get.path, id],
+  return useQuery<Project | null>({
+    queryKey: ["/api/projects", id],
     queryFn: async () => {
-      const url = buildUrl(api.projects.get.path, { id });
-      const res = await fetch(url, { credentials: "include" });
+      const res = await fetch(`/api/projects/${id}`, { credentials: "include" });
       if (res.status === 404) return null;
       if (!res.ok) throw new Error("Failed to fetch project");
-      return api.projects.get.responses[200].parse(await res.json());
+      return res.json();
     },
     enabled: !!id,
   });
@@ -34,12 +45,11 @@ export function useCreateProject() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (data: InsertProject) => {
-      const validated = api.projects.create.input.parse(data);
-      const res = await fetch(api.projects.create.path, {
-        method: api.projects.create.method,
+    mutationFn: async (data: CreateProjectData) => {
+      const res = await fetch("/api/projects", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(validated),
+        body: JSON.stringify(data),
         credentials: "include",
       });
 
@@ -47,10 +57,10 @@ export function useCreateProject() {
         const error = await res.json();
         throw new Error(error.message || "Failed to create project");
       }
-      return api.projects.create.responses[201].parse(await res.json());
+      return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.projects.list.path] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       toast({
         title: "Project Created",
         description: "You can now integrate the SDK with your new project.",
@@ -72,16 +82,15 @@ export function useDeleteProject() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const url = buildUrl(api.projects.delete.path, { id });
-      const res = await fetch(url, { 
-        method: api.projects.delete.method,
+      const res = await fetch(`/api/projects/${id}`, { 
+        method: "DELETE",
         credentials: "include" 
       });
       
       if (!res.ok) throw new Error("Failed to delete project");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.projects.list.path] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       toast({
         title: "Project Deleted",
         description: "The project and all its events have been removed.",

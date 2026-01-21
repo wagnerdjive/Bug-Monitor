@@ -1,0 +1,49 @@
+[info]Build started
+[info]Cloning repository https://github.com/wagnerdjive/Bug-Monitor.git
+[info]Repository cloned successfully
+[info]Building Docker image
+[info]Detected: node (nextjs)
+[info]Using base image: node:24-alpine
+[info]Pulling base image...
+[info]Base image pulled successfully
+[info]Creating application layer...
+[info]Pushing image → xindiri/techmonitor-b5kphun:2bb3892
+[info]Image built and pushed successfully
+[info]Docker image built and pushed: xindiri/techmonitor-b5kphun:2bb3892
+[info]Deploying to wolke
+[info]Build process finished successfully
+[info]
+[info]added 337 packages, and audited 338 packages in 1m
+[info]
+[info]51 packages are looking for funding
+[info]run `npm fund` for details
+[info]
+[info]found 0 vulnerabilities
+[info]npm notice
+[info]npm notice New minor version of npm available! 11.6.2 -> 11.7.0
+[info]npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
+[info]npm notice To update run: npm install -g npm@11.7.0
+[info]npm notice
+[info]
+[info]> techmonitor@1.0.0 build
+[info]> node --max-old-space-size=1024 ./node_modules/.bin/vite build
+[info]
+[info]vite v7.3.0 building client environment for production...
+[info]transforming...
+[info]✓ 2669 modules transformed.
+[info]rendering chunks...
+[info]computing gzip size...
+[info]../spring-backend/src/main/resources/static/index.html 2.09 kB │ gzip: 0.80 kB
+[info]../spring-backend/src/main/resources/static/assets/IMG_5782_1768827594715-TX7RFKML.PNG 24.34 kB
+[info]../spring-backend/src/main/resources/static/assets/index-BRXtvV1e.css 81.62 kB │ gzip: 13.09 kB
+[info]../spring-backend/src/main/resources/static/assets/index-DT4-VnGN.js 153.81 kB │ gzip: 38.73 kB
+[info]✓ built in 1m 14s
+[info]npm error Missing script: "start"
+[info]npm error
+[info]npm error Did you mean one of these?
+[info]npm error npm star # Mark your favorite packages
+[info]npm error npm stars # View packages marked as favorites
+[info]npm error
+[info]npm error To see a list of scripts, run:
+[info]npm error npm run
+[info]npm error A complete log of this run can be found in: /root/.npm/_logs/2026-01-21T20_02_30_750Z-debug-0.log

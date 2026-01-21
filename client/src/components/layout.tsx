@@ -42,7 +42,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
               <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground hover:opacity-80 transition-opacity cursor-pointer">
                 <div className="relative flex items-center justify-center">
                   <Shield className="w-6 h-6 text-primary" />
-                  <Target className="w-3 h-3 text-primary absolute" />
+                  <Target className="w-2.5 h-2.5 text-primary absolute" />
                 </div>
                 <span>TechMonitor</span>
               </div>
@@ -85,7 +85,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
         <div className="flex items-center gap-2 font-display font-bold text-xl text-primary">
           <div className="relative flex items-center justify-center">
             <Shield className="w-6 h-6" />
-            <Target className="w-3 h-3 absolute" />
+            <Target className="w-2.5 h-2.5 absolute" />
           </div>
           <span>TechMonitor</span>
         </div>
@@ -102,7 +102,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
                 <SheetTitle className="flex items-center gap-2 font-display text-primary">
                   <div className="relative flex items-center justify-center">
                     <Shield className="w-6 h-6" />
-                    <Target className="w-3 h-3 absolute" />
+                    <Target className="w-2.5 h-2.5 absolute" />
                   </div>
                   TechMonitor
                 </SheetTitle>
@@ -143,7 +143,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
               <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground hover:opacity-80 transition-opacity cursor-pointer">
                 <div className="relative flex items-center justify-center">
                   <Shield className="w-6 h-6 text-primary" />
-                  <Target className="w-3 h-3 text-primary absolute" />
+                  <Target className="w-2.5 h-2.5 text-primary absolute" />
                 </div>
                 <span>TechMonitor</span>
               </div>

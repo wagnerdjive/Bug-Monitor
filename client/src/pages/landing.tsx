@@ -15,7 +15,7 @@ export default function Landing() {
           <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground">
             <div className="relative flex items-center justify-center">
               <Shield className="w-6 h-6 text-primary" />
-              <Target className="w-3 h-3 text-primary absolute" />
+              <Target className="w-2.5 h-2.5 text-primary absolute" />
             </div>
             <span>TechMonitor</span>
           </div>

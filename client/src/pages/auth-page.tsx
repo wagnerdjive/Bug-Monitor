@@ -97,7 +97,7 @@ export default function AuthPage() {
       <div className="flex items-center gap-2 font-display font-bold text-2xl text-foreground mb-8">
         <div className="relative flex items-center justify-center">
           <Shield className="w-8 h-8 text-primary" />
-          <Target className="w-4 h-4 text-primary absolute" />
+          <Target className="w-3.5 h-3.5 text-primary absolute" />
         </div>
         <span>TechMonitor</span>
       </div>

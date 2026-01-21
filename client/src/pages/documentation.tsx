@@ -121,7 +121,7 @@ async def global_exception_handler(request, exc):
               <h4 className="font-bold flex items-center gap-2 mb-2">
                 <div className="relative flex items-center justify-center">
                   <Shield className="w-4 h-4 text-primary" />
-                  <Target className="w-2 h-2 text-primary absolute" />
+                  <Target className="w-1.5 h-1.5 text-primary absolute" />
                 </div>
                 {t("docs.securityAuth")}
               </h4>
@@ -271,7 +271,7 @@ async def global_exception_handler(request, exc):
               <CardTitle className="flex items-center gap-2">
                 <div className="relative flex items-center justify-center">
                   <Shield className="w-5 h-5 text-blue-400" />
-                  <Target className="w-2.5 h-2.5 text-blue-400 absolute" />
+                  <Target className="w-2 h-2 text-blue-400 absolute" />
                 </div>
                 {t("docs.securityTitle")}
               </CardTitle>

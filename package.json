@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "./start-dev.sh",
     "vite:dev": "vite --host 0.0.0.0 --port 5000",
-    "build": "node --max-old-space-size=1024 ./node_modules/.bin/vite build && cd spring-backend && mvn clean package -DskipTests",
+    "build": "npm run build:frontend",
+    "build:frontend": "node --max-old-space-size=1024 ./node_modules/.bin/vite build",
     "start": "java -jar spring-backend/target/*.jar",
     "check": "tsc"
   },

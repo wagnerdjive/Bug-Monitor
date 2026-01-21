@@ -26,33 +26,27 @@ public class EmailService {
     }
     
     public void sendInvitationEmail(String toEmail, String inviteToken, String invitedByUsername) {
-        // Log para console padrão para garantir visibilidade imediata
-        System.out.println(">>> [EMAIL DEBUG] INICIANDO ENVIO PARA: " + toEmail);
-        System.out.println(">>> [EMAIL DEBUG] STATUS: emailEnabled=" + emailEnabled + ", mailSender=" + (mailSender != null));
-        
         if (mailSender == null) {
-            System.err.println(">>> [EMAIL ERROR] mailSender is NULL! Bean não injetado.");
+            System.out.println("[EMAIL] Mail sender not configured, skipping email to: " + toEmail);
             return;
         }
         
         if (!emailEnabled) {
-            System.out.println(">>> [EMAIL DISABLED] Simulação de envio para: " + toEmail);
+            System.out.println("[EMAIL] Email disabled, would send invitation to: " + toEmail);
             return;
         }
         
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("TechMonitor - Convite");
+        message.setSubject("TechMonitor - Invitation");
         message.setText(buildInvitationEmailBody(inviteToken, invitedByUsername));
         
         try {
-            System.out.println(">>> [EMAIL DEBUG] Conectando ao Zoho SMTP (Porto 465)...");
             mailSender.send(message);
-            System.out.println(">>> [EMAIL SUCCESS] EMAIL ENVIADO COM SUCESSO PARA: " + toEmail);
+            System.out.println("[EMAIL] Invitation sent successfully to: " + toEmail);
         } catch (Exception e) {
-            System.err.println(">>> [EMAIL ERROR] FALHA CRÍTICA NO ENVIO: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("[EMAIL] Failed to send invitation to " + toEmail + ": " + e.getMessage());
         }
     }
     

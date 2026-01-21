@@ -24,23 +24,12 @@ public class InvitationService {
     }
     
     public Invitation createInvitation(String email, Integer invitedBy) {
-        // LOGS CRÍTICOS NO TOPO DO MÉTODO
-        System.out.println(">>> [CRITICAL DEBUG] " + new java.util.Date() + " - INICIANDO para: " + email);
-        
-        // Tentativa de log direto no arquivo para persistência extrema
-        try (java.io.FileOutputStream fos = new java.io.FileOutputStream("/home/runner/workspace/email_trace.log", true)) {
-            fos.write(("DEBUG START " + email + "\n").getBytes());
-        } catch (Exception e) {}
-
         Optional<Invitation> existing = invitationRepository.findByEmailAndStatus(email, "PENDING");
         if (existing.isPresent()) {
             Invitation invitation = existing.get();
-            System.out.println(">>> [CRITICAL DEBUG] Convite pendente já existe. ID: " + invitation.getId());
-            
             String inviterUsername = userRepository.findById(invitedBy)
                 .map(User::getUsername)
                 .orElse("A team member");
-            
             emailService.sendInvitationEmail(email, invitation.getToken(), inviterUsername);
             return invitation;
         }
@@ -52,7 +41,6 @@ public class InvitationService {
         invitation.setStatus("PENDING");
         
         Invitation savedInvitation = invitationRepository.save(invitation);
-        System.out.println(">>> [CRITICAL DEBUG] Salvo no banco. ID: " + savedInvitation.getId());
         
         String inviterUsername = userRepository.findById(invitedBy)
             .map(User::getUsername)

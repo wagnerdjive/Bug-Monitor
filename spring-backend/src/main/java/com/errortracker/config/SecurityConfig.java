@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
@@ -21,8 +23,12 @@ public class SecurityConfig {
     @Value("${app.feature.keycloak-enabled:false}")
     private boolean keycloakEnabled;
     
+    @Lazy
     @Autowired(required = false)
     private OAuth2SuccessHandler oAuth2SuccessHandler;
+    
+    @Autowired(required = false)
+    private ClientRegistrationRepository clientRegistrationRepository;
     
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,7 +61,7 @@ public class SecurityConfig {
                 })
             );
         
-        if (keycloakEnabled && oAuth2SuccessHandler != null) {
+        if (keycloakEnabled && oAuth2SuccessHandler != null && clientRegistrationRepository != null) {
             http.oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(auth -> auth
                     .baseUri("/api/oauth2/authorization")

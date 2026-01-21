@@ -58,12 +58,23 @@ Preferred communication style: Simple, everyday language.
 
 ### Recent Features
 - **Profile Management**: Users can update their profile (first name, last name, email, profile image URL) at `/profile`
-- **SSO Authentication**: Keycloak SSO integration with feature flag control (replaces Google Auth placeholder)
-- **Email Notifications**: SMTP-based email service for invitations (enabled via `EMAIL_ENABLED=true`)
+- **SSO Authentication**: Keycloak SSO integration with feature flag control (requires OAuth2 client configuration)
+- **Email Notifications**: SMTP-based email service using Zoho Mail (smtp.zoho.com:465 with SSL)
 - **Feature Flags**: Backend-controlled feature flags exposed via `/api/feature-flags`
 - **Project Team Management**: New "Team" tab in project details to view and remove assigned users
 - **Navigation Update**: Profile link added to sidebar user section
 - **RBAC**: Role-based access control (ADMIN/USER roles)
+
+### Email Configuration
+- **SMTP Server**: smtp.zoho.com (port 465 with SSL)
+- **From Address**: Configured via `app.email.from` property
+- **Feature Flag**: Controlled by `app.feature.email-enabled` (default: false)
+- **Invitation Emails**: Sent when admin invites new users via `/api/admin/invitations`
+
+### Keycloak SSO Configuration
+- **Feature Flag**: Controlled by `app.feature.keycloak-enabled` property
+- **OAuth2 Login**: Requires Spring Security OAuth2 client registration
+- **Graceful Degradation**: If OAuth2 client is not configured, SSO login is disabled even if flag is true
 
 ### Build System
 - Development: Vite dev server with HMR on port 5000, Spring Boot on port 5001

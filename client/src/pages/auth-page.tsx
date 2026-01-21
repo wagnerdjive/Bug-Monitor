@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { useLocation, Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { ShieldCheck, ArrowLeft, Mail, Lock, User, Loader2 } from "lucide-react";
+import { Target, ArrowLeft, Mail, Lock, User, Loader2 } from "lucide-react";
 import { LanguageSelector } from "@/components/language-selector";
 import { useTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
@@ -95,7 +95,7 @@ export default function AuthPage() {
       </div>
 
       <div className="flex items-center gap-2 font-display font-bold text-2xl text-foreground mb-8">
-        <ShieldCheck className="w-8 h-8 text-primary" />
+        <Target className="w-8 h-8 text-primary" />
         <span>TechMonitor</span>
       </div>
       

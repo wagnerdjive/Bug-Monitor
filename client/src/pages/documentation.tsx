@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useTranslation } from "@/i18n";
 import { 
   BookOpen, Code, Terminal, Cpu, ChevronDown, ChevronUp, 
-  Copy, Check, ShieldCheck, Zap, Bell, Workflow, Search 
+  Copy, Check, Target, Zap, Bell, Workflow, Search 
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -119,7 +119,7 @@ async def global_exception_handler(request, exc):
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-xl border border-border/40 bg-muted/20">
               <h4 className="font-bold flex items-center gap-2 mb-2">
-                <ShieldCheck className="w-4 h-4 text-primary" />
+                <Target className="w-4 h-4 text-primary" />
                 {t("docs.securityAuth")}
               </h4>
               <p className="text-sm text-muted-foreground">{t("docs.securityAuthDesc")}</p>

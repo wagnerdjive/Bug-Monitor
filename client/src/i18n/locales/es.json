@@ -51,6 +51,9 @@
     "registerSuccess": "Registro exitoso",
     "loginFailed": "Error al iniciar sesion",
     "registerFailed": "Error al registrarse",
+    "registrationSuccess": "Registro exitoso",
+    "welcomeToTeam": "Bienvenido al equipo!",
+    "passwordsMismatch": "Las contrasenas no coinciden",
     "welcomeBack": "Bienvenido de Nuevo",
     "createAccount": "Crear Cuenta",
     "loginDescription": "Ingresa tus credenciales para acceder al panel",
@@ -236,6 +239,17 @@
     "viewer": "Visualizador",
     "contributor": "Contribuidor",
     "admin": "Admin"
+  },
+  "invite": {
+    "invalidLink": "Enlace de Invitacion Invalido",
+    "noToken": "No se proporciono ningun token de invitacion. Por favor, usa el enlace del correo de invitacion.",
+    "validating": "Validando invitacion...",
+    "expiredOrUsed": "Esta invitacion ha expirado o ya ha sido utilizada.",
+    "acceptTitle": "Aceptar Invitacion",
+    "acceptDescription": "Has sido invitado a unirte a TechMonitor. Completa tu registro a continuacion.",
+    "emailLabel": "Tu Email",
+    "acceptButton": "Crear Cuenta y Unirse",
+    "passwordsMismatch": "Las contrasenas no coinciden"
   },
   "docs": {
     "title": "Documentación",

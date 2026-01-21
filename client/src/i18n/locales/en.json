@@ -51,6 +51,9 @@
     "registerSuccess": "Registration successful",
     "loginFailed": "Login failed",
     "registerFailed": "Registration failed",
+    "registrationSuccess": "Registration successful",
+    "welcomeToTeam": "Welcome to the team!",
+    "passwordsMismatch": "Passwords do not match",
     "welcomeBack": "Welcome Back",
     "createAccount": "Create Account",
     "loginDescription": "Enter your credentials to access your dashboard",
@@ -236,6 +239,17 @@
     "viewer": "Viewer",
     "contributor": "Contributor",
     "admin": "Admin"
+  },
+  "invite": {
+    "invalidLink": "Invalid Invitation Link",
+    "noToken": "No invitation token was provided. Please use the link from your invitation email.",
+    "validating": "Validating invitation...",
+    "expiredOrUsed": "This invitation has expired or has already been used.",
+    "acceptTitle": "Accept Invitation",
+    "acceptDescription": "You've been invited to join TechMonitor. Complete your registration below.",
+    "emailLabel": "Your Email",
+    "acceptButton": "Create Account & Join",
+    "passwordsMismatch": "Passwords do not match"
   },
   "docs": {
     "title": "Documentation",

@@ -13,6 +13,7 @@ import Documentation from "@/pages/documentation";
 import ProjectDetails from "@/pages/project-details";
 import EventDetails from "@/pages/event-details";
 import AuthPage from "@/pages/auth-page";
+import AcceptInvite from "@/pages/accept-invite";
 import Admin from "@/pages/admin";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
@@ -32,6 +33,9 @@ function Router() {
     <Switch>
       <Route path="/auth">
         {user ? <Redirect to="/" /> : <AuthPage />}
+      </Route>
+      <Route path="/accept-invite">
+        {user ? <Redirect to="/" /> : <AcceptInvite />}
       </Route>
       <Route path="/admin">
         {user && user.role === "ADMIN" ? <Admin /> : <Redirect to="/" />}

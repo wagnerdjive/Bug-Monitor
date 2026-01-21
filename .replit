@@ -52,4 +52,4 @@ expertMode = true
 EMAIL_ENABLED = "true"
 SMTP_USERNAME = "techtarget@zohomail.com"
 EMAIL_FROM = "techtarget@zohomail.com"
-APP_URL = "http://0.0.0.0:5000"
+APP_URL = "https://4b6c8ea2-2399-4e2b-b210-1484c40561fd-00-26eomv4ru4hkz.riker.replit.dev"

@@ -43,6 +43,7 @@ Preferred communication style: Simple, everyday language.
 
 ### API Structure
 - `/api/register` - User registration
+- `/api/register/invite/{token}` - Validate invitation token (GET) and register with invitation (POST)
 - `/api/login` - User login
 - `/api/logout` - User logout
 - `/api/auth/user` - Get current authenticated user
@@ -56,6 +57,7 @@ Preferred communication style: Simple, everyday language.
 - `/api/oauth2/authorization/keycloak` - Initiate Keycloak SSO login (Spring Security handles callback)
 
 ### Recent Features
+- **Invitation Acceptance Flow**: Users can accept invitations via `/accept-invite?token=xxx` link from email
 - **Profile Management**: Users can update their profile (first name, last name, email, profile image URL) at `/profile`
 - **SSO Authentication**: Keycloak SSO integration with feature flag control (requires OAuth2 client configuration)
 - **Email Notifications**: SMTP-based email service using Zoho Mail (smtp.zoho.com:465 with SSL)
@@ -63,12 +65,15 @@ Preferred communication style: Simple, everyday language.
 - **Project Team Management**: New "Team" tab in project details to view and remove assigned users
 - **Navigation Update**: Profile link added to sidebar user section
 - **RBAC**: Role-based access control (ADMIN/USER roles)
+- **i18n Support**: Full internationalization with English, Portuguese, and Spanish translations
 
 ### Email Configuration
 - **SMTP Server**: smtp.zoho.com (port 465 with SSL)
 - **From Address**: Configured via `app.email.from` property
+- **Base URL**: Configured via `APP_URL` environment variable (defaults to http://localhost:5000)
 - **Feature Flag**: Controlled by `app.feature.email-enabled` (default: false)
 - **Invitation Emails**: Sent when admin invites new users via `/api/admin/invitations`
+- **Email Links**: Invitation links use APP_URL for configurable base URL in emails
 
 ### Keycloak SSO Configuration
 - **Feature Flag**: Controlled by `app.feature.keycloak-enabled` property

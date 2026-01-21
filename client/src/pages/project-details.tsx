@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Select,
   SelectContent,
@@ -79,6 +80,8 @@ interface ProjectUser {
 function ProjectTeamMembers({ projectId }: { projectId: number }) {
   const { t } = useTranslation();
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
+  const isAdmin = currentUser?.role === "ADMIN";
 
   const { data: projectUsers, isLoading } = useQuery<ProjectUser[]>({
     queryKey: [`/api/projects/${projectId}/users`],
@@ -159,39 +162,41 @@ function ProjectTeamMembers({ projectId }: { projectId: number }) {
                   <Badge variant="secondary" className="capitalize">
                     {t(`projectUsers.${projectUser.role.toLowerCase()}`) || projectUser.role}
                   </Badge>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="text-muted-foreground hover:text-destructive"
-                        data-testid={`button-remove-user-${projectUser.id}`}
-                      >
-                        <UserMinus className="w-4 h-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>{t("projectUsers.removeConfirm")}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {t("projectUsers.removeWarning")}
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => removeUserMutation.mutate(projectUser.id)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  {isAdmin && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-muted-foreground hover:text-destructive"
+                          data-testid={`button-remove-user-${projectUser.id}`}
                         >
-                          {removeUserMutation.isPending ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            t("projectUsers.removeUser")
-                          )}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          <UserMinus className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>{t("projectUsers.removeConfirm")}</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {t("projectUsers.removeWarning")}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => removeUserMutation.mutate(projectUser.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            {removeUserMutation.isPending ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              t("projectUsers.removeUser")
+                            )}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </div>
             ))}
@@ -212,6 +217,9 @@ export default function ProjectDetails() {
   const [severityFilter, setSeverityFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [isSimulating, setIsSimulating] = useState(false);
+
+  const { user: currentUser } = useAuth();
+  const isAdmin = currentUser?.role === "ADMIN";
 
   const urlParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
   const initialTab = urlParams.get("tab") || "overview";
@@ -372,31 +380,33 @@ export default function ProjectDetails() {
               {isSimulating ? t("project.simulating") : t("project.simulateError")}
             </Button>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm" className="gap-2" data-testid="button-delete-project">
-                  <Trash2 className="w-4 h-4" />
-                  {t("common.delete")}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{t("project.deleteConfirm")}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {t("project.deleteWarning")}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={() => deleteProject.mutate(project.id)}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
+            {isAdmin && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" className="gap-2" data-testid="button-delete-project">
+                    <Trash2 className="w-4 h-4" />
                     {t("common.delete")}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t("project.deleteConfirm")}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t("project.deleteWarning")}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={() => deleteProject.mutate(project.id)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {t("common.delete")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
 

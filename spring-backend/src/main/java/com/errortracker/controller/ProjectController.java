@@ -111,8 +111,8 @@ public class ProjectController {
         
         return projectService.getProject(id)
             .map(project -> {
-                // Only admins and owners can delete projects (not assigned users)
-                if (!isAdmin(userId) && !project.getUserId().equals(userId)) {
+                // Only admins can delete projects
+                if (!isAdmin(userId)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Unauthorized"));
                 }
@@ -152,8 +152,8 @@ public class ProjectController {
         
         return projectService.getProject(projectId)
             .map(project -> {
-                // Only admins and owners can remove users from projects
-                if (!isAdmin(userId) && !project.getUserId().equals(userId)) {
+                // Only admins can remove users from projects
+                if (!isAdmin(userId)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Unauthorized"));
                 }

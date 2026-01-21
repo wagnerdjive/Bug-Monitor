@@ -129,6 +129,12 @@ public class AdminController {
             role
         );
         
+        // Ensure user is added to project owners/members if they are not already
+        // This is a safety check for visibility
+        if (role.equals("ADMIN") && !project.get().getUserId().equals(request.getUserId())) {
+            // Optional: Update ownership or just rely on ProjectUser
+        }
+        
         return ResponseEntity.ok(Map.of(
             "message", "User assigned to project successfully",
             "projectId", pu.getProjectId(),

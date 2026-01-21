@@ -43,6 +43,7 @@ export default function Admin() {
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const [selectedRole, setSelectedRole] = useState<string>("VIEWER");
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const { data: users, isLoading: usersLoading } = useQuery<User[]>({
@@ -79,11 +80,11 @@ export default function Admin() {
   });
 
   const assignMutation = useMutation({
-    mutationFn: async ({ userId, projectId }: { userId: number; projectId: number }) => {
+    mutationFn: async ({ userId, projectId, role }: { userId: number; projectId: number; role: string }) => {
       const res = await apiRequest("POST", "/api/admin/projects/assign", {
         userId,
         projectId,
-        role: "VIEWER",
+        role,
       });
       return res.json();
     },
@@ -91,6 +92,7 @@ export default function Admin() {
       setAssignDialogOpen(false);
       setSelectedUserId(null);
       setSelectedProjectId("");
+      setSelectedRole("VIEWER");
       toast({
         title: t("admin.userAssigned"),
         description: t("admin.userAssignedDesc"),
@@ -124,6 +126,7 @@ export default function Admin() {
       assignMutation.mutate({
         userId: selectedUserId,
         projectId: parseInt(selectedProjectId),
+        role: selectedRole,
       });
     }
   };
@@ -249,6 +252,19 @@ export default function Admin() {
                                     {project.name}
                                   </SelectItem>
                                 ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>{t("projectUsers.role")}</Label>
+                            <Select value={selectedRole} onValueChange={setSelectedRole}>
+                              <SelectTrigger data-testid="select-role">
+                                <SelectValue placeholder={t("projectUsers.role")} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="VIEWER">{t("projectUsers.viewer")}</SelectItem>
+                                <SelectItem value="CONTRIBUTOR">{t("projectUsers.contributor")}</SelectItem>
+                                <SelectItem value="ADMIN">{t("projectUsers.admin")}</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>

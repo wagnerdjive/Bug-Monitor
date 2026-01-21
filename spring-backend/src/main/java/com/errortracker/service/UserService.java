@@ -55,7 +55,15 @@ public class UserService {
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    
+
+    public Optional<User> findByUsernameOrEmail(String login) {
+        Optional<User> user = userRepository.findByUsername(login);
+        if (user.isEmpty()) {
+            user = userRepository.findByEmail(login);
+        }
+        return user;
+    }
+
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }

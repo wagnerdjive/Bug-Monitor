@@ -24,8 +24,10 @@ public class InvitationService {
     }
     
     public Invitation createInvitation(String email, Integer invitedBy) {
+        System.out.println(">>> [DEBUG] InvitationService.createInvitation called for: " + email);
         Optional<Invitation> existing = invitationRepository.findByEmailAndStatus(email, "PENDING");
         if (existing.isPresent()) {
+            System.out.println(">>> [DEBUG] Found existing pending invitation");
             return existing.get();
         }
         
@@ -37,19 +39,20 @@ public class InvitationService {
         
         Invitation savedInvitation = invitationRepository.save(invitation);
         
-        System.out.println("[EMAIL DEBUG] Invitation created for email: " + email);
+        System.out.println(">>> [DEBUG] Invitation saved to DB with ID: " + savedInvitation.getId());
         
         String inviterUsername = userRepository.findById(invitedBy)
             .map(User::getUsername)
             .orElse("A team member");
         
-        System.out.println("[EMAIL DEBUG] Inviter: " + inviterUsername);
+        System.out.println(">>> [DEBUG] Inviter found: " + inviterUsername);
         
         try {
+            System.out.println(">>> [DEBUG] Calling emailService.sendInvitationEmail...");
             emailService.sendInvitationEmail(email, savedInvitation.getToken(), inviterUsername);
-            System.out.println("[EMAIL DEBUG] EmailService.sendInvitationEmail call completed");
+            System.out.println(">>> [DEBUG] emailService.sendInvitationEmail call finished");
         } catch (Exception e) {
-            System.err.println("[EMAIL ERROR] Failed to trigger email sending from InvitationService");
+            System.err.println(">>> [DEBUG] ERROR: Failed to call emailService");
             e.printStackTrace();
         }
         

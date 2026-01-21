@@ -30,7 +30,11 @@ public class EmailService {
         System.out.println(">>> [EMAIL DEBUG] INICIANDO ENVIO PARA: " + toEmail);
         System.out.println(">>> [EMAIL DEBUG] STATUS: emailEnabled=" + emailEnabled + ", mailSender=" + (mailSender != null));
         
-        if (!isEmailEnabled()) {
+        if (mailSender == null) {
+            System.out.println(">>> [EMAIL ERROR] mailSender is NULL! Check if spring-boot-starter-mail is in pom.xml and properties are correct.");
+        }
+        
+        if (!emailEnabled) {
             System.out.println(">>> [EMAIL DISABLED] Simulação de envio para: " + toEmail);
             return;
         }
@@ -42,7 +46,7 @@ public class EmailService {
         message.setText(buildInvitationEmailBody(inviteToken, invitedByUsername));
         
         try {
-            System.out.println(">>> [EMAIL DEBUG] Tentando enviar via SMTP...");
+            System.out.println(">>> [EMAIL DEBUG] Tentando enviar via SMTP: " + toEmail);
             mailSender.send(message);
             System.out.println(">>> [EMAIL SUCCESS] EMAIL ENVIADO COM SUCESSO PARA: " + toEmail);
         } catch (Exception e) {

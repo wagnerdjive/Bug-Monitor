@@ -172,7 +172,7 @@ export default function AuthPage() {
 
             {!isLogin && (
               <div className="space-y-2">
-                <label className="text-sm font-medium">{t("auth.confirmPassword") || "Confirm Password"}</label>
+                <label className="text-sm font-medium">Confirm Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
@@ -180,7 +180,7 @@ export default function AuthPage() {
                     value={confirmPassword} 
                     onChange={(e) => setConfirmPassword(e.target.value)} 
                     required 
-                    placeholder={t("auth.enterConfirmPassword") || "Confirm your password"}
+                    placeholder="Confirm your password"
                     className="pl-10"
                     data-testid="input-confirm-password"
                   />

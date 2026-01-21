@@ -11,6 +11,8 @@ public class UserResponse {
     private String lastName;
     private String profileImageUrl;
     private String role;
+    private Boolean blocked;
+    private Boolean canCreateProjects;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
@@ -23,6 +25,8 @@ public class UserResponse {
         response.lastName = user.getLastName();
         response.profileImageUrl = user.getProfileImageUrl();
         response.role = user.getRole();
+        response.blocked = user.getBlocked();
+        response.canCreateProjects = user.getCanCreateProjects();
         response.createdAt = user.getCreatedAt();
         response.updatedAt = user.getUpdatedAt();
         return response;
@@ -54,4 +58,10 @@ public class UserResponse {
     
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    
+    public Boolean getBlocked() { return blocked; }
+    public void setBlocked(Boolean blocked) { this.blocked = blocked; }
+    
+    public Boolean getCanCreateProjects() { return canCreateProjects; }
+    public void setCanCreateProjects(Boolean canCreateProjects) { this.canCreateProjects = canCreateProjects; }
 }

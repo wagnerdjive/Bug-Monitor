@@ -28,8 +28,8 @@
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/controller/AdminController.java
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/service/UserService.java
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/dto/UserResponse.java
-/home/runner/workspace/spring-backend/src/main/java/com/errortracker/controller/EventController.java
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/controller/AuthController.java
+/home/runner/workspace/spring-backend/src/main/java/com/errortracker/controller/EventController.java
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/entity/Project.java
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/repository/ProjectRepository.java
 /home/runner/workspace/spring-backend/src/main/java/com/errortracker/service/ProjectUserService.java

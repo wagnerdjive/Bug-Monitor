@@ -199,7 +199,19 @@
     "assignFailed": "Failed to assign user",
     "noInvitations": "No invitations sent yet",
     "copyLink": "Copy Link",
-    "expires": "Expires"
+    "expires": "Expires",
+    "blockUser": "Block User",
+    "unblockUser": "Unblock User",
+    "userBlocked": "User Blocked",
+    "userBlockedDesc": "This user can no longer access any projects.",
+    "userUnblocked": "User Unblocked",
+    "userUnblockedDesc": "This user can now access projects again.",
+    "blocked": "Blocked",
+    "canCreateProjects": "Can Create Projects",
+    "permissions": "Permissions",
+    "permissionsUpdated": "Permissions Updated",
+    "permissionsUpdatedDesc": "User permissions have been updated.",
+    "members": "members"
   },
   "profile": {
     "title": "Profile",

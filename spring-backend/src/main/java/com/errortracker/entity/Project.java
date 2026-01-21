@@ -2,11 +2,13 @@ package com.errortracker.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "projects")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +34,7 @@ public class Project {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
     
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<ErrorEvent> events;
     
@@ -40,12 +43,18 @@ public class Project {
     
     @Transient
     private Long userCount24h;
+    
+    @Transient
+    private Long memberCount;
 
     public Long getErrorCount24h() { return errorCount24h != null ? errorCount24h : 0L; }
     public void setErrorCount24h(Long errorCount24h) { this.errorCount24h = errorCount24h; }
     
     public Long getUserCount24h() { return userCount24h != null ? userCount24h : 0L; }
     public void setUserCount24h(Long userCount24h) { this.userCount24h = userCount24h; }
+    
+    public Long getMemberCount() { return memberCount != null ? memberCount : 0L; }
+    public void setMemberCount(Long memberCount) { this.memberCount = memberCount; }
     
     @PrePersist
     protected void onCreate() {

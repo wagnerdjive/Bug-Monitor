@@ -72,10 +72,10 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-1">
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Users className="w-3 h-3" /> Users
+                        <Users className="w-3 h-3" /> {t("admin.members")}
                       </span>
                       <p className="text-2xl font-bold font-mono">
-                        {project.userCount24h || 0}
+                        {project.memberCount || 1}
                       </p>
                     </div>
                   </div>

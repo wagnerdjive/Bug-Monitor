@@ -35,9 +35,11 @@ public class ProjectService {
         for (Project project : projects) {
             long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
             long userCount = errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since);
+            long memberCount = projectUserRepository.countByProjectId(project.getId());
             
             project.setErrorCount24h(errorCount);
             project.setUserCount24h(userCount);
+            project.setMemberCount(memberCount + 1); // +1 for owner
         }
         
         return projects;
@@ -70,9 +72,11 @@ public class ProjectService {
         for (Project project : allProjects) {
             long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
             long userCount = errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since);
+            long memberCount = projectUserRepository.countByProjectId(project.getId());
             
             project.setErrorCount24h(errorCount);
             project.setUserCount24h(userCount);
+            project.setMemberCount(memberCount + 1); // +1 for owner
         }
         
         return allProjects;
@@ -86,12 +90,14 @@ public class ProjectService {
             // Explicitly fetch counts
             long errorCount = errorEventRepository.countByProjectIdAndCreatedAtAfter(project.getId(), since);
             long userCount = errorEventRepository.countDistinctUsersByProjectIdAndCreatedAtAfter(project.getId(), since);
+            long memberCount = projectUserRepository.countByProjectId(project.getId());
             
             // Log for debugging
-            System.out.println("Fetching project " + id + ": errors=" + errorCount + ", users=" + userCount);
+            System.out.println("Fetching project " + id + ": errors=" + errorCount + ", users=" + userCount + ", members=" + memberCount);
             
             project.setErrorCount24h(errorCount);
             project.setUserCount24h(userCount);
+            project.setMemberCount(memberCount + 1); // +1 for owner
             
             return project;
         });

@@ -14,7 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useProjects } from "@/hooks/use-projects";
-import { Users, Mail, UserPlus, FolderPlus, Copy, Check, Shield, Clock, AlertCircle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Users, Mail, UserPlus, FolderPlus, Copy, Check, Shield, Clock, AlertCircle, Ban, CheckCircle } from "lucide-react";
 
 interface User {
   id: number;
@@ -23,6 +24,8 @@ interface User {
   firstName: string;
   lastName: string;
   role: string;
+  blocked: boolean;
+  canCreateProjects: boolean;
   createdAt: string;
 }
 
@@ -89,6 +92,8 @@ export default function Admin() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/projects", selectedProjectId, "users"] });
       setAssignDialogOpen(false);
       setSelectedUserId(null);
       setSelectedProjectId("");
@@ -102,6 +107,51 @@ export default function Admin() {
       toast({
         title: t("common.error"),
         description: error.message || t("admin.assignFailed"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  const blockMutation = useMutation({
+    mutationFn: async ({ userId, block }: { userId: number; block: boolean }) => {
+      const endpoint = block ? `/api/admin/users/${userId}/block` : `/api/admin/users/${userId}/unblock`;
+      const res = await apiRequest("PUT", endpoint, {});
+      return res.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({
+        title: variables.block ? t("admin.userBlocked") : t("admin.userUnblocked"),
+        description: variables.block ? t("admin.userBlockedDesc") : t("admin.userUnblockedDesc"),
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: t("common.error"),
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const permissionsMutation = useMutation({
+    mutationFn: async ({ userId, canCreateProjects }: { userId: number; canCreateProjects: boolean }) => {
+      const res = await apiRequest("PUT", `/api/admin/users/${userId}/permissions`, {
+        canCreateProjects,
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({
+        title: t("admin.permissionsUpdated"),
+        description: t("admin.permissionsUpdatedDesc"),
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: t("common.error"),
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -221,20 +271,68 @@ export default function Admin() {
                           <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
                             {user.role}
                           </Badge>
+                          {user.blocked && (
+                            <Badge variant="destructive">
+                              <Ban className="w-3 h-3 mr-1" />
+                              {t("admin.blocked")}
+                            </Badge>
+                          )}
+                          {user.canCreateProjects && !user.blocked && user.role !== "ADMIN" && (
+                            <Badge variant="outline">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              {t("admin.canCreateProjects")}
+                            </Badge>
+                          )}
                         </div>
                         <span className="text-sm text-muted-foreground">{user.email}</span>
                       </div>
                     </div>
-                    <Dialog open={assignDialogOpen && selectedUserId === user.id} onOpenChange={(open) => {
-                      setAssignDialogOpen(open);
-                      if (open) setSelectedUserId(user.id);
-                    }}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm" data-testid={`button-assign-${user.id}`}>
-                          <FolderPlus className="w-4 h-4 mr-2" />
-                          {t("admin.assignProject")}
-                        </Button>
-                      </DialogTrigger>
+                    <div className="flex items-center gap-2">
+                      {user.role !== "ADMIN" && (
+                        <>
+                          <Button 
+                            variant={user.blocked ? "default" : "destructive"} 
+                            size="sm" 
+                            onClick={() => blockMutation.mutate({ userId: user.id, block: !user.blocked })}
+                            disabled={blockMutation.isPending}
+                            data-testid={`button-block-${user.id}`}
+                          >
+                            {user.blocked ? (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                {t("admin.unblockUser")}
+                              </>
+                            ) : (
+                              <>
+                                <Ban className="w-4 h-4 mr-2" />
+                                {t("admin.blockUser")}
+                              </>
+                            )}
+                          </Button>
+                          <div className="flex items-center gap-2 px-2">
+                            <Label htmlFor={`create-projects-${user.id}`} className="text-sm whitespace-nowrap">
+                              {t("admin.canCreateProjects")}
+                            </Label>
+                            <Switch
+                              id={`create-projects-${user.id}`}
+                              checked={user.canCreateProjects}
+                              onCheckedChange={(checked) => permissionsMutation.mutate({ userId: user.id, canCreateProjects: checked })}
+                              disabled={permissionsMutation.isPending || user.blocked}
+                              data-testid={`switch-create-projects-${user.id}`}
+                            />
+                          </div>
+                        </>
+                      )}
+                      <Dialog open={assignDialogOpen && selectedUserId === user.id} onOpenChange={(open) => {
+                        setAssignDialogOpen(open);
+                        if (open) setSelectedUserId(user.id);
+                      }}>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm" data-testid={`button-assign-${user.id}`} disabled={user.blocked}>
+                            <FolderPlus className="w-4 h-4 mr-2" />
+                            {t("admin.assignProject")}
+                          </Button>
+                        </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>{t("admin.assignToProject")}</DialogTitle>
@@ -283,6 +381,7 @@ export default function Admin() {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
+                    </div>
                   </CardContent>
                 </Card>
               ))}

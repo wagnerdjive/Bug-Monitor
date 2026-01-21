@@ -31,6 +31,12 @@ public class User {
     @Column(nullable = false)
     private String role = "USER";
     
+    @Column(nullable = false)
+    private Boolean blocked = false;
+    
+    @Column(name = "can_create_projects", nullable = false)
+    private Boolean canCreateProjects = false;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
@@ -78,5 +84,15 @@ public class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
     
+    public Boolean getBlocked() { return blocked != null ? blocked : false; }
+    public void setBlocked(Boolean blocked) { this.blocked = blocked; }
+    
+    public Boolean getCanCreateProjects() { return canCreateProjects != null ? canCreateProjects : false; }
+    public void setCanCreateProjects(Boolean canCreateProjects) { this.canCreateProjects = canCreateProjects; }
+    
     public boolean isAdmin() { return "ADMIN".equals(role); }
+    
+    public boolean isBlocked() { return Boolean.TRUE.equals(blocked); }
+    
+    public boolean canCreateProjects() { return isAdmin() || Boolean.TRUE.equals(canCreateProjects); }
 }

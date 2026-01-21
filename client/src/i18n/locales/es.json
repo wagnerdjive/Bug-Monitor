@@ -199,7 +199,19 @@
     "assignFailed": "Error al asignar usuario",
     "noInvitations": "Sin invitaciones enviadas aun",
     "copyLink": "Copiar Enlace",
-    "expires": "Expira"
+    "expires": "Expira",
+    "blockUser": "Bloquear Usuario",
+    "unblockUser": "Desbloquear Usuario",
+    "userBlocked": "Usuario Bloqueado",
+    "userBlockedDesc": "Este usuario ya no puede acceder a ningun proyecto.",
+    "userUnblocked": "Usuario Desbloqueado",
+    "userUnblockedDesc": "Este usuario puede acceder a proyectos nuevamente.",
+    "blocked": "Bloqueado",
+    "canCreateProjects": "Puede Crear Proyectos",
+    "permissions": "Permisos",
+    "permissionsUpdated": "Permisos Actualizados",
+    "permissionsUpdatedDesc": "Los permisos del usuario han sido actualizados.",
+    "members": "miembros"
   },
   "profile": {
     "title": "Perfil",

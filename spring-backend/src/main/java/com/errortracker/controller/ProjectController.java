@@ -51,11 +51,23 @@ public class ProjectController {
         return projectUserService.hasAccess(projectId, userId);
     }
     
+    private boolean isUserBlocked(Integer userId) {
+        Optional<User> user = userService.findById(userId);
+        return user.map(User::isBlocked).orElse(false);
+    }
+    
     @GetMapping
     public ResponseEntity<?> listProjects(HttpServletRequest request) {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        // Check if user is blocked
+        Optional<User> currentUser = userService.findById(userId);
+        if (currentUser.isPresent() && currentUser.get().isBlocked()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Your account has been blocked. Please contact an administrator."));
         }
         
         // Admin users have access to all projects
@@ -75,6 +87,24 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         
+        // Check if user is blocked
+        Optional<User> currentUser = userService.findById(userId);
+        if (currentUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        User user = currentUser.get();
+        if (user.isBlocked()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Your account has been blocked. Please contact an administrator."));
+        }
+        
+        // Check if user can create projects
+        if (!user.canCreateProjects()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "You don't have permission to create projects. Please contact an administrator."));
+        }
+        
         Project project = projectService.createProject(
             projectRequest.getName(),
             projectRequest.getPlatform(),
@@ -88,6 +118,13 @@ public class ProjectController {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        // Check if user is blocked
+        Optional<User> currentUser = userService.findById(userId);
+        if (currentUser.isPresent() && currentUser.get().isBlocked()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Your account has been blocked. Please contact an administrator."));
         }
         
         return projectService.getProject(id)
@@ -107,6 +144,11 @@ public class ProjectController {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        if (isUserBlocked(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Account blocked"));
         }
         
         return projectService.getProject(id)
@@ -129,6 +171,11 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         
+        if (isUserBlocked(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Account blocked"));
+        }
+        
         return projectService.getProject(id)
             .map(project -> {
                 if (!isAdmin(userId) && !hasProjectAccess(id, userId, project)) {
@@ -148,6 +195,11 @@ public class ProjectController {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        if (isUserBlocked(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Account blocked"));
         }
         
         return projectService.getProject(projectId)

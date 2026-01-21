@@ -10,6 +10,7 @@ interface Project {
   createdAt: string;
   errorCount24h?: number;
   userCount24h?: number;
+  memberCount?: number;
 }
 
 interface CreateProjectData {

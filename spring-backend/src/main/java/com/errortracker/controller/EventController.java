@@ -56,6 +56,11 @@ public class EventController {
         return projectUserService.hasAccess(projectId, userId);
     }
     
+    private boolean isUserBlocked(Integer userId) {
+        Optional<User> user = userService.findById(userId);
+        return user.map(User::isBlocked).orElse(false);
+    }
+    
     @GetMapping("/projects/{projectId}/events")
     public ResponseEntity<?> listEvents(
             @PathVariable Integer projectId,
@@ -68,6 +73,11 @@ public class EventController {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        if (isUserBlocked(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Account blocked"));
         }
         
         Optional<Project> projectOpt = projectService.getProject(projectId);
@@ -92,6 +102,11 @@ public class EventController {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        if (isUserBlocked(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Account blocked"));
         }
         
         return errorEventService.getEvent(id)
@@ -121,6 +136,11 @@ public class EventController {
         Integer userId = getUserId(request);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        if (isUserBlocked(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("message", "Account blocked"));
         }
         
         return errorEventService.getEvent(id)

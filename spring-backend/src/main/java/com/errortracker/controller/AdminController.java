@@ -117,6 +117,11 @@ public class AdminController {
                 .body(Map.of("error", "User not found"));
         }
         
+        if (user.get().isBlocked()) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Cannot assign blocked user to project"));
+        }
+        
         Optional<Project> project = projectService.getProject(request.getProjectId());
         if (project.isEmpty()) {
             return ResponseEntity.badRequest()
@@ -206,5 +211,78 @@ public class AdminController {
             .collect(Collectors.toList());
         
         return ResponseEntity.ok(result);
+    }
+    
+    @PutMapping("/users/{userId}/block")
+    public ResponseEntity<?> blockUser(@PathVariable Integer userId, HttpSession session) {
+        if (!isAdmin(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", "Admin access required"));
+        }
+        
+        User currentUser = getCurrentUser(session);
+        if (currentUser != null && currentUser.getId().equals(userId)) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Cannot block yourself"));
+        }
+        
+        Optional<User> user = userService.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        User u = user.get();
+        u.setBlocked(true);
+        userService.save(u);
+        
+        return ResponseEntity.ok(Map.of("message", "User blocked successfully"));
+    }
+    
+    @PutMapping("/users/{userId}/unblock")
+    public ResponseEntity<?> unblockUser(@PathVariable Integer userId, HttpSession session) {
+        if (!isAdmin(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", "Admin access required"));
+        }
+        
+        Optional<User> user = userService.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        User u = user.get();
+        u.setBlocked(false);
+        userService.save(u);
+        
+        return ResponseEntity.ok(Map.of("message", "User unblocked successfully"));
+    }
+    
+    @PutMapping("/users/{userId}/permissions")
+    public ResponseEntity<?> updateUserPermissions(
+            @PathVariable Integer userId, 
+            @RequestBody Map<String, Boolean> permissions,
+            HttpSession session) {
+        if (!isAdmin(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", "Admin access required"));
+        }
+        
+        Optional<User> user = userService.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        User u = user.get();
+        
+        if (permissions.containsKey("canCreateProjects")) {
+            u.setCanCreateProjects(permissions.get("canCreateProjects"));
+        }
+        
+        userService.save(u);
+        
+        return ResponseEntity.ok(Map.of(
+            "message", "User permissions updated successfully",
+            "canCreateProjects", u.getCanCreateProjects()
+        ));
     }
 }

@@ -40,12 +40,22 @@ public class ErrorEventService {
         event.setTraceId(request.getTraceId());
         event.setUserName(request.getUserName());
 
-        
-        if (request.getSeverity() != null) {
-            event.setSeverity(request.getSeverity());
+        // Handle both 'severity' and 'level' for compatibility
+        String severity = request.getSeverity();
+        if (severity == null || severity.isEmpty()) {
+            severity = request.getLevel();
         }
+        
+        if (severity != null) {
+            event.setSeverity(severity);
+        } else {
+            event.setSeverity("medium");
+        }
+        
         if (request.getStatus() != null) {
             event.setStatus(request.getStatus());
+        } else {
+            event.setStatus("unresolved");
         }
         
         return errorEventRepository.save(event);

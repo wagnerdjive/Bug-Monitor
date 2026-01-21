@@ -22,6 +22,7 @@ public class IngestRequest {
     private LocalDateTime occurredAt;
     private String severity;
     private String status;
+    private String level;
 
     private String traceId;
     private String userName;
@@ -61,6 +62,9 @@ public class IngestRequest {
     
     public String getSeverity() { return severity; }
     public void setSeverity(String severity) { this.severity = severity; }
+    
+    public String getLevel() { return level; }
+    public void setLevel(String level) { this.level = level; }
     
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

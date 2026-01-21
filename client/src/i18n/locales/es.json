@@ -43,6 +43,8 @@
     "enterEmail": "Ingresa el email",
     "enterFirstName": "Nombre",
     "enterLastName": "Apellido",
+    "enterConfirmPassword": "Confirma tu contraseña",
+    "confirmPassword": "Confirmar Contraseña",
     "noAccount": "No tienes una cuenta?",
     "hasAccount": "Ya tienes una cuenta?",
     "loginSuccess": "Inicio de sesion exitoso",

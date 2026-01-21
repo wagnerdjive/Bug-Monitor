@@ -43,6 +43,8 @@
     "enterEmail": "Digite o email",
     "enterFirstName": "Nome",
     "enterLastName": "Sobrenome",
+    "enterConfirmPassword": "Confirme sua senha",
+    "confirmPassword": "Confirmar Senha",
     "noAccount": "Nao tem uma conta?",
     "hasAccount": "Ja tem uma conta?",
     "loginSuccess": "Login realizado com sucesso",

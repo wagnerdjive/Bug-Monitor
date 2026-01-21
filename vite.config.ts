@@ -14,6 +14,17 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "spring-backend/src/main/resources/static"),
     emptyOutDir: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+      },
+    },
   },
   server: {
     port: 5000,

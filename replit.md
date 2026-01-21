@@ -39,6 +39,8 @@ Preferred communication style: Simple, everyday language.
 - BCrypt password hashing for secure password storage
 - PostgreSQL-backed sessions for horizontal scalability
 - Protected routes require authentication via session cookie
+- **Keycloak SSO**: Optional OAuth2/OIDC authentication via Keycloak (enabled via `KEYCLOAK_ENABLED=true`)
+- First user (via any auth method) automatically becomes ADMIN
 
 ### API Structure
 - `/api/register` - User registration
@@ -51,12 +53,17 @@ Preferred communication style: Simple, everyday language.
 - `/api/projects/:id/users` - Project team members (GET, DELETE)
 - `/api/events/:id` - Individual event details
 - `/api/ingest` - Public endpoint for SDK error submission (authenticated via API key)
+- `/api/feature-flags` - Get feature flags (keycloakEnabled, emailEnabled)
+- `/api/oauth2/authorization/keycloak` - Initiate Keycloak SSO login (Spring Security handles callback)
 
 ### Recent Features
 - **Profile Management**: Users can update their profile (first name, last name, email, profile image URL) at `/profile`
-- **Enhanced Auth UI**: Authentication page features improved design with Google Auth placeholder (coming soon)
+- **SSO Authentication**: Keycloak SSO integration with feature flag control (replaces Google Auth placeholder)
+- **Email Notifications**: SMTP-based email service for invitations (enabled via `EMAIL_ENABLED=true`)
+- **Feature Flags**: Backend-controlled feature flags exposed via `/api/feature-flags`
 - **Project Team Management**: New "Team" tab in project details to view and remove assigned users
 - **Navigation Update**: Profile link added to sidebar user section
+- **RBAC**: Role-based access control (ADMIN/USER roles)
 
 ### Build System
 - Development: Vite dev server with HMR on port 5000, Spring Boot on port 5001

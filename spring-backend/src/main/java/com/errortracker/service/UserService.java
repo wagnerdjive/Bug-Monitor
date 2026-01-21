@@ -98,4 +98,26 @@ public class UserService {
         
         return userRepository.save(user);
     }
+    
+    public User createFromOAuth(String username, String email, String firstName, String lastName, String profileImageUrl) {
+        String uniqueUsername = username;
+        int counter = 1;
+        while (userRepository.existsByUsername(uniqueUsername)) {
+            uniqueUsername = username + counter;
+            counter++;
+        }
+        
+        User user = new User();
+        user.setUsername(uniqueUsername);
+        user.setPassword(passwordEncoder.encode(java.util.UUID.randomUUID().toString()));
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setProfileImageUrl(profileImageUrl);
+        
+        boolean isFirstUser = userRepository.count() == 0;
+        user.setRole(isFirstUser ? "ADMIN" : "USER");
+        
+        return userRepository.save(user);
+    }
 }

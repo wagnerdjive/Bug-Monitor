@@ -172,131 +172,104 @@ cd ..
 npm run dev
 ```
 
-## Google OAuth Integration
+## Feature Flags
 
-To enable Google authentication, follow these steps:
+TechMonitor uses feature flags to enable/disable optional features. These are controlled via environment variables on the backend:
 
-### 1. Create Google OAuth Credentials
+| Flag | Environment Variable | Default | Description |
+|------|---------------------|---------|-------------|
+| Keycloak SSO | `KEYCLOAK_ENABLED` | `false` | Enable Keycloak OAuth2/OIDC authentication |
+| Email Notifications | `EMAIL_ENABLED` | `false` | Enable SMTP email sending for invitations |
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Navigate to **APIs & Services** > **Credentials**
-4. Click **Create Credentials** > **OAuth client ID**
-5. Select **Web application** as the application type
-6. Add the following:
-   - **Authorized JavaScript origins**: 
-     - `http://localhost:5000` (development)
-     - `https://your-domain.com` (production)
-   - **Authorized redirect URIs**:
-     - `http://localhost:5001/api/oauth2/callback/google` (development)
-     - `https://your-domain.com/api/oauth2/callback/google` (production)
-7. Save and copy the **Client ID** and **Client Secret**
+The frontend automatically fetches these flags from `/api/feature-flags` and adjusts the UI accordingly.
 
-### 2. Configure Backend (Spring Boot)
+## Keycloak SSO Integration (Optional)
 
-Add the following dependencies to `spring-backend/pom.xml`:
+TechMonitor supports Keycloak for Single Sign-On (SSO) authentication. Keycloak is a free, open-source identity and access management solution.
 
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-oauth2-client</artifactId>
-</dependency>
-```
+### 1. Set Up Keycloak Server
 
-Add the following to `spring-backend/src/main/resources/application.properties`:
+1. Download and run Keycloak from [keycloak.org](https://www.keycloak.org/downloads)
+   ```bash
+   # Using Docker
+   docker run -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
+   ```
 
-```properties
-# Google OAuth2
-spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
-spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
-spring.security.oauth2.client.registration.google.scope=email,profile
-spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/api/oauth2/callback/google
-```
+2. Access Keycloak Admin Console at `http://localhost:8080/admin`
 
-### 3. Set Environment Variables
+3. Create a new realm called `techmonitor`
+
+4. Create a new client:
+   - **Client ID**: `techmonitor`
+   - **Client Protocol**: `openid-connect`
+   - **Access Type**: `confidential`
+   - **Valid Redirect URIs**: 
+     - `http://localhost:5001/api/oauth2/callback/keycloak` (development)
+     - `https://your-domain.com/api/oauth2/callback/keycloak` (production)
+   - **Web Origins**: `+`
+
+5. Go to the **Credentials** tab and copy the **Secret**
+
+### 2. Configure Environment Variables
 
 Set the following environment variables:
 
 ```bash
-# Backend (Spring Boot)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+# Enable Keycloak authentication
+KEYCLOAK_ENABLED=true
 
-# Frontend (Vite) - Enables the Google button
-VITE_GOOGLE_AUTH_ENABLED=true
+# Keycloak configuration
+KEYCLOAK_CLIENT_ID=techmonitor
+KEYCLOAK_CLIENT_SECRET=your-client-secret
+KEYCLOAK_ISSUER_URI=http://localhost:8080/realms/techmonitor
+
+# Application base URL (for redirect URIs)
+APP_BASE_URL=http://localhost:5000
 ```
 
-### 4. Implement OAuth2 Handler
+### 3. First User is Admin
 
-Create a new controller to handle the OAuth2 callback:
+The first user to authenticate via Keycloak (or any method) automatically becomes an ADMIN. Subsequent users are assigned the USER role.
 
-```java
-// spring-backend/src/main/java/com/errortracker/controller/OAuth2Controller.java
-@RestController
-@RequestMapping("/api/oauth2")
-public class OAuth2Controller {
-    
-    @Autowired
-    private UserService userService;
-    
-    @GetMapping("/callback/google")
-    public ResponseEntity<?> googleCallback(
-            @AuthenticationPrincipal OAuth2User principal,
-            HttpServletRequest request) {
-        
-        String email = principal.getAttribute("email");
-        String name = principal.getAttribute("name");
-        String picture = principal.getAttribute("picture");
-        
-        // Find or create user
-        User user = userService.findByEmail(email)
-            .orElseGet(() -> userService.createFromOAuth(email, name, picture));
-        
-        // Create session
-        HttpSession session = request.getSession(true);
-        session.setAttribute("userId", user.getId());
-        
-        // Redirect to dashboard
-        return ResponseEntity.status(HttpStatus.FOUND)
-            .header("Location", "/")
-            .build();
-    }
-}
-```
+## SMTP Email Configuration (Optional)
 
-### 5. Update Security Configuration
+TechMonitor can send invitation emails via SMTP when the email feature is enabled.
 
-Update `SecurityConfig.java` to include OAuth2 login:
+### 1. Configure SMTP Server
 
-```java
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .oauth2Login(oauth2 -> oauth2
-            .authorizationEndpoint(auth -> auth
-                .baseUri("/api/oauth2/authorization")
-            )
-            .redirectionEndpoint(redir -> redir
-                .baseUri("/api/oauth2/callback/*")
-            )
-            .defaultSuccessUrl("/", true)
-        )
-        // ... rest of your configuration
-    ;
-    return http.build();
-}
-```
-
-### 6. Enable Google Auth in Frontend
-
-Set the environment variable to enable the Google button:
+Set the following environment variables:
 
 ```bash
-# In your .env file (root directory)
-VITE_GOOGLE_AUTH_ENABLED=true
+# Enable email sending
+EMAIL_ENABLED=true
+
+# SMTP configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+
+# Email sender settings
+EMAIL_FROM=noreply@techmonitor.app
+APP_BASE_URL=http://localhost:5000
 ```
 
-When `VITE_GOOGLE_AUTH_ENABLED=true`, the "Coming Soon" label is removed and the Google button becomes clickable, redirecting to `/api/oauth2/authorization/google`.
+### 2. Gmail App Password (if using Gmail)
+
+1. Enable 2-Step Verification on your Google account
+2. Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
+3. Generate a new app password for "Mail"
+4. Use this password as `SMTP_PASSWORD`
+
+### 3. Email Behavior
+
+When `EMAIL_ENABLED=true`:
+- Invitation emails are sent automatically when creating invitations
+- Password reset emails are sent when requested
+
+When `EMAIL_ENABLED=false`:
+- Email content is logged to the console (useful for development)
+- The invitation token is visible in the logs
 
 ---
 

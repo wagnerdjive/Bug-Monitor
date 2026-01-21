@@ -54,6 +54,7 @@
     "loginDescription": "Ingresa tus credenciales para acceder al panel",
     "registerDescription": "Completa los datos para crear tu cuenta",
     "continueWithGoogle": "Continuar con Google",
+    "continueWithSSO": "Continuar con SSO",
     "comingSoon": "Proximamente",
     "orContinueWith": "o continua con"
   },

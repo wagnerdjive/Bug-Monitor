@@ -54,6 +54,7 @@
     "loginDescription": "Digite suas credenciais para acessar o painel",
     "registerDescription": "Preencha os dados para criar sua conta",
     "continueWithGoogle": "Continuar com Google",
+    "continueWithSSO": "Continuar com SSO",
     "comingSoon": "Em breve",
     "orContinueWith": "ou continue com"
   },

@@ -54,6 +54,7 @@
     "loginDescription": "Enter your credentials to access your dashboard",
     "registerDescription": "Fill in the details to create your account",
     "continueWithGoogle": "Continue with Google",
+    "continueWithSSO": "Continue with SSO",
     "comingSoon": "Coming Soon",
     "orContinueWith": "or continue with"
   },

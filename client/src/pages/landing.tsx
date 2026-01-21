@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Target, CheckCircle2, Zap, Lock } from "lucide-react";
+import { Shield, Target, CheckCircle2, Zap, Lock } from "lucide-react";
 import { LanguageSelector } from "@/components/language-selector";
 import { useTranslation } from "@/i18n";
 import logoPng from "@assets/IMG_5782_1768827594715.PNG";
@@ -13,7 +13,10 @@ export default function Landing() {
       <nav className="border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground">
-            <Target className="w-6 h-6 text-primary" />
+            <div className="relative flex items-center justify-center">
+              <Shield className="w-6 h-6 text-primary" />
+              <Target className="w-3 h-3 text-primary absolute" />
+            </div>
             <span>TechMonitor</span>
           </div>
           <div className="flex items-center gap-4">

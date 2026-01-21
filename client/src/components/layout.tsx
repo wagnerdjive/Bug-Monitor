@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import {
   LayoutDashboard,
   LogOut,
+  Shield,
   Target,
   Menu,
   Users,
@@ -39,7 +40,10 @@ export function Layout({ children, simple = false }: LayoutProps) {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <Link href="/">
               <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground hover:opacity-80 transition-opacity cursor-pointer">
-                <Target className="w-6 h-6 text-primary" />
+                <div className="relative flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-primary" />
+                  <Target className="w-3 h-3 text-primary absolute" />
+                </div>
                 <span>TechMonitor</span>
               </div>
             </Link>
@@ -79,7 +83,10 @@ export function Layout({ children, simple = false }: LayoutProps) {
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
         <div className="flex items-center gap-2 font-display font-bold text-xl text-primary">
-          <Target className="w-6 h-6" />
+          <div className="relative flex items-center justify-center">
+            <Shield className="w-6 h-6" />
+            <Target className="w-3 h-3 absolute" />
+          </div>
           <span>TechMonitor</span>
         </div>
         <div className="flex items-center gap-2">
@@ -93,7 +100,10 @@ export function Layout({ children, simple = false }: LayoutProps) {
             <SheetContent side="left" className="w-64 bg-card border-r border-border">
               <SheetHeader className="mb-6">
                 <SheetTitle className="flex items-center gap-2 font-display text-primary">
-                  <Target className="w-6 h-6" />
+                  <div className="relative flex items-center justify-center">
+                    <Shield className="w-6 h-6" />
+                    <Target className="w-3 h-3 absolute" />
+                  </div>
                   TechMonitor
                 </SheetTitle>
               </SheetHeader>
@@ -131,7 +141,10 @@ export function Layout({ children, simple = false }: LayoutProps) {
           <div className="flex items-center justify-between mb-2">
             <Link href="/">
               <div className="flex items-center gap-2 font-display font-bold text-xl text-foreground hover:opacity-80 transition-opacity cursor-pointer">
-                <Target className="w-6 h-6 text-primary" />
+                <div className="relative flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-primary" />
+                  <Target className="w-3 h-3 text-primary absolute" />
+                </div>
                 <span>TechMonitor</span>
               </div>
             </Link>

@@ -39,12 +39,21 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody AuthRequest request, HttpServletRequest httpRequest) {
         try {
+            String username = request.getUsername();
+            if (username == null || username.isBlank()) {
+                if (request.getEmail() != null && request.getEmail().contains("@")) {
+                    username = request.getEmail().split("@")[0];
+                } else {
+                    return ResponseEntity.badRequest().body(Map.of("message", "Username or valid email required"));
+                }
+            }
+
             if (request.getConfirmPassword() != null && !request.getPassword().equals(request.getConfirmPassword())) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Passwords do not match"));
             }
 
             User user = userService.createUser(
-                request.getUsername(),
+                username,
                 request.getPassword(),
                 request.getEmail(),
                 request.getFirstName(),

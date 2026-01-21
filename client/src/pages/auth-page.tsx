@@ -25,6 +25,15 @@ export default function AuthPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const { loginMutation, registerMutation, user } = useAuth();
+
+  // Auto-generate username from email
+  useEffect(() => {
+    if (!isLogin && email) {
+      const prefix = email.split("@")[0];
+      setUsername(prefix);
+    }
+  }, [email, isLogin]);
+
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -99,20 +108,22 @@ export default function AuthPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t("auth.username")}</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
-                  value={username} 
-                  onChange={(e) => setUsername(e.target.value)} 
-                  required 
-                  placeholder={t("auth.enterUsername")}
-                  className="pl-10"
-                  data-testid="input-username"
-                />
+            {isLogin && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("auth.username")}</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    required 
+                    placeholder={t("auth.enterUsername")}
+                    className="pl-10"
+                    data-testid="input-username"
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             {!isLogin && (
               <>

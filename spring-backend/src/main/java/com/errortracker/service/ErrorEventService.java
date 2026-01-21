@@ -36,7 +36,13 @@ public class ErrorEventService {
         event.setPlatformInfo(request.getPlatformInfo());
         event.setTags(request.getTags());
         event.setBreadcrumbs(request.getBreadcrumbs());
-        event.setOccurredAt(request.getOccurredAt());
+        
+        if (request.getOccurredAt() != null) {
+            event.setOccurredAt(request.getOccurredAt());
+        } else {
+            event.setOccurredAt(java.time.LocalDateTime.now());
+        }
+        
         event.setTraceId(request.getTraceId());
         event.setUserName(request.getUserName());
 

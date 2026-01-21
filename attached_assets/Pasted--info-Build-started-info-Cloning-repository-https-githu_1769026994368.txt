@@ -1,0 +1,62 @@
+[info]Build started
+[info]Cloning repository https://github.com/wagnerdjive/Bug-Monitor.git
+[info]Repository cloned successfully
+[info]Building Docker image
+[info]Detected: node (nextjs)
+[info]Using base image: node:24-alpine
+[info]Pulling base image...
+[info]Base image pulled successfully
+[info]Creating application layer...
+[info]Pushing image → xindiri/techmonitor-b5kphun:68a2d24
+[info]Image built and pushed successfully
+[info]Docker image built and pushed: xindiri/techmonitor-b5kphun:68a2d24
+[info]Deploying to wolke
+[info]
+[info]added 337 packages, and audited 338 packages in 1m
+[info]Build process finished successfully
+[info]
+[info]51 packages are looking for funding
+[info]run `npm fund` for details
+[info]
+[info]found 0 vulnerabilities
+[info]npm notice
+[info]npm notice New minor version of npm available! 11.6.2 -> 11.7.0
+[info]npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
+[info]npm notice To update run: npm install -g npm@11.7.0
+[info]npm notice
+[info]
+[info]> techmonitor@1.0.0 build
+[info]> node --max-old-space-size=1024 ./node_modules/.bin/vite build
+[info]
+[info]vite v7.3.0 building client environment for production...
+[info]transforming...
+[info]✓ 2669 modules transformed.
+[info]rendering chunks...
+[info]computing gzip size...
+[info]../spring-backend/src/main/resources/static/index.html 2.09 kB │ gzip: 0.80 kB
+[info]../spring-backend/src/main/resources/static/assets/IMG_5782_1768827594715-TX7RFKML.PNG 24.34 kB
+[info]../spring-backend/src/main/resources/static/assets/index-BRXtvV1e.css 81.62 kB │ gzip: 13.09 kB
+[info]../spring-backend/src/main/resources/static/assets/vendor-355hkWIK.js 815.07 kB │ gzip: 242.29 kB
+[info]✓ built in 1m 16s
+[info]
+[info]> techmonitor@1.0.0 start
+[info]> java -jar spring-backend/target/*.jar
+[info]
+[sh]java: not found
+[info]
+[info]added 337 packages, and audited 338 packages in 1m
+[info]
+[info]51 packages are looking for funding
+[info]run `npm fund` for details
+[info]
+[info]found 0 vulnerabilities
+[info]npm notice
+[info]npm notice New minor version of npm available! 11.6.2 -> 11.7.0
+[info]npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
+[info]npm notice To update run: npm install -g npm@11.7.0
+[info]npm notice
+[info]
+[info]> techmonitor@1.0.0 build
+[info]
+[info]vite v7.3.0 building client environment for production...
+[info]transforming...

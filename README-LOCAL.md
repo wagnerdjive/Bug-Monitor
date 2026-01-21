@@ -172,6 +172,134 @@ cd ..
 npm run dev
 ```
 
+## Google OAuth Integration
+
+To enable Google authentication, follow these steps:
+
+### 1. Create Google OAuth Credentials
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Navigate to **APIs & Services** > **Credentials**
+4. Click **Create Credentials** > **OAuth client ID**
+5. Select **Web application** as the application type
+6. Add the following:
+   - **Authorized JavaScript origins**: 
+     - `http://localhost:5000` (development)
+     - `https://your-domain.com` (production)
+   - **Authorized redirect URIs**:
+     - `http://localhost:5001/api/oauth2/callback/google` (development)
+     - `https://your-domain.com/api/oauth2/callback/google` (production)
+7. Save and copy the **Client ID** and **Client Secret**
+
+### 2. Configure Backend (Spring Boot)
+
+Add the following dependencies to `spring-backend/pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-oauth2-client</artifactId>
+</dependency>
+```
+
+Add the following to `spring-backend/src/main/resources/application.properties`:
+
+```properties
+# Google OAuth2
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
+spring.security.oauth2.client.registration.google.scope=email,profile
+spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/api/oauth2/callback/google
+```
+
+### 3. Set Environment Variables
+
+Set the following environment variables:
+
+```bash
+# Backend (Spring Boot)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Frontend (Vite) - Enables the Google button
+VITE_GOOGLE_AUTH_ENABLED=true
+```
+
+### 4. Implement OAuth2 Handler
+
+Create a new controller to handle the OAuth2 callback:
+
+```java
+// spring-backend/src/main/java/com/errortracker/controller/OAuth2Controller.java
+@RestController
+@RequestMapping("/api/oauth2")
+public class OAuth2Controller {
+    
+    @Autowired
+    private UserService userService;
+    
+    @GetMapping("/callback/google")
+    public ResponseEntity<?> googleCallback(
+            @AuthenticationPrincipal OAuth2User principal,
+            HttpServletRequest request) {
+        
+        String email = principal.getAttribute("email");
+        String name = principal.getAttribute("name");
+        String picture = principal.getAttribute("picture");
+        
+        // Find or create user
+        User user = userService.findByEmail(email)
+            .orElseGet(() -> userService.createFromOAuth(email, name, picture));
+        
+        // Create session
+        HttpSession session = request.getSession(true);
+        session.setAttribute("userId", user.getId());
+        
+        // Redirect to dashboard
+        return ResponseEntity.status(HttpStatus.FOUND)
+            .header("Location", "/")
+            .build();
+    }
+}
+```
+
+### 5. Update Security Configuration
+
+Update `SecurityConfig.java` to include OAuth2 login:
+
+```java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .oauth2Login(oauth2 -> oauth2
+            .authorizationEndpoint(auth -> auth
+                .baseUri("/api/oauth2/authorization")
+            )
+            .redirectionEndpoint(redir -> redir
+                .baseUri("/api/oauth2/callback/*")
+            )
+            .defaultSuccessUrl("/", true)
+        )
+        // ... rest of your configuration
+    ;
+    return http.build();
+}
+```
+
+### 6. Enable Google Auth in Frontend
+
+Set the environment variable to enable the Google button:
+
+```bash
+# In your .env file (root directory)
+VITE_GOOGLE_AUTH_ENABLED=true
+```
+
+When `VITE_GOOGLE_AUTH_ENABLED=true`, the "Coming Soon" label is removed and the Google button becomes clickable, redirecting to `/api/oauth2/authorization/google`.
+
+---
+
 ## Production Build
 
 1. **Frontend**: `npm run build` (outputs to `dist/`)

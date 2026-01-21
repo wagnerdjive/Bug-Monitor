@@ -31,7 +31,8 @@ public class EmailService {
         System.out.println(">>> [EMAIL DEBUG] STATUS: emailEnabled=" + emailEnabled + ", mailSender=" + (mailSender != null));
         
         if (mailSender == null) {
-            System.out.println(">>> [EMAIL ERROR] mailSender is NULL! Check if spring-boot-starter-mail is in pom.xml and properties are correct.");
+            System.err.println(">>> [EMAIL ERROR] mailSender is NULL! Bean não injetado.");
+            return;
         }
         
         if (!emailEnabled) {
@@ -46,7 +47,7 @@ public class EmailService {
         message.setText(buildInvitationEmailBody(inviteToken, invitedByUsername));
         
         try {
-            System.out.println(">>> [EMAIL DEBUG] Tentando enviar via SMTP: " + toEmail);
+            System.out.println(">>> [EMAIL DEBUG] Conectando ao Zoho SMTP (Porto 465)...");
             mailSender.send(message);
             System.out.println(">>> [EMAIL SUCCESS] EMAIL ENVIADO COM SUCESSO PARA: " + toEmail);
         } catch (Exception e) {

@@ -266,7 +266,7 @@ async def global_exception_handler(request, exc):
           <Card className="bg-slate-900 border-slate-800 text-white overflow-hidden group">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-blue-400" />
+                <Target className="w-5 h-5 text-blue-400" />
                 {t("docs.securityTitle")}
               </CardTitle>
             </CardHeader>

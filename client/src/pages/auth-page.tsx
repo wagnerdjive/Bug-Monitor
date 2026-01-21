@@ -204,6 +204,7 @@ export default function AuthPage() {
               className="w-full" 
               disabled={isPending}
               data-testid="button-submit"
+              variant="default"
             >
               {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {isLogin ? t("auth.login") : t("auth.register")}

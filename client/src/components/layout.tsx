@@ -79,7 +79,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
         <div className="flex items-center gap-2 font-display font-bold text-xl text-primary">
-          <ShieldCheck className="w-6 h-6" />
+          <Target className="w-6 h-6" />
           <span>TechMonitor</span>
         </div>
         <div className="flex items-center gap-2">
@@ -93,7 +93,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
             <SheetContent side="left" className="w-64 bg-card border-r border-border">
               <SheetHeader className="mb-6">
                 <SheetTitle className="flex items-center gap-2 font-display text-primary">
-                  <ShieldCheck className="w-6 h-6" />
+                  <Target className="w-6 h-6" />
                   TechMonitor
                 </SheetTitle>
               </SheetHeader>

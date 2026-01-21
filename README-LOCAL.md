@@ -235,7 +235,7 @@ The first user to authenticate via Keycloak (or any method) automatically become
 
 TechMonitor can send invitation emails via SMTP when the email feature is enabled.
 
-### 1. Configure SMTP Server
+### 1. Configure SMTP Server (Zoho Mail)
 
 Set the following environment variables:
 
@@ -243,23 +243,31 @@ Set the following environment variables:
 # Enable email sending
 EMAIL_ENABLED=true
 
-# SMTP configuration
-SMTP_HOST=smtp.gmail.com
+# Zoho Mail SMTP configuration
+SMTP_HOST=smtp.zoho.com
 SMTP_PORT=587
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
+SMTP_USERNAME=your-email@zoho.com
+SMTP_PASSWORD=your-zoho-password
 
 # Email sender settings
-EMAIL_FROM=noreply@techmonitor.app
+EMAIL_FROM=your-email@zoho.com
 APP_BASE_URL=http://localhost:5000
 ```
 
-### 2. Gmail App Password (if using Gmail)
+### 2. Zoho Mail Setup
 
-1. Enable 2-Step Verification on your Google account
-2. Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
-3. Generate a new app password for "Mail"
-4. Use this password as `SMTP_PASSWORD`
+1. Log in to your Zoho Mail account
+2. Go to **Settings** > **Mail** > **Accounts**
+3. Under **IMAP/POP/SMTP**, enable SMTP access
+4. Use your Zoho email and password for authentication
+5. If you have 2FA enabled, generate an App-Specific Password:
+   - Go to **Settings** > **Security** > **App Passwords**
+   - Create a new app password and use it as `SMTP_PASSWORD`
+
+**Note**: For Zoho domains outside the US, use the appropriate SMTP server:
+- EU: `smtp.zoho.eu`
+- India: `smtp.zoho.in`
+- Australia: `smtp.zoho.com.au`
 
 ### 3. Email Behavior
 

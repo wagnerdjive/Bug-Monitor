@@ -11,8 +11,8 @@
   cmds = [
     "npm install",
     "npm run build:frontend",
-    "mvn clean package -DskipTests"
+    "cd spring-backend && mvn clean package -DskipTests"
   ]
 
 [start]
-  cmd = "java -jar target/*.jar"
+  cmd = "java -jar spring-backend/target/*.jar"

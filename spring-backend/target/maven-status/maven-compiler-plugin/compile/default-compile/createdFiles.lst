@@ -5,7 +5,6 @@ com/errortracker/ErrorTrackerApplication.class
 com/errortracker/dto/AssignProjectRequest.class
 com/errortracker/repository/ProjectUserRepository.class
 com/errortracker/service/EmailService.class
-com/errortracker/controller/AuthController.class
 com/errortracker/entity/Project.class
 com/errortracker/entity/ProjectUser.class
 com/errortracker/dto/ProfileUpdateRequest.class
@@ -31,6 +30,5 @@ com/errortracker/entity/User.class
 com/errortracker/repository/InvitationRepository.class
 com/errortracker/entity/ErrorEvent.class
 com/errortracker/controller/AdminController.class
-com/errortracker/config/OAuth2SuccessHandler.class
 com/errortracker/entity/Invitation.class
 com/errortracker/controller/FeatureFlagsController.class

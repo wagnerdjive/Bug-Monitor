@@ -20,6 +20,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -50,7 +51,15 @@ export default function AuthPage() {
         }
       });
     } else {
-      registerMutation.mutate({ username, password, email, firstName, lastName }, {
+      if (password !== confirmPassword) {
+        toast({
+          title: t("auth.registerFailed"),
+          description: "Passwords do not match",
+          variant: "destructive",
+        });
+        return;
+      }
+      registerMutation.mutate({ username, password, confirmPassword, email, firstName, lastName }, {
         onError: (error: Error) => {
           toast({
             title: t("auth.registerFailed"),
@@ -89,38 +98,6 @@ export default function AuthPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {featureFlags?.keycloakEnabled ? (
-            <Button 
-              variant="outline" 
-              className="w-full gap-2"
-              onClick={() => window.location.href = "/api/oauth2/authorization/keycloak"}
-              data-testid="button-sso-auth"
-            >
-              <ShieldCheck className="w-5 h-5 text-primary" />
-              {t("auth.continueWithSSO")}
-            </Button>
-          ) : (
-            <Button 
-              variant="outline" 
-              className="w-full gap-2" 
-              disabled
-              data-testid="button-sso-auth"
-            >
-              <ShieldCheck className="w-5 h-5 text-muted-foreground" />
-              {t("auth.continueWithSSO")}
-              <span className="ml-auto text-xs text-muted-foreground">{t("auth.comingSoon")}</span>
-            </Button>
-          )}
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">{t("auth.orContinueWith")}</span>
-            </div>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">{t("auth.username")}</label>
@@ -192,6 +169,24 @@ export default function AuthPage() {
                 />
               </div>
             </div>
+
+            {!isLogin && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("auth.confirmPassword") || "Confirm Password"}</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    type="password" 
+                    value={confirmPassword} 
+                    onChange={(e) => setConfirmPassword(e.target.value)} 
+                    required 
+                    placeholder={t("auth.enterConfirmPassword") || "Confirm your password"}
+                    className="pl-10"
+                    data-testid="input-confirm-password"
+                  />
+                </div>
+              </div>
+            )}
 
             <Button 
               type="submit" 

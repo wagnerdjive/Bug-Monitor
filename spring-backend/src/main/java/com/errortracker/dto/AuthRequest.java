@@ -12,6 +12,7 @@ public class AuthRequest {
     private String email;
     private String firstName;
     private String lastName;
+    private String confirmPassword;
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -27,4 +28,7 @@ public class AuthRequest {
     
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getConfirmPassword() { return confirmPassword; }
+    public void setConfirmPassword(String confirmPassword) { this.confirmPassword = confirmPassword; }
 }

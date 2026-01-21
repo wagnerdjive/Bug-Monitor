@@ -20,16 +20,6 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @EnableWebSecurity
 public class SecurityConfig {
     
-    @Value("${app.feature.keycloak-enabled:false}")
-    private boolean keycloakEnabled;
-    
-    @Lazy
-    @Autowired(required = false)
-    private OAuth2SuccessHandler oAuth2SuccessHandler;
-    
-    @Autowired(required = false)
-    private ClientRegistrationRepository clientRegistrationRepository;
-    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -47,7 +37,7 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/api/**")
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/register", "/api/login", "/api/ingest", "/api/auth/user", "/api/register/invite/**", "/api/oauth2/**", "/api/feature-flags").permitAll()
+                .requestMatchers("/api/register", "/api/login", "/api/ingest", "/api/auth/user", "/api/register/invite/**", "/api/feature-flags").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
@@ -60,18 +50,6 @@ public class SecurityConfig {
                     response.setStatus(HttpStatus.OK.value());
                 })
             );
-        
-        if (keycloakEnabled && oAuth2SuccessHandler != null && clientRegistrationRepository != null) {
-            http.oauth2Login(oauth2 -> oauth2
-                .authorizationEndpoint(auth -> auth
-                    .baseUri("/api/oauth2/authorization")
-                )
-                .redirectionEndpoint(redir -> redir
-                    .baseUri("/api/oauth2/callback/*")
-                )
-                .successHandler(oAuth2SuccessHandler)
-            );
-        }
         
         return http.build();
     }

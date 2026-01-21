@@ -39,8 +39,7 @@ Preferred communication style: Simple, everyday language.
 - BCrypt password hashing for secure password storage
 - PostgreSQL-backed sessions for horizontal scalability
 - Protected routes require authentication via session cookie
-- **Keycloak SSO**: Optional OAuth2/OIDC authentication via Keycloak (enabled via `KEYCLOAK_ENABLED=true`)
-- First user (via any auth method) automatically becomes ADMIN
+- First user automatically becomes ADMIN
 
 ### API Structure
 - `/api/register` - User registration

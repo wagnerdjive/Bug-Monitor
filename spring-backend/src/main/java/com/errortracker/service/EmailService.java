@@ -25,6 +25,26 @@ public class EmailService {
         return emailEnabled && mailSender != null;
     }
     
+    public void sendWelcomeEmail(String toEmail, String username) {
+        if (!isEmailEnabled()) {
+            System.out.println("[EMAIL DISABLED] Would send welcome email to: " + toEmail);
+            return;
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("Welcome to TechMonitor!");
+        message.setText("Hello " + username + ",\n\nYour account has been successfully created. You can now start monitoring your applications.\n\nBest regards,\nThe TechMonitor Team");
+
+        try {
+            mailSender.send(message);
+            System.out.println("[EMAIL] Welcome email sent to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("[EMAIL] Failed to send welcome email to " + toEmail + ": " + e.getMessage());
+        }
+    }
+
     public void sendInvitationEmail(String toEmail, String inviteToken, String invitedByUsername) {
         if (mailSender == null) {
             System.out.println("[EMAIL] Mail sender not configured, skipping email to: " + toEmail);

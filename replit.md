@@ -45,10 +45,18 @@ Preferred communication style: Simple, everyday language.
 - `/api/login` - User login
 - `/api/logout` - User logout
 - `/api/auth/user` - Get current authenticated user
+- `/api/profile` - User profile management (PUT)
 - `/api/projects` - CRUD operations for projects
 - `/api/projects/:id/events` - Error events for a project
+- `/api/projects/:id/users` - Project team members (GET, DELETE)
 - `/api/events/:id` - Individual event details
 - `/api/ingest` - Public endpoint for SDK error submission (authenticated via API key)
+
+### Recent Features
+- **Profile Management**: Users can update their profile (first name, last name, email, profile image URL) at `/profile`
+- **Enhanced Auth UI**: Authentication page features improved design with Google Auth placeholder (coming soon)
+- **Project Team Management**: New "Team" tab in project details to view and remove assigned users
+- **Navigation Update**: Profile link added to sidebar user section
 
 ### Build System
 - Development: Vite dev server with HMR on port 5000, Spring Boot on port 5001

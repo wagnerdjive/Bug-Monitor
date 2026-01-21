@@ -1,6 +1,7 @@
 package com.errortracker.controller;
 
 import com.errortracker.dto.AuthRequest;
+import com.errortracker.dto.ProfileUpdateRequest;
 import com.errortracker.dto.UserResponse;
 import com.errortracker.entity.Invitation;
 import com.errortracker.entity.User;
@@ -179,6 +180,32 @@ public class AuthController {
             session.setAttribute("userId", user.getId());
             
             return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.fromUser(user));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+    
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@RequestBody ProfileUpdateRequest request, HttpServletRequest httpRequest) {
+        HttpSession session = httpRequest.getSession(false);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        try {
+            User user = userService.updateProfile(
+                userId,
+                request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getProfileImageUrl()
+            );
+            return ResponseEntity.ok(UserResponse.fromUser(user));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }

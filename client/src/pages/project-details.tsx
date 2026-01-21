@@ -34,7 +34,10 @@ import {
   X,
   Filter,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Users,
+  UserMinus,
+  Loader2
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
@@ -55,6 +58,149 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/i18n";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+interface ProjectUser {
+  id: number;
+  userId: number;
+  projectId: number;
+  role: string;
+  user?: {
+    id: number;
+    username: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    profileImageUrl?: string;
+  };
+}
+
+function ProjectTeamMembers({ projectId }: { projectId: number }) {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+
+  const { data: projectUsers, isLoading } = useQuery<ProjectUser[]>({
+    queryKey: [`/api/projects/${projectId}/users`],
+  });
+
+  const removeUserMutation = useMutation({
+    mutationFn: async (projectUserId: number) => {
+      await apiRequest("DELETE", `/api/projects/${projectId}/users/${projectUserId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${projectId}/users`] });
+      toast({
+        title: t("projectUsers.removeSuccess"),
+      });
+    },
+    onError: () => {
+      toast({
+        title: t("projectUsers.removeFailed"),
+        variant: "destructive",
+      });
+    },
+  });
+
+  const getUserInitials = (user: ProjectUser["user"]) => {
+    if (!user) return "?";
+    if (user.firstName && user.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    }
+    return user.username.substring(0, 2).toUpperCase();
+  };
+
+  const getUserDisplayName = (user: ProjectUser["user"]) => {
+    if (!user) return "Unknown User";
+    if (user.firstName && user.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+    return user.username;
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Users className="w-5 h-5" />
+          {t("projectUsers.title")}
+        </CardTitle>
+        <CardDescription>{t("projectUsers.description")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : !projectUsers || projectUsers.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <p>{t("projectUsers.noUsers")}</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {projectUsers.map((projectUser) => (
+              <div 
+                key={projectUser.id} 
+                className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+                data-testid={`team-member-${projectUser.id}`}
+              >
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={projectUser.user?.profileImageUrl} />
+                    <AvatarFallback>{getUserInitials(projectUser.user)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">{getUserDisplayName(projectUser.user)}</p>
+                    <p className="text-sm text-muted-foreground">{projectUser.user?.email || projectUser.user?.username}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="capitalize">
+                    {t(`projectUsers.${projectUser.role.toLowerCase()}`) || projectUser.role}
+                  </Badge>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-muted-foreground hover:text-destructive"
+                        data-testid={`button-remove-user-${projectUser.id}`}
+                      >
+                        <UserMinus className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t("projectUsers.removeConfirm")}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t("projectUsers.removeWarning")}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => removeUserMutation.mutate(projectUser.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {removeUserMutation.isPending ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            t("projectUsers.removeUser")
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function ProjectDetails() {
   const [, params] = useRoute("/projects/:id");
@@ -255,12 +401,15 @@ export default function ProjectDetails() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="w-full md:w-auto grid grid-cols-3 md:inline-flex">
+          <TabsList className="w-full md:w-auto grid grid-cols-4 md:inline-flex">
             <TabsTrigger value="overview" className="gap-2" data-testid="tab-overview">
               <Activity className="w-4 h-4 hidden sm:inline" /> {t("project.overview")}
             </TabsTrigger>
             <TabsTrigger value="issues" className="gap-2" data-testid="tab-issues">
               <AlertTriangle className="w-4 h-4 hidden sm:inline" /> {t("project.issues")}
+            </TabsTrigger>
+            <TabsTrigger value="team" className="gap-2" data-testid="tab-team">
+              <Users className="w-4 h-4 hidden sm:inline" /> {t("projectUsers.title")}
             </TabsTrigger>
             <TabsTrigger value="setup" className="gap-2" data-testid="tab-setup">
               {t("project.setup")}
@@ -502,6 +651,10 @@ export default function ProjectDetails() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="team">
+            <ProjectTeamMembers projectId={projectId} />
           </TabsContent>
 
           <TabsContent value="setup">

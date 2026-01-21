@@ -75,4 +75,27 @@ public class UserService {
     public boolean isEmailTaken(String email) {
         return userRepository.existsByEmail(email);
     }
+    
+    public User updateProfile(Integer userId, String firstName, String lastName, String email, String profileImageUrl) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        if (firstName != null) {
+            user.setFirstName(firstName);
+        }
+        if (lastName != null) {
+            user.setLastName(lastName);
+        }
+        if (email != null && !email.equals(user.getEmail())) {
+            if (userRepository.existsByEmail(email)) {
+                throw new IllegalArgumentException("Email already in use");
+            }
+            user.setEmail(email);
+        }
+        if (profileImageUrl != null) {
+            user.setProfileImageUrl(profileImageUrl);
+        }
+        
+        return userRepository.save(user);
+    }
 }

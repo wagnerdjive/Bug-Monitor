@@ -14,6 +14,7 @@ import ProjectDetails from "@/pages/project-details";
 import EventDetails from "@/pages/event-details";
 import AuthPage from "@/pages/auth-page";
 import Admin from "@/pages/admin";
+import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,6 +35,9 @@ function Router() {
       </Route>
       <Route path="/admin">
         {user && user.role === "ADMIN" ? <Admin /> : <Redirect to="/" />}
+      </Route>
+      <Route path="/profile">
+        {user ? <Profile /> : <Redirect to="/auth" />}
       </Route>
       <Route path="/documentation" component={Documentation} />
       <Route path="/projects/:id">

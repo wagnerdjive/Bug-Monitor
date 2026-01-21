@@ -6,6 +6,7 @@ import {
   ShieldCheck,
   Menu,
   Users,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -170,20 +171,27 @@ export function Layout({ children, simple = false }: LayoutProps) {
             <LanguageSelector />
           </div>
 
-          <div className="flex items-center gap-3 mb-4 px-2">
-            <Avatar className="w-8 h-8 border border-border">
-              <AvatarImage src={user?.profileImageUrl || undefined} />
-              <AvatarFallback>{user?.username?.[0]?.toUpperCase() || "U"}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">
-                {user?.username}
-              </p>
-              <p className="text-xs text-muted-foreground truncate">
-                {user?.email}
-              </p>
-            </div>
-          </div>
+          <Link href="/profile">
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-3 mb-4 h-auto py-2"
+              data-testid="link-profile"
+            >
+              <Avatar className="w-8 h-8 border border-border">
+                <AvatarImage src={user?.profileImageUrl || undefined} />
+                <AvatarFallback>{user?.username?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-sm font-medium truncate">
+                  {user?.username}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </p>
+              </div>
+              <User className="w-4 h-4 text-muted-foreground" />
+            </Button>
+          </Link>
           <Button
             variant="outline"
             className="w-full gap-2 border-border/50 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-colors"

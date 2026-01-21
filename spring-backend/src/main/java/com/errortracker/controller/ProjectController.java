@@ -121,4 +121,50 @@ public class ProjectController {
             })
             .orElse(ResponseEntity.notFound().build());
     }
+    
+    @GetMapping("/{id}/users")
+    public ResponseEntity<?> getProjectUsers(@PathVariable Integer id, HttpServletRequest request) {
+        Integer userId = getUserId(request);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        return projectService.getProject(id)
+            .map(project -> {
+                if (!isAdmin(userId) && !hasProjectAccess(id, userId, project)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Unauthorized"));
+                }
+                return ResponseEntity.ok(projectUserService.getProjectUsersWithDetails(id));
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @DeleteMapping("/{projectId}/users/{projectUserId}")
+    public ResponseEntity<?> removeUserFromProject(
+            @PathVariable Integer projectId, 
+            @PathVariable Integer projectUserId, 
+            HttpServletRequest request) {
+        Integer userId = getUserId(request);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        return projectService.getProject(projectId)
+            .map(project -> {
+                // Only admins and owners can remove users from projects
+                if (!isAdmin(userId) && !project.getUserId().equals(userId)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Unauthorized"));
+                }
+                
+                try {
+                    projectUserService.removeProjectUser(projectUserId, projectId);
+                    return ResponseEntity.noContent().build();
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+                }
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
 }

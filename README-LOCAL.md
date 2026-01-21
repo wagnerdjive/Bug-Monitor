@@ -34,6 +34,8 @@ CREATE TABLE users (
     last_name VARCHAR(255),
     profile_image_url VARCHAR(255),
     role VARCHAR(50) NOT NULL DEFAULT 'USER',
+    blocked BOOLEAN DEFAULT FALSE NOT NULL,
+    can_create_projects BOOLEAN DEFAULT TRUE NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE,
     updated_at TIMESTAMP WITHOUT TIME ZONE
 );

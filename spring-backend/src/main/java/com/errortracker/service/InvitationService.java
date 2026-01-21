@@ -37,11 +37,21 @@ public class InvitationService {
         
         Invitation savedInvitation = invitationRepository.save(invitation);
         
+        System.out.println("[EMAIL DEBUG] Invitation created for email: " + email);
+        
         String inviterUsername = userRepository.findById(invitedBy)
             .map(User::getUsername)
             .orElse("A team member");
         
-        emailService.sendInvitationEmail(email, savedInvitation.getToken(), inviterUsername);
+        System.out.println("[EMAIL DEBUG] Inviter: " + inviterUsername);
+        
+        try {
+            emailService.sendInvitationEmail(email, savedInvitation.getToken(), inviterUsername);
+            System.out.println("[EMAIL DEBUG] EmailService.sendInvitationEmail call completed");
+        } catch (Exception e) {
+            System.err.println("[EMAIL ERROR] Failed to trigger email sending from InvitationService");
+            e.printStackTrace();
+        }
         
         return savedInvitation;
     }

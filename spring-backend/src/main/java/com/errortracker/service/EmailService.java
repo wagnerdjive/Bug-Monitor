@@ -26,24 +26,28 @@ public class EmailService {
     }
     
     public void sendInvitationEmail(String toEmail, String inviteToken, String invitedByUsername) {
+        // Log para console padrão para garantir visibilidade imediata
+        System.out.println(">>> [EMAIL DEBUG] INICIANDO ENVIO PARA: " + toEmail);
+        System.out.println(">>> [EMAIL DEBUG] STATUS: emailEnabled=" + emailEnabled + ", mailSender=" + (mailSender != null));
+        
         if (!isEmailEnabled()) {
-            System.out.println("[EMAIL DISABLED] Would send invitation to: " + toEmail);
-            System.out.println("[EMAIL DISABLED] Invite link: " + baseUrl + "/accept-invite?token=" + inviteToken);
+            System.out.println(">>> [EMAIL DISABLED] Simulação de envio para: " + toEmail);
             return;
         }
         
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("You've been invited to TechMonitor");
+        message.setSubject("TechMonitor - Convite");
         message.setText(buildInvitationEmailBody(inviteToken, invitedByUsername));
         
         try {
+            System.out.println(">>> [EMAIL DEBUG] Tentando enviar via SMTP...");
             mailSender.send(message);
-            System.out.println("Invitation email sent to: " + toEmail);
+            System.out.println(">>> [EMAIL SUCCESS] EMAIL ENVIADO COM SUCESSO PARA: " + toEmail);
         } catch (Exception e) {
-            System.err.println("Failed to send invitation email to " + toEmail + ": " + e.getMessage());
-            throw new RuntimeException("Failed to send invitation email", e);
+            System.err.println(">>> [EMAIL ERROR] FALHA CRÍTICA NO ENVIO: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     

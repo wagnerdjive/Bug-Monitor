@@ -5,6 +5,7 @@ com/errortracker/ErrorTrackerApplication.class
 com/errortracker/dto/AssignProjectRequest.class
 com/errortracker/repository/ProjectUserRepository.class
 com/errortracker/service/EmailService.class
+com/errortracker/controller/AuthController.class
 com/errortracker/entity/Project.class
 com/errortracker/entity/ProjectUser.class
 com/errortracker/dto/ProfileUpdateRequest.class

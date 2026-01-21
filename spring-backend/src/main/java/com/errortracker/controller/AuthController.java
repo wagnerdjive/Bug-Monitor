@@ -27,11 +27,13 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final InvitationService invitationService;
+    private final com.errortracker.service.EmailService emailService;
     
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, InvitationService invitationService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, InvitationService invitationService, com.errortracker.service.EmailService emailService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.invitationService = invitationService;
+        this.emailService = emailService;
     }
     
     @PostMapping("/register")

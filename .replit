@@ -45,3 +45,10 @@ waitForPort = 5000
 [agent]
 integrations = ["javascript_log_in_with_replit:2.0.0"]
 expertMode = true
+
+[userenv]
+
+[userenv.shared]
+EMAIL_ENABLED = "true"
+SMTP_USERNAME = "techtarget@zohomail.com"
+EMAIL_FROM = "techtarget@zohomail.com"

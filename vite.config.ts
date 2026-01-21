@@ -12,7 +12,7 @@ export default defineConfig({
   },
   root: path.resolve(import.meta.dirname, "client"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "spring-backend/src/main/resources/static"),
+    outDir: path.resolve(import.meta.dirname, "src/main/resources/static"),
     emptyOutDir: true,
     sourcemap: false,
     chunkSizeWarningLimit: 1000,

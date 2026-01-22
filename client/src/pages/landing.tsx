@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Target, CheckCircle2, Zap, Lock } from "lucide-react";
 import { LanguageSelector } from "@/components/language-selector";
 import { useTranslation } from "@/i18n";
-import logoPng from "@assets/IMG_5782_1768827594715.PNG";
+import logoPng from "../../attached_assets/IMG_5782_1768827594715.PNG";
 
 export default function Landing() {
   const { t } = useTranslation();

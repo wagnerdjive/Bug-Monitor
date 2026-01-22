@@ -108,7 +108,7 @@ async def global_exception_handler(request, exc):
       title: t("docs.introTitle"),
       icon: BookOpen,
       content: t("docs.introContent"),
-      details: "TechMonitor provides a robust set of tools for developers to track, analyze, and resolve application errors in real-time. By integrating our SDK, you gain access to comprehensive error reports, including environment details, user context, and historical data to identify patterns and prevent future regressions."
+      details: "Logra provides a robust set of tools for developers to track, analyze, and resolve application errors in real-time. By integrating our SDK, you gain access to comprehensive error reports, including environment details, user context, and historical data to identify patterns and prevent future regressions."
     },
     {
       title: t("docs.getStartedTitle"),

@@ -44,7 +44,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
                   <Shield className="w-6 h-6 text-primary" />
                   <Target className="w-2.5 h-2.5 text-primary absolute" />
                 </div>
-                <span>TechMonitor</span>
+                <span>Logra</span>
               </div>
             </Link>
             <div className="flex items-center gap-4">
@@ -64,7 +64,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
         </main>
         <footer className="py-8 border-t border-border/50 bg-muted/50">
           <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-4">
-            <img src={logoPng} alt="TechTarget Logo" className="h-8 object-contain opacity-50" />
+            <img src={logoPng} alt="Logra Logo" className="h-8 object-contain opacity-50" />
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
               POWERED BY TECHTARGET
             </p>
@@ -145,7 +145,7 @@ export function Layout({ children, simple = false }: LayoutProps) {
                   <Shield className="w-6 h-6 text-primary" />
                   <Target className="w-2.5 h-2.5 text-primary absolute" />
                 </div>
-                <span>TechMonitor</span>
+                <span>Logra</span>
               </div>
             </Link>
           </div>

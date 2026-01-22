@@ -35,17 +35,17 @@ export function SdkInstructions({ project }: SdkInstructionsProps) {
     {
       value: "javascript",
       label: "JavaScript",
-      code: `// TechMonitor Error Reporter - JavaScript/TypeScript
-const TECHMONITOR_API_KEY = "${project.apiKey}";
-const TECHMONITOR_URL = "${ingestUrl}";
+      code: `// Logra Error Reporter - JavaScript/TypeScript
+const LOGRA_API_KEY = "${project.apiKey}";
+const LOGRA_URL = "${ingestUrl}";
 
 async function reportError(error) {
   try {
-    const response = await fetch(TECHMONITOR_URL, {
+    const response = await fetch(LOGRA_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        apiKey: TECHMONITOR_API_KEY,
+        apiKey: LOGRA_API_KEY,
         message: error.message || String(error),
         level: "error",
         stackTrace: error.stack || new Error().stack,
@@ -82,20 +82,20 @@ try {
     {
       value: "python",
       label: "Python",
-      code: `# TechMonitor Error Reporter - Python
+      code: `# Logra Error Reporter - Python
 import requests
 import traceback
 import platform
 from datetime import datetime
 
-TECHMONITOR_API_KEY = "${project.apiKey}"
-TECHMONITOR_URL = "${ingestUrl}"
+LOGRA_API_KEY = "${project.apiKey}"
+LOGRA_URL = "${ingestUrl}"
 
 def report_error(error, level="error"):
-    """Report an error to TechMonitor"""
+    """Report an error to Logra"""
     try:
         payload = {
-            "apiKey": TECHMONITOR_API_KEY,
+            "apiKey": LOGRA_API_KEY,
             "message": str(error),
             "level": level,
             "stackTrace": traceback.format_exc(),
@@ -106,7 +106,7 @@ def report_error(error, level="error"):
             "occurredAt": datetime.utcnow().isoformat() + "Z"
         }
         response = requests.post(
-            TECHMONITOR_URL,
+            LOGRA_URL,
             json=payload,
             headers={"Content-Type": "application/json"},
             timeout=5
@@ -139,7 +139,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-object TechMonitor {
+object Logra {
     private const val API_KEY = "${project.apiKey}"
     private const val INGEST_URL = "${ingestUrl}"
     private val client = OkHttpClient()
@@ -191,7 +191,7 @@ try {
 import Foundation
 import UIKit
 
-class TechMonitor {
+class Logra {
     static let apiKey = "${project.apiKey}"
     static let ingestURL = URL(string: "${ingestUrl}")!
     
@@ -247,7 +247,7 @@ import java.time.Instant;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class TechMonitor {
+public class Logra {
     private static final String API_KEY = "${project.apiKey}";
     private static final String INGEST_URL = "${ingestUrl}";
     private static final Gson gson = new Gson();
@@ -308,7 +308,7 @@ try {
     {
       value: "curl",
       label: "cURL",
-      code: `# TechMonitor Error Reporter - cURL
+      code: `# Logra Error Reporter - cURL
 # Use this to test the integration or send errors from shell scripts
 
 curl -X POST "${ingestUrl}" \\

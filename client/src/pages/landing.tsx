@@ -17,7 +17,7 @@ export default function Landing() {
               <Shield className="w-6 h-6 text-primary" />
               <Target className="w-2.5 h-2.5 text-primary absolute" />
             </div>
-            <span>TechMonitor</span>
+            <span>Logra</span>
           </div>
           <div className="flex items-center gap-4">
             <LanguageSelector />
@@ -124,7 +124,7 @@ export default function Landing() {
           <div className="flex flex-col items-center gap-3">
             <img
               src={logoPng}
-              alt="TechTarget Logo"
+              alt="Logra Logo"
               className="h-32 object-contain"
             />
           </div>

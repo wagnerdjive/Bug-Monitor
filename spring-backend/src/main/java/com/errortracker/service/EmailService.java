@@ -34,8 +34,8 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("Welcome to TechMonitor!");
-        message.setText("Hello " + username + ",\n\nYour account has been successfully created. You can now start monitoring your applications.\n\nBest regards,\nThe TechMonitor Team");
+        message.setSubject("Welcome to Logra!");
+        message.setText("Hello " + username + ",\n\nYour account has been successfully created. You can now start monitoring your applications.\n\nBest regards,\nThe Logra Team");
 
         try {
             mailSender.send(message);
@@ -59,7 +59,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("TechMonitor - Invitation");
+        message.setSubject("Logra - Invitation");
         message.setText(buildInvitationEmailBody(inviteToken, invitedByUsername));
         
         try {
@@ -80,7 +80,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        message.setSubject("Reset your TechMonitor password");
+        message.setSubject("Reset your Logra password");
         message.setText(buildPasswordResetEmailBody(resetToken));
         
         try {
@@ -96,9 +96,9 @@ public class EmailService {
         return String.format("""
             Hello!
             
-            You've been invited to join TechMonitor by %s.
+            You've been invited to join Logra by %s.
             
-            TechMonitor is a real-time error tracking and performance monitoring platform for developers.
+            Logra is a real-time error tracking and performance monitoring platform for developers.
             
             Click the link below to accept the invitation and create your account:
             
@@ -117,7 +117,7 @@ public class EmailService {
         return String.format("""
             Hello!
             
-            We received a request to reset your TechMonitor password.
+            We received a request to reset your Logra password.
             
             Click the link below to reset your password:
             

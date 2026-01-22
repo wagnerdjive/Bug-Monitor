@@ -150,7 +150,7 @@ export default function AcceptInvite() {
           <Shield className="w-8 h-8 text-primary" />
           <Target className="w-3.5 h-3.5 text-primary absolute" />
         </div>
-        <span>TechMonitor</span>
+        <span>Logra</span>
       </div>
       
       <Card className="w-full max-w-md">

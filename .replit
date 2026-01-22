@@ -10,8 +10,8 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 5001
-externalPort = 3000
+localPort = 8080
+externalPort = 8080
 
 [env]
 PORT = "5000"
@@ -31,19 +31,35 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "Frontend Dev"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend Dev"
 
 [[workflows.workflow]]
-name = "Start application"
+name = "Frontend Dev"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
+args = "cd client && npm run dev"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "Backend Dev"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd spring-backend && mvn spring-boot:run"
+waitForPort = 8080
 
 [agent]
 integrations = ["javascript_log_in_with_replit:2.0.0"]

@@ -32,8 +32,11 @@ server: {
 }
 ```
 
-### Comunicação com o Backend (Proxy)
-O frontend está configurado para encaminhar chamadas de API para o backend. Se você alterar a porta do backend (ex: para 8081), lembre-se de atualizar o `target` no arquivo `vite.config.ts`:
+### Comunicação com o Backend (Proxy e URL)
+O frontend está configurado para encaminhar chamadas de API para o backend.
+
+#### Desenvolvimento (Local)
+Se você alterar a porta do backend (ex: para 8081), atualize o `target` no arquivo `vite.config.ts`:
 ```typescript
 proxy: {
   "/api": {
@@ -42,6 +45,13 @@ proxy: {
   }
 }
 ```
+
+#### Produção / Deploy
+Em produção, as chamadas são feitas para a URL onde o backend está hospedado.
+1. Se o frontend e o backend estiverem no mesmo domínio, o proxy configurado no servidor de produção (como o `server.js` incluído) cuidará disso.
+2. Caso precise apontar para uma URL externa, você pode configurar a variável de ambiente `VITE_API_URL` no seu provedor de deploy ou em um arquivo `.env` na pasta `client/`:
+   - Exemplo no `.env`: `VITE_API_URL=https://api.seudominio.com`
+   - No código, as chamadas utilizam a URL base configurada em `client/src/lib/queryClient.ts`.
 
 ## Build para Produção
 Para gerar os arquivos estáticos para deploy:

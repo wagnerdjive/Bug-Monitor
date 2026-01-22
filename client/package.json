@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5000",
     "build": "node --max-old-space-size=1024 ./node_modules/.bin/vite build",
+    "start": "node server.js",
     "check": "tsc"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",

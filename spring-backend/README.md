@@ -49,6 +49,27 @@ Gerencia quais usuários têm acesso a quais projetos (Muitos-para-Muitos).
 ### 6. `SPRING_SESSION` / `SPRING_SESSION_ATTRIBUTES`
 Tabelas internas do Spring Session JDBC para gerenciar sessões de login de forma persistente no banco de dados, permitindo que o usuário continue logado mesmo após o reinício do servidor.
 
+## Como Rodar o Backend
+
+### Pré-requisitos
+- Java 17 ou superior
+- Maven 3.8+
+- Banco de Dados PostgreSQL
+
+### Comandos para Rodar
+Na pasta `spring-backend/`, execute:
+```bash
+mvn spring-boot:run
+```
+
+### Como Trocar a Porta
+A porta padrão é **8080**. Para alterar:
+1. Abra o arquivo `src/main/resources/application.properties`.
+2. Altere o valor de `server.port=8080` para a porta desejada.
+   - Exemplo: `server.port=8081`
+
+---
+
 ## SQL de Criação das Tabelas
 
 Caso precise criar as tabelas manualmente, utilize as queries abaixo:

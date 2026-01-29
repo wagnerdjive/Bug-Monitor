@@ -36,7 +36,7 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "http://173.249.57.138:8080",
+        target: "bug-monitor-backend:8080",
         changeOrigin: true,
       },
     },

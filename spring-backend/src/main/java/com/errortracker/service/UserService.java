@@ -32,6 +32,7 @@ public class UserService {
         
         boolean isFirstUser = userRepository.count() == 0;
         user.setRole(isFirstUser ? "ADMIN" : "USER");
+        user.setCanCreateProjects(true); // Users registered via portal can create projects
         
         return userRepository.save(user);
     }
@@ -48,6 +49,7 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole("USER");
+        user.setCanCreateProjects(false); // Users from invitation cannot create projects
         
         return userRepository.save(user);
     }
@@ -125,6 +127,7 @@ public class UserService {
         
         boolean isFirstUser = userRepository.count() == 0;
         user.setRole(isFirstUser ? "ADMIN" : "USER");
+        user.setCanCreateProjects(true);
         
         return userRepository.save(user);
     }

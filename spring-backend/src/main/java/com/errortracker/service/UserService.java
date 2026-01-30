@@ -30,8 +30,8 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         
-        user.setRole("USER");
-        user.setCanCreateProjects(true); // Users registered via portal can create projects
+        user.setRole("ADMIN"); // Portal registered users are admins of their own scope
+        user.setCanCreateProjects(true);
         
         return userRepository.save(user);
     }
@@ -124,7 +124,7 @@ public class UserService {
         user.setLastName(lastName);
         user.setProfileImageUrl(profileImageUrl);
         
-        user.setRole("USER");
+        user.setRole("ADMIN"); // OAuth registered users are also admins
         user.setCanCreateProjects(true);
         
         return userRepository.save(user);

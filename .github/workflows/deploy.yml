@@ -56,7 +56,15 @@ jobs:
               cd "$APP_DIR"
             fi
 
+            # Garante que o container antigo seja removido para evitar conflitos de porta
+            docker compose down --remove-orphans
+
             # Pull nova imagem e sobe
             docker compose pull
-            docker compose up -d --build --remove-orphans
+            docker compose up -d --build
+            
+            # Limpeza de imagens antigas para economizar espaço
+            docker image prune -f
+            
+            # Verifica status
             docker compose ps

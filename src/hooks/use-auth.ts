@@ -53,7 +53,14 @@ export function useAuth() {
       await apiRequest("POST", "/api/logout");
     },
     onSuccess: () => {
+      // Limpa o cache do usuário
       queryClient.setQueryData(["/api/auth/user"], null);
+
+      // ✅ Limpa ou invalida todas as queries dependentes do usuário
+      queryClient.removeQueries({ queryKey: ["/api/projects"] });
+
+      // Alternativa mais radical:
+      queryClient.clear(); // limpa todo o cache
     },
   });
 

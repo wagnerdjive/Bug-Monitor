@@ -27,7 +27,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 82,
+    port: 5000,
     host: "0.0.0.0",
     allowedHosts: true,
     fs: {
@@ -36,7 +36,7 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "bug-monitor-backend:8080",
+        target: "http://bug-monitor-backend:8080",
         changeOrigin: true,
       },
     },

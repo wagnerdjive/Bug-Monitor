@@ -30,8 +30,8 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         
-        boolean isFirstUser = userRepository.count() == 0;
-        user.setRole(isFirstUser ? "ADMIN" : "USER");
+        user.setRole("ADMIN"); // Portal registered users are admins of their own scope
+        user.setCanCreateProjects(true);
         
         return userRepository.save(user);
     }
@@ -48,6 +48,7 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole("USER");
+        user.setCanCreateProjects(false); // Users from invitation cannot create projects
         
         return userRepository.save(user);
     }
@@ -123,8 +124,8 @@ public class UserService {
         user.setLastName(lastName);
         user.setProfileImageUrl(profileImageUrl);
         
-        boolean isFirstUser = userRepository.count() == 0;
-        user.setRole(isFirstUser ? "ADMIN" : "USER");
+        user.setRole("ADMIN"); // OAuth registered users are also admins
+        user.setCanCreateProjects(true);
         
         return userRepository.save(user);
     }
